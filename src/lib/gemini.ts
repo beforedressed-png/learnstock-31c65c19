@@ -114,18 +114,25 @@ Bad title examples (do NOT write like this):
 
 # KEYWORDS
 - Provide ${kwMin}-${kwMax} keywords (target: ${kwTarget}). Maximum 49.
-- ORDER BY IMPORTANCE — the most important keywords come FIRST. Order is critical.
-- The top 10 keywords MUST include the individual words and concepts from the title.
-- Each keyword is a single concept. Separate descriptive elements: use "white", "fluffy", "young animal", "pup" as separate keywords — NOT "white fluffy pup".
-- Real compound names stay together: "Arctic Fox", "Mount Bromo", "sign language", "aerial view", "one person", "lab coat".
-- Mix general and specific levels: e.g. "animal", "mammal", "carnivora", "Arctic Fox".
-- Locations: when a city / state / region is included, also include the country. Don't mix conflicting locations.
-- Conceptual keywords for feelings / mood / trends (e.g. solitude, childhood, conservation). Concepts must match the image — "cold" for an ice cube, never "heat".
-- Number of people: include "one person", "two people", "three people", "four people", or "nobody" when there are no people. Never include people's real names.
-- Setting words when relevant: indoors, outdoors, day, night, sunny, cloudy, summer, winter.
-- Viewpoint when relevant: "aerial view", "high-angle view", "directly above", "drone point of view", "side view", "close-up".
-- Demographic info (ethnicity, race, heritage, age range, gender) ONLY when clearly visible and described with respectful, accurate language.
-- Lowercase except proper nouns (place names, species names). No punctuation inside a keyword. No duplicates. No keyword longer than 3 words.
+- STRICT RULE: EVERY keyword MUST be a SINGLE WORD. No spaces, no hyphens, no compound phrases. EVER.
+- Split every multi-word concept into separate single-word keywords:
+  - "comic book"     → "comic", "book"
+  - "speech bubble"  → "speech", "bubble"
+  - "vector illustration" → "vector", "illustration"
+  - "pop art"        → "pop", "art"
+  - "graphic design" → "graphic", "design"
+  - "Arctic Fox"     → "arctic", "fox"
+  - "Mount Bromo"    → "mount", "bromo"
+  - "aerial view"    → "aerial", "view"
+  - "one person"     → "one", "person"
+  - "thumbs up"      → "thumbs", "up"
+- ORDER BY IMPORTANCE — the most important single words come FIRST.
+- The top 10 keywords MUST include the individual words from the title (already split).
+- Mix general and specific levels: e.g. "animal", "mammal", "fox", "arctic".
+- Conceptual single words for feelings / mood (solitude, childhood, freedom, joy). Concepts must match the image.
+- People count as single words: "one", "two", "three", "four", "people", "nobody".
+- Setting words when relevant: indoors, outdoors, day, night, summer, winter.
+- All lowercase. No punctuation inside a keyword. No duplicates after lowercasing.
 - DO NOT include: brand / company / product names, artist names, real known people, fictional character names, third-party IP, or trademarks.${negKwLine}${reqKwLine}
 
 # CATEGORY
