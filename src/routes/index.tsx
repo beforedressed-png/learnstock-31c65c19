@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   FileSpreadsheet,
 } from "lucide-react";
+import logoWhite from "@/assets/logo-white.png";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -36,11 +37,8 @@ function Landing() {
     <div className="min-h-screen text-foreground">
       <header className="sticky top-0 z-30 glass border-b border-primary/15">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)]">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-bold tracking-tight">Learn Stock</span>
+          <Link to="/" className="flex items-center" aria-label="Learn Stock home">
+            <img src={logoWhite} alt="Learn Stock" className="h-7 w-auto" />
           </Link>
           <nav className="hidden items-center gap-6 text-xs text-muted-foreground md:flex">
             <a href="#features" className="hover:text-foreground transition-colors">Features</a>
@@ -272,12 +270,7 @@ function Landing() {
 
       <footer className="border-t border-primary/15">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground md:flex-row lg:px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
-              <Sparkles className="h-3 w-3" />
-            </div>
-            <span className="font-semibold text-foreground">Learn Stock</span>
-          </div>
+          <img src={logoWhite} alt="Learn Stock" className="h-5 w-auto opacity-90" />
           <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
         </div>
       </footer>
