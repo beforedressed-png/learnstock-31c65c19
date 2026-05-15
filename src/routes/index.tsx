@@ -9,6 +9,10 @@ import {
   Layers,
   ShieldCheck,
   FileSpreadsheet,
+  ChevronRight,
+  Check,
+  X,
+  Lock,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 
@@ -184,6 +188,118 @@ function Landing() {
                 <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{d}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Before vs After */}
+        <section className="mx-auto max-w-6xl px-4 py-16 lg:px-6">
+          <div className="text-center">
+            <span className="glass-glow inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary-glow">
+              <Sparkles className="h-3 w-3" />
+              See what changes
+            </span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Before vs. After</h2>
+          </div>
+
+          <div className="relative mt-10 grid gap-6 md:grid-cols-2">
+            {/* BEFORE */}
+            <div className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 backdrop-blur-sm shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-destructive">
+                <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
+                Before
+              </div>
+              <div className="mt-5">
+                <p className="text-xs text-muted-foreground">Title</p>
+                <div className="mt-1.5 rounded-lg border border-destructive/25 bg-background/40 px-3 py-2.5">
+                  <span className="text-sm text-muted-foreground line-through decoration-destructive/60">
+                    Nature tree green
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-xs text-muted-foreground">Keywords</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {["Nature", "tree", "green"].map((k) => (
+                    <span
+                      key={k}
+                      className="rounded-md border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs text-muted-foreground line-through decoration-destructive/60"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                  <span className="rounded-md border border-border bg-muted/30 px-2 py-0.5 text-xs text-muted-foreground">
+                    +0 more
+                  </span>
+                </div>
+              </div>
+              <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-destructive">
+                <X className="h-3.5 w-3.5" />
+                Zero relevant search matches
+              </p>
+            </div>
+
+            {/* AFTER */}
+            <div className="relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 backdrop-blur-sm shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-success">
+                <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                After — Learn Stock <Sparkles className="h-3 w-3 text-primary-glow" />
+              </div>
+              <div className="mt-5">
+                <p className="text-xs text-muted-foreground">Title</p>
+                <div className="mt-1.5 rounded-lg border border-success/25 bg-background/40 px-3 py-2.5">
+                  <span className="text-sm font-medium text-foreground">
+                    Lush Green Forest Landscape with Sunlight Rays — Nature Background
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-xs text-muted-foreground">Keywords</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {[
+                    "forest",
+                    "greenery",
+                    "sunlight",
+                    "nature",
+                    "eco",
+                    "scenic",
+                    "outdoor",
+                    "environment",
+                    "foliage",
+                    "serene",
+                  ].map((k) => (
+                    <span
+                      key={k}
+                      className="rounded-md border border-success/30 bg-success/10 px-2 py-0.5 text-xs text-foreground/90"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                  <span className="rounded-md border border-primary/30 bg-primary/15 px-2 py-0.5 text-xs text-primary-glow">
+                    +39 more
+                  </span>
+                </div>
+              </div>
+              <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-success">
+                <Check className="h-3.5 w-3.5" />
+                Matches real search queries
+              </p>
+            </div>
+
+            {/* Center arrow */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] glow-ring">
+                <ChevronRight className="h-5 w-5" />
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-10 flex items-center justify-center gap-4">
+            <span className="hidden h-px w-24 bg-gradient-to-r from-transparent to-border sm:block" />
+            <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-muted-foreground">
+              <Lock className="h-3 w-3 text-primary-glow" />
+              This is what gets ranked.
+            </span>
+            <span className="hidden h-px w-24 bg-gradient-to-l from-transparent to-border sm:block" />
           </div>
         </section>
 
