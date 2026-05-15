@@ -89,18 +89,28 @@ function buildPrompt(opts: GenerateOptions): string {
   return `You generate Adobe Stock metadata that strictly follows Adobe's official Title and Keyword guidelines. Analyze the image and return a title, an ordered keyword list, and a category id.
 
 # TITLE
-- Short, factual, descriptive English phrase (NOT a formal sentence, NOT a list of keywords).
-- ${titleCap} CHARACTERS OR FEWER (hard limit). Adobe recommends 70 or fewer for best search visibility — stay under 70 when possible.
-- Accurate, relevant, precise. Easy to read.
-- Describe subject, action, and setting. Add location for travel/nature, species for animals, cuisine names for food, and "AI generated" if the image is clearly AI.
-- Use caring, engaged language for people. Never demeaning, derogatory, or stereotyping.
-- DO NOT include: company / brand / product names, artist names (including single-name artists), real known people, fictional character names, movie / franchise / comic / artwork names, or "in the style of / inspired by / influenced by" references.
-- No quotes, no emojis, no hashtags. Plain text only.${negTitleLine}
+- Short, marketable English phrase. NOT a formal sentence. NOT a long descriptive caption.
+- ${titleCap} CHARACTERS OR FEWER (hard limit). Adobe recommends 70 or fewer — stay well under 70 whenever possible.
+- Preferred shape: "<Subject> <short qualifier>, <secondary phrase or synonyms>". Use a comma to add a second short clause instead of long "showing/with/of" sentences.
+- Avoid weak filler verbs and constructions: "showing", "depicting", "featuring", "that shows", "which represents", "image of", "picture of", "illustration of", "a set of".
+- Use natural buyer-search phrasing — words a designer would type into search (e.g. "icons set", "flat icons", "line icons", "vector illustration", "seamless pattern", "isolated on white", "concept", "background").
+- Describe subject + key qualifier + style/use. Add location for travel/nature, species for animals, cuisine names for food, and "AI generated" only if clearly AI.
+- Use caring, respectful language for people. Never demeaning, derogatory, or stereotyping.
+- DO NOT include: brand / company / product names, artist names, real known people, fictional character names, franchise / IP / artwork names, or "in the style of / inspired by" references.
+- No quotes, no emojis, no hashtags, no trailing period. Plain text only.${negTitleLine}
 
-Good title examples:
-- "Young woman playing catch with Jack Russel Terrier at a beach in Portland, Oregon, USA"
+Good title examples (study the rhythm — subject, comma, short secondary clause):
+- "Thumbs up and thumbs down icons set, like and dislike symbols"
 - "Aerial view of Mount Bromo, Indonesia"
-- "Senior woman flexing her muscles on beach"
+- "Young woman playing fetch with Jack Russell Terrier on a beach in Portland, Oregon"
+- "Minimalist line icons set, business and finance symbols"
+- "Senior woman flexing muscles on the beach, healthy lifestyle concept"
+- "Seamless floral pattern, pastel watercolor flowers on white background"
+
+Bad title examples (do NOT write like this):
+- "Thumbs up and thumbs down icons showing positive and negative feedback"  → uses "showing"; rewrite as "icons set, like and dislike symbols"
+- "An image of a sunset over mountains"  → starts with "image of"
+- "Picture depicting a happy family at home"  → "picture depicting" filler
 
 # KEYWORDS
 - Provide ${kwMin}-${kwMax} keywords (target: ${kwTarget}). Maximum 49.
