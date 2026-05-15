@@ -213,14 +213,14 @@ function Landing() {
                 <p className="text-xs text-muted-foreground">Title</p>
                 <div className="mt-1.5 rounded-lg border border-destructive/25 bg-background/40 px-3 py-2.5">
                   <span className="text-sm text-muted-foreground line-through decoration-destructive/60">
-                    Nature tree green
+                    Business woman working laptop office
                   </span>
                 </div>
               </div>
               <div className="mt-4">
                 <p className="text-xs text-muted-foreground">Keywords</p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {["Nature", "tree", "green"].map((k) => (
+                  {["business woman", "working", "laptop office"].map((k) => (
                     <span
                       key={k}
                       className="rounded-md border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs text-muted-foreground line-through decoration-destructive/60"
@@ -235,7 +235,7 @@ function Landing() {
               </div>
               <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-destructive">
                 <X className="h-3.5 w-3.5" />
-                Zero relevant search matches
+                Compound phrases — Adobe will reject
               </p>
             </div>
 
@@ -249,7 +249,7 @@ function Landing() {
                 <p className="text-xs text-muted-foreground">Title</p>
                 <div className="mt-1.5 rounded-lg border border-success/25 bg-background/40 px-3 py-2.5">
                   <span className="text-sm font-medium text-foreground">
-                    Lush Green Forest Landscape with Sunlight Rays — Nature Background
+                    Confident businesswoman working on laptop at modern office desk, remote work concept
                   </span>
                 </div>
               </div>
@@ -257,16 +257,16 @@ function Landing() {
                 <p className="text-xs text-muted-foreground">Keywords</p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {[
-                    "forest",
-                    "greenery",
-                    "sunlight",
-                    "nature",
-                    "eco",
-                    "scenic",
-                    "outdoor",
-                    "environment",
-                    "foliage",
-                    "serene",
+                    "businesswoman",
+                    "laptop",
+                    "office",
+                    "working",
+                    "professional",
+                    "confident",
+                    "remote",
+                    "desk",
+                    "corporate",
+                    "freelancer",
                   ].map((k) => (
                     <span
                       key={k}
@@ -282,7 +282,7 @@ function Landing() {
               </div>
               <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-success">
                 <Check className="h-3.5 w-3.5" />
-                Matches real search queries
+                Single-word keywords, CSV-ready
               </p>
             </div>
 
