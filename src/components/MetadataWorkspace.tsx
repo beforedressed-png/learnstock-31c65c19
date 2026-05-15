@@ -204,7 +204,7 @@ export function MetadataWorkspace({ settings }: Props) {
   return (
     <div className="space-y-4">
       {/* Upload card */}
-      <section className="rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+      <section className="glass rounded-2xl shadow-[var(--shadow-card)]">
         <header className="flex items-center gap-2 border-b border-border px-4 py-3">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted">
             <Upload className="h-3.5 w-3.5" />
@@ -393,7 +393,7 @@ function ItemCard({
   onDownload: () => void;
 }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition-shadow hover:shadow-md">
+    <article className="overflow-hidden glass rounded-2xl shadow-[var(--shadow-card)] transition-shadow hover:shadow-md">
       <div className="grid gap-4 p-4 sm:grid-cols-[120px_1fr]">
         <div className="relative">
           <div className="aspect-square overflow-hidden rounded-xl bg-muted">
