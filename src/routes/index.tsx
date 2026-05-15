@@ -270,12 +270,7 @@ function Landing() {
 
       <footer className="border-t border-primary/15">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground md:flex-row lg:px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
-              <Sparkles className="h-3 w-3" />
-            </div>
-            <span className="font-semibold text-foreground">Learn Stock</span>
-          </div>
+          <img src={logoWhite} alt="Learn Stock" className="h-5 w-auto opacity-90" />
           <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
         </div>
       </footer>
