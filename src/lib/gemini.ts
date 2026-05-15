@@ -173,14 +173,18 @@ export async function generateMetadata(
     throw new Error("Model returned invalid JSON");
   }
 
-  const title = String(parsed.title ?? "").trim().slice(0, 200);
+  const title = String(parsed.title ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 70);
   const keywords = Array.isArray(parsed.keywords)
     ? Array.from(
-        new Set(
+        new Map(
           parsed.keywords
-            .map((k) => String(k).toLowerCase().trim())
-            .filter((k) => k.length > 0 && k.length < 40),
-        ),
+            .map((k) => String(k).replace(/[",;]/g, "").trim())
+            .filter((k) => k.length > 0 && k.length < 40)
+            .map((k) => [k.toLowerCase(), k]),
+        ).values(),
       ).slice(0, 49)
     : [];
   const categoryId = Math.max(1, Math.min(21, Number(parsed.category) || 8));
