@@ -138,7 +138,7 @@ export function MetadataWorkspace({ settings }: Props) {
 
   const runGeneration = async () => {
     if (!store.activeKey) {
-      toast.error("Add a Gemini API key first (Controls → API Keys)");
+      toast.error(`Add a ${store.provider === "grok" ? "Grok" : "Gemini"} API key first (Controls → API Keys)`);
       return;
     }
     const queue = items.filter((i) => i.status === "pending" || i.status === "error");
