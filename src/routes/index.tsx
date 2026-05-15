@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   FileSpreadsheet,
 } from "lucide-react";
+import logoWhite from "@/assets/logo-white.png";
 
 export const Route = createFileRoute("/")({
   component: Landing,
