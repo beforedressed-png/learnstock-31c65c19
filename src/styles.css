@@ -105,14 +105,42 @@
 @layer utilities {
   .glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
     border: 1px solid var(--glass-border);
   }
   .glow-ring {
     box-shadow: var(--shadow-glow);
   }
   .text-glow {
-    text-shadow: 0 0 24px color-mix(in oklab, var(--primary-glow) 60%, transparent);
+    text-shadow: 0 0 18px color-mix(in oklab, var(--primary-glow) 45%, transparent);
+  }
+}
+
+/* Frosted glass + soft glow on buttons */
+@layer base {
+  button:not([data-no-glass]),
+  [role="button"]:not([data-no-glass]) {
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    transition: box-shadow 0.25s ease, transform 0.15s ease, background-color 0.2s ease;
+  }
+  button.bg-primary,
+  [role="button"].bg-primary {
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--primary) 85%, transparent),
+      color-mix(in oklab, var(--primary-glow) 75%, transparent));
+    border: 1px solid color-mix(in oklab, var(--primary-glow) 35%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 18%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent),
+      0 6px 22px -8px color-mix(in oklab, var(--primary-glow) 45%, transparent);
+  }
+  button.bg-primary:hover,
+  [role="button"].bg-primary:hover {
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 22%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent),
+      0 8px 28px -6px color-mix(in oklab, var(--primary-glow) 60%, transparent);
   }
 }
