@@ -109,6 +109,22 @@
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid var(--glass-border);
   }
+  .glass-glow {
+    position: relative;
+    background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 14%, transparent), color-mix(in oklab, var(--primary-glow) 4%, transparent));
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid color-mix(in oklab, var(--primary) 28%, transparent);
+    box-shadow: 0 6px 24px -10px color-mix(in oklab, var(--primary) 45%, transparent), inset 0 1px 0 0 color-mix(in oklab, white 12%, transparent);
+  }
+  .glass-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, color-mix(in oklab, white 10%, transparent), transparent 55%);
+    pointer-events: none;
+  }
   .glow-ring {
     box-shadow: var(--shadow-glow);
   }

@@ -60,7 +60,7 @@ function Landing() {
       <main>
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] text-foreground/80 backdrop-blur">
+          <div className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
             <Sparkles className="h-3 w-3 text-primary-glow" />
             AI-powered stock metadata
           </div>
@@ -83,7 +83,7 @@ function Landing() {
             </Link>
             <a
               href="#how"
-              className="inline-flex items-center gap-1.5 rounded-full glass px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground transition-colors"
+              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground transition-colors"
             >
               How it works
             </a>
@@ -121,7 +121,7 @@ function Landing() {
               { v: "49", l: "Keywords per image" },
               { v: "4", l: "Stock platforms supported" },
             ].map((s) => (
-              <div key={s.l} className="glass rounded-xl px-4 py-5 text-center">
+              <div key={s.l} className="glass-glow rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
               </div>
