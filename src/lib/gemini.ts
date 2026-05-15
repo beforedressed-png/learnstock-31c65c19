@@ -53,6 +53,8 @@ export interface GenerateOptions {
   keywordCount: number; // target, 10..49
   negativeTitleWords?: string; // comma/space separated words to avoid in title
   negativeKeywords?: string; // comma/space separated keywords to avoid
+  customPrompt?: string; // user instruction injected into the system prompt
+  requiredKeywords?: string; // keywords the model MUST include
 }
 
 // Prompt follows Adobe Stock's official guidance:
@@ -67,12 +69,21 @@ function buildPrompt(opts: GenerateOptions): string {
     .split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
   const negKw = (opts.negativeKeywords ?? "")
     .split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
+  const reqKw = (opts.requiredKeywords ?? "")
+    .split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
+  const customInstr = (opts.customPrompt ?? "").trim();
 
   const negTitleLine = negTitle.length
     ? `\n- NEVER use these words in the title: ${negTitle.join(", ")}.`
     : "";
   const negKwLine = negKw.length
     ? `\n- NEVER include these keywords (or close synonyms): ${negKw.join(", ")}.`
+    : "";
+  const reqKwLine = reqKw.length
+    ? `\n- ALWAYS include these keywords (place them naturally, prefer top half): ${reqKw.join(", ")}.`
+    : "";
+  const customBlock = customInstr
+    ? `\n\n# ADDITIONAL USER INSTRUCTIONS (highest priority, override defaults if conflicting except CATEGORY/JSON shape)\n${customInstr}`
     : "";
 
   return `You generate Adobe Stock metadata that strictly follows Adobe's official Title and Keyword guidelines. Analyze the image and return a title, an ordered keyword list, and a category id.
@@ -105,11 +116,11 @@ Good title examples:
 - Viewpoint when relevant: "aerial view", "high-angle view", "directly above", "drone point of view", "side view", "close-up".
 - Demographic info (ethnicity, race, heritage, age range, gender) ONLY when clearly visible and described with respectful, accurate language.
 - Lowercase except proper nouns (place names, species names). No punctuation inside a keyword. No duplicates. No keyword longer than 3 words.
-- DO NOT include: brand / company / product names, artist names, real known people, fictional character names, third-party IP, or trademarks.${negKwLine}
+- DO NOT include: brand / company / product names, artist names, real known people, fictional character names, third-party IP, or trademarks.${negKwLine}${reqKwLine}
 
 # CATEGORY
 Pick the SINGLE best id (1-21):
-1 Animals, 2 Buildings and Architecture, 3 Business, 4 Drinks, 5 The Environment, 6 States of Mind, 7 Food, 8 Graphic Resources, 9 Hobbies and Leisure, 10 Industry, 11 Landscapes, 12 Lifestyle, 13 People, 14 Plants and Flowers, 15 Culture and Religion, 16 Science, 17 Social Issues, 18 Sports, 19 Technology, 20 Transport, 21 Travel.
+1 Animals, 2 Buildings and Architecture, 3 Business, 4 Drinks, 5 The Environment, 6 States of Mind, 7 Food, 8 Graphic Resources, 9 Hobbies and Leisure, 10 Industry, 11 Landscapes, 12 Lifestyle, 13 People, 14 Plants and Flowers, 15 Culture and Religion, 16 Science, 17 Social Issues, 18 Sports, 19 Technology, 20 Transport, 21 Travel.${customBlock}
 
 # OUTPUT
 Respond with VALID JSON only, no commentary, matching this shape:

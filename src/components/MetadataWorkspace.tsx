@@ -58,6 +58,22 @@ function applyPostProcessing(meta: StockMetadata, settings: GenSettings): StockM
     );
     keywords = keywords.filter((k) => !blocked.has(k.toLowerCase()));
   }
+  // Always-include custom keywords (prepend, dedupe, cap at 49)
+  if (settings.customKeywordsEnabled && settings.customKeywords.trim()) {
+    const extra = settings.customKeywords
+      .split(/[,\n]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const seen = new Set<string>();
+    keywords = [...extra, ...keywords]
+      .filter((k) => {
+        const key = k.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .slice(0, 49);
+  }
   return { ...meta, title, keywords };
 }
 
@@ -138,6 +154,8 @@ export function MetadataWorkspace({ settings }: Props) {
           keywordCount: settings.keywordCount,
           negativeTitleWords: settings.negativeTitleEnabled ? settings.negativeTitleWords : "",
           negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
+          customPrompt: settings.customPromptEnabled ? settings.customPrompt : "",
+          requiredKeywords: settings.customKeywordsEnabled ? settings.customKeywords : "",
         });
         const meta = applyPostProcessing(raw, settings);
         setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "done", meta } : i)));
@@ -186,7 +204,7 @@ export function MetadataWorkspace({ settings }: Props) {
   return (
     <div className="space-y-4">
       {/* Upload card */}
-      <section className="rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+      <section className="glass rounded-2xl shadow-[var(--shadow-card)]">
         <header className="flex items-center gap-2 border-b border-border px-4 py-3">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted">
             <Upload className="h-3.5 w-3.5" />
@@ -240,7 +258,7 @@ export function MetadataWorkspace({ settings }: Props) {
       </section>
 
       {/* Action bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-card)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 glass rounded-2xl px-4 py-3 shadow-[var(--shadow-card)]">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {items.length === 0 ? (
             <span className="text-muted-foreground">Upload files to begin.</span>
@@ -307,7 +325,7 @@ export function MetadataWorkspace({ settings }: Props) {
 
       {/* Results */}
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card px-6 py-20 text-center">
+        <div className="flex flex-col items-center justify-center glass rounded-2xl border border-dashed border-primary/30 px-6 py-20 text-center">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
             <ImageIcon className="h-6 w-6 text-muted-foreground" />
           </div>
@@ -375,7 +393,7 @@ function ItemCard({
   onDownload: () => void;
 }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition-shadow hover:shadow-md">
+    <article className="overflow-hidden glass rounded-2xl shadow-[var(--shadow-card)] transition-shadow hover:shadow-md">
       <div className="grid gap-4 p-4 sm:grid-cols-[120px_1fr]">
         <div className="relative">
           <div className="aspect-square overflow-hidden rounded-xl bg-muted">

@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   ChevronDown,
   Lightbulb,
-  Lock,
   SlidersHorizontal,
   Sparkles,
   TextCursorInput,
@@ -10,10 +9,13 @@ import {
   Hash,
   AlignLeft,
   Ban,
+  Wand2,
+  Tag,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApiKeysDialog } from "./ApiKeysDialog";
 import { cn } from "@/lib/utils";
@@ -35,6 +37,9 @@ const PLATFORMS: { id: ExportPlatform; label: string; abbr: string; available: b
   { id: "pond5", label: "Pond5", abbr: "P5", available: false },
 ];
 
+const cardCls =
+  "glass rounded-2xl shadow-[var(--shadow-card)]";
+
 export function ControlsSidebar({ settings, update }: Props) {
   const [tab, setTab] = useState<"metadata" | "prompt">("metadata");
   const [open, setOpen] = useState(true);
@@ -45,10 +50,10 @@ export function ControlsSidebar({ settings, update }: Props) {
   return (
     <aside className="space-y-4">
       {/* Controls card */}
-      <section className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
+      <section className={cn(cardCls, "p-4")}>
         <header className="mb-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-foreground">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)]">
               <SlidersHorizontal className="h-4 w-4" />
             </div>
             <div className="leading-tight">
@@ -60,41 +65,92 @@ export function ControlsSidebar({ settings, update }: Props) {
         </header>
 
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-          <TabsList className="grid w-full grid-cols-2 rounded-xl bg-muted p-1">
+          <TabsList className="grid w-full grid-cols-2 rounded-xl bg-muted/60 p-1">
             <TabsTrigger
               value="metadata"
-              className="gap-1.5 rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background"
+              className="gap-1.5 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary-glow data-[state=active]:text-primary-foreground data-[state=active]:shadow-[var(--shadow-elegant)]"
             >
               <Sparkles className="h-3.5 w-3.5" />
               Metadata
             </TabsTrigger>
             <TabsTrigger
               value="prompt"
-              className="gap-1.5 rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background"
+              className="gap-1.5 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary-glow data-[state=active]:text-primary-foreground data-[state=active]:shadow-[var(--shadow-elegant)]"
             >
               <TextCursorInput className="h-3.5 w-3.5" />
               Prompt
             </TabsTrigger>
           </TabsList>
         </Tabs>
-
-        {tab === "prompt" && (
-          <div className="mt-4 rounded-lg border border-dashed border-border bg-muted/40 px-3 py-6 text-center text-xs text-muted-foreground">
-            <Lock className="mx-auto mb-2 h-4 w-4" />
-            Custom prompts are coming soon. Adobe Stock guidelines are applied automatically.
-          </div>
-        )}
       </section>
+
+      {/* Prompt tab — custom AI prompt + custom always-include keywords */}
+      {tab === "prompt" && (
+        <section className={cn(cardCls, "p-4 space-y-4")}>
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-xs font-semibold">
+                <Wand2 className="h-3.5 w-3.5 text-primary" />
+                Custom AI Prompt
+              </span>
+              <Switch
+                checked={settings.customPromptEnabled}
+                onCheckedChange={(v) => update("customPromptEnabled", v)}
+              />
+            </div>
+            <p className="mb-2 text-[11px] text-muted-foreground">
+              Extra instructions for the AI when generating title and keywords.
+            </p>
+            <Textarea
+              value={settings.customPrompt}
+              onChange={(e) => update("customPrompt", e.target.value)}
+              disabled={!settings.customPromptEnabled}
+              placeholder="e.g. Focus on minimalist composition, mention lighting style, prefer cinematic mood…"
+              rows={5}
+              className="resize-none bg-background/40 text-xs leading-relaxed"
+            />
+          </div>
+
+          <div className="border-t border-border/60 pt-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-xs font-semibold">
+                <Tag className="h-3.5 w-3.5 text-primary" />
+                Custom Keywords
+              </span>
+              <Switch
+                checked={settings.customKeywordsEnabled}
+                onCheckedChange={(v) => update("customKeywordsEnabled", v)}
+              />
+            </div>
+            <p className="mb-2 text-[11px] text-muted-foreground">
+              Always include these keywords (placed first, deduped).
+            </p>
+            <Textarea
+              value={settings.customKeywords}
+              onChange={(e) => update("customKeywords", e.target.value)}
+              disabled={!settings.customKeywordsEnabled}
+              placeholder="ai generated, concept art, isolated"
+              rows={3}
+              className="resize-none bg-background/40 text-xs leading-relaxed"
+            />
+          </div>
+
+          <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-[11px] text-muted-foreground">
+            <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+            <span>Adobe Stock guidelines stay enforced. Custom prompt only adds focus, it can't break category or JSON schema.</span>
+          </div>
+        </section>
+      )}
 
       {/* Metadata Settings */}
       {tab === "metadata" && (
-        <section className="rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+        <section className={cardCls}>
           <button
             onClick={() => setOpen((o) => !o)}
             className="flex w-full items-center justify-between gap-3 px-4 py-3"
           >
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted text-foreground">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/15 text-primary">
                 <SlidersHorizontal className="h-3.5 w-3.5" />
               </div>
               <span className="text-sm font-semibold">Metadata Settings</span>
@@ -108,7 +164,7 @@ export function ControlsSidebar({ settings, update }: Props) {
           </button>
 
           {open && (
-            <div className="space-y-5 border-t border-border p-4">
+            <div className="space-y-5 border-t border-border/60 p-4">
               {/* Export platform */}
               <div>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -125,8 +181,8 @@ export function ControlsSidebar({ settings, update }: Props) {
                         className={cn(
                           "group relative flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs transition-all",
                           active
-                            ? "border-transparent bg-foreground text-background shadow-sm"
-                            : "border-border bg-card hover:border-foreground/30",
+                            ? "border-transparent bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)]"
+                            : "border-border bg-background/30 hover:border-primary/40 hover:bg-primary/10",
                           !p.available && "cursor-not-allowed opacity-45",
                         )}
                         title={p.available ? "" : "Coming soon"}
@@ -134,7 +190,9 @@ export function ControlsSidebar({ settings, update }: Props) {
                         <span
                           className={cn(
                             "flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold",
-                            active ? "bg-background/15 text-background" : "bg-muted text-muted-foreground",
+                            active
+                              ? "bg-background/20 text-primary-foreground"
+                              : "bg-muted text-muted-foreground",
                           )}
                         >
                           {p.abbr}
@@ -147,7 +205,6 @@ export function ControlsSidebar({ settings, update }: Props) {
                 </div>
               </div>
 
-              {/* Title length */}
               <SliderField
                 icon={<AlignLeft className="h-3.5 w-3.5" />}
                 label="Title Length"
@@ -160,8 +217,7 @@ export function ControlsSidebar({ settings, update }: Props) {
                 hint={settings.titleLength > 70 ? "Adobe recommends ≤ 70" : undefined}
               />
 
-              {/* Description (placeholder, fixed) */}
-              <div className="flex items-center justify-between rounded-lg bg-muted/60 px-3 py-2.5 text-xs">
+              <div className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2.5 text-xs">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Type className="h-3.5 w-3.5" />
                   <span className="font-semibold uppercase tracking-wider text-[10px]">Description</span>
@@ -169,7 +225,6 @@ export function ControlsSidebar({ settings, update }: Props) {
                 <span className="text-muted-foreground">150 chars (fixed)</span>
               </div>
 
-              {/* Keywords count */}
               <SliderField
                 icon={<Hash className="h-3.5 w-3.5" />}
                 label="Keywords Count"
@@ -181,7 +236,6 @@ export function ControlsSidebar({ settings, update }: Props) {
                 onChange={(v) => update("keywordCount", v)}
               />
 
-              {/* Options */}
               <div className="space-y-2 pt-1">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Options
@@ -224,10 +278,10 @@ export function ControlsSidebar({ settings, update }: Props) {
                 />
               </div>
 
-              <div className="flex items-start gap-2 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2 text-[11px] text-muted-foreground">
+              <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-[11px] text-muted-foreground">
                 <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
                 <span>
-                  &ldquo;isolated on transparent background&rdquo; is auto-added for PNGs.
+                  Use the Prompt tab to add a custom AI instruction or always-include keywords.
                 </span>
               </div>
             </div>
@@ -267,7 +321,7 @@ function SliderField({
           {label}
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-sm font-bold text-primary tabular-nums">{value}</span>
+          <span className="text-sm font-bold text-primary tabular-nums text-glow">{value}</span>
           <span className="text-[11px] text-muted-foreground">{unit}</span>
         </div>
       </div>
@@ -305,7 +359,12 @@ function ToggleRow({
   accent?: string;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-card px-3 py-2">
+    <div
+      className={cn(
+        "rounded-lg border bg-background/30 px-3 py-2 transition-colors",
+        enabled ? "border-primary/40" : "border-border",
+      )}
+    >
       <div className="flex items-center justify-between gap-2">
         <span
           className={cn(
@@ -323,7 +382,7 @@ function ToggleRow({
           value={value}
           onChange={(e) => onChangeValue(e.target.value)}
           placeholder={placeholder}
-          className="mt-2 h-8 text-xs"
+          className="mt-2 h-8 bg-background/40 text-xs"
         />
       )}
     </div>
