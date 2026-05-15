@@ -218,13 +218,20 @@ export async function generateMetadata(
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, titleCap);
+  // Enforce SINGLE-WORD keywords: split phrases on whitespace/hyphen/slash, lowercase, dedupe.
+  const STOP = new Set(["a", "an", "the", "of", "and", "or", "to", "in", "on", "with", "for", "by", "at"]);
   const keywords = Array.isArray(parsed.keywords)
     ? Array.from(
         new Map(
           parsed.keywords
-            .map((k) => String(k).replace(/[",;]/g, "").trim())
-            .filter((k) => k.length > 0 && k.length < 40)
-            .map((k) => [k.toLowerCase(), k]),
+            .flatMap((k) =>
+              String(k)
+                .replace(/[",;.!?()]/g, "")
+                .split(/[\s\-/_]+/),
+            )
+            .map((w) => w.trim().toLowerCase())
+            .filter((w) => w.length > 1 && w.length < 30 && !STOP.has(w) && /^[a-z0-9]+$/i.test(w))
+            .map((w) => [w, w]),
         ).values(),
       ).slice(0, kwMax)
     : [];
