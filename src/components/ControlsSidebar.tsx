@@ -21,6 +21,7 @@ import { ApiKeysDialog } from "./ApiKeysDialog";
 import { cn } from "@/lib/utils";
 import type { ExportPlatform, GenSettings } from "@/lib/gen-settings";
 import { GEMINI_MODELS } from "@/lib/gemini";
+import { GROK_MODELS } from "@/lib/grok";
 import { useKeyStore } from "@/lib/keys-store";
 
 interface Props {
