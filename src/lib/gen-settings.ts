@@ -1,5 +1,5 @@
-// Generation settings — title length, keyword count, prefix/suffix, negatives.
-// Persisted to localStorage so settings survive reloads.
+// Generation settings — title length, keyword count, prefix/suffix, negatives,
+// custom prompt and custom keywords. Persisted to localStorage.
 import { useCallback, useEffect, useState } from "react";
 
 export type ExportPlatform = "adobe" | "shutterstock" | "freepik" | "vecteezy" | "pond5" | "general";
@@ -12,10 +12,14 @@ export interface GenSettings {
   suffix: string;
   negativeTitleWords: string;
   negativeKeywords: string;
+  customPrompt: string;
+  customKeywords: string;
   prefixEnabled: boolean;
   suffixEnabled: boolean;
   negativeTitleEnabled: boolean;
   negativeKeywordsEnabled: boolean;
+  customPromptEnabled: boolean;
+  customKeywordsEnabled: boolean;
 }
 
 const DEFAULTS: GenSettings = {
@@ -26,13 +30,17 @@ const DEFAULTS: GenSettings = {
   suffix: "",
   negativeTitleWords: "",
   negativeKeywords: "",
+  customPrompt: "",
+  customKeywords: "",
   prefixEnabled: false,
   suffixEnabled: false,
   negativeTitleEnabled: false,
   negativeKeywordsEnabled: false,
+  customPromptEnabled: false,
+  customKeywordsEnabled: false,
 };
 
-const LS_KEY = "learnstock.gen-settings.v1";
+const LS_KEY = "learnstock.gen-settings.v2";
 
 export function useGenSettings() {
   const [settings, setSettings] = useState<GenSettings>(() => {
