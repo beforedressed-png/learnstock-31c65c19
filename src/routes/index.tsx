@@ -66,6 +66,7 @@ function Landing() {
           </div>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
             Stock metadata that{" "}
+            <br className="hidden md:block" />
             <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent text-glow">
               sells itself
             </span>
