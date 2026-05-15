@@ -258,7 +258,7 @@ export function MetadataWorkspace({ settings }: Props) {
       </section>
 
       {/* Action bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-card)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 glass rounded-2xl px-4 py-3 shadow-[var(--shadow-card)]">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {items.length === 0 ? (
             <span className="text-muted-foreground">Upload files to begin.</span>
@@ -325,7 +325,7 @@ export function MetadataWorkspace({ settings }: Props) {
 
       {/* Results */}
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card px-6 py-20 text-center">
+        <div className="flex flex-col items-center justify-center glass rounded-2xl border border-dashed border-primary/30 px-6 py-20 text-center">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
             <ImageIcon className="h-6 w-6 text-muted-foreground" />
           </div>
