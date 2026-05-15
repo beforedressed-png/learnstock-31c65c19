@@ -83,7 +83,7 @@ function Landing() {
             </Link>
             <a
               href="#how"
-              className="inline-flex items-center gap-1.5 rounded-full glass px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground transition-colors"
+              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground transition-colors"
             >
               How it works
             </a>
