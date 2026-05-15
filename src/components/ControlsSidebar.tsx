@@ -45,7 +45,9 @@ export function ControlsSidebar({ settings, update }: Props) {
   const [open, setOpen] = useState(true);
   const keyStore = useKeyStore();
   const activeModelLabel =
-    GEMINI_MODELS.find((m) => m.id === keyStore.model)?.label ?? "Google Gemini";
+    keyStore.provider === "grok"
+      ? GROK_MODELS.find((m) => m.id === keyStore.model)?.label ?? "xAI Grok"
+      : GEMINI_MODELS.find((m) => m.id === keyStore.model)?.label ?? "Google Gemini";
 
   return (
     <aside className="space-y-4">
