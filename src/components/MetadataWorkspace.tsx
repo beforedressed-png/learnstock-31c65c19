@@ -157,6 +157,7 @@ export function MetadataWorkspace({ settings }: Props) {
           negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
           customPrompt: settings.customPromptEnabled ? settings.customPrompt : "",
           requiredKeywords: settings.customKeywordsEnabled ? settings.customKeywords : "",
+          includeDescription: settings.platform === "general",
         };
         const raw =
           store.provider === "grok"
