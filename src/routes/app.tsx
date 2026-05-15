@@ -29,7 +29,9 @@ function AppPage() {
       <header className="sticky top-0 z-30 glass border-b border-primary/20">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <img src={logoIcon} alt="" className="h-6 w-6" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)] glow-ring">
+              <img src={logoIcon} alt="" className="h-4.5 w-4.5" />
+            </span>
             <div className="leading-tight">
               <h1 className="text-base font-bold tracking-tight text-glow">Learn Stock</h1>
               <p className="text-[11px] text-muted-foreground">AI metadata for stock contributors</p>
