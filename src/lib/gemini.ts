@@ -216,7 +216,7 @@ export async function generateMetadata(
   const json = await res.json();
   const text =
     json?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text || "").join("") ?? "";
-  let parsed: { title?: string; keywords?: string[]; category?: number };
+  let parsed: { title?: string; keywords?: string[]; category?: number; description?: string };
   try {
     parsed = JSON.parse(text);
   } catch {
@@ -253,7 +253,11 @@ export async function generateMetadata(
   if (!title) throw new Error("Model returned empty title");
   if (keywords.length < 5) throw new Error("Model returned too few keywords");
 
-  return { title, keywords, category: categoryId, categoryLabel };
+  const description = opts.includeDescription
+    ? String(parsed.description ?? "").replace(/\s+/g, " ").trim().slice(0, DESCRIPTION_CAP) || undefined
+    : undefined;
+
+  return { title, keywords, category: categoryId, categoryLabel, description };
 }
 
 export async function verifyApiKey(apiKey: string): Promise<boolean> {
