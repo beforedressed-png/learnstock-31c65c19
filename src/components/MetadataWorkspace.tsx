@@ -58,12 +58,12 @@ function applyPostProcessing(meta: StockMetadata, settings: GenSettings): StockM
     );
     keywords = keywords.filter((k) => !blocked.has(k.toLowerCase()));
   }
-  // Always-include custom keywords (prepend, dedupe, cap at 49)
+  // Always-include custom keywords (split to single words, prepend, dedupe, cap at 49)
   if (settings.customKeywordsEnabled && settings.customKeywords.trim()) {
     const extra = settings.customKeywords
-      .split(/[,\n]+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
+      .split(/[,\n\s\-/_]+/)
+      .map((s) => s.trim().toLowerCase())
+      .filter((s) => s.length > 1 && /^[a-z0-9]+$/i.test(s));
     const seen = new Set<string>();
     keywords = [...extra, ...keywords]
       .filter((k) => {
