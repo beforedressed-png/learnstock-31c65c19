@@ -65,14 +65,14 @@ function Landing() {
             AI-powered stock metadata
           </div>
           <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
-            Generate stock metadata{" "}
+            Stock metadata that{" "}
             <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent text-glow">
-              in seconds
+              sells itself
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-sm text-muted-foreground md:text-base">
-            Upload your images and let Gemini craft Adobe Stock-ready titles and single-word
-            keywords. Bring your own API key, export CSV, ship faster.
+            Drop your images, get Adobe-ready titles, single-word keywords and the right category in
+            seconds. Bring your own AI key, export a contributor-perfect CSV, and ship batches faster.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
