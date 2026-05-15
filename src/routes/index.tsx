@@ -176,8 +176,8 @@ function Landing() {
                 key={t}
                 className="glass rounded-xl p-5 transition-colors hover:border-primary/40"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary-glow">
-                  <Icon className="h-4.5 w-4.5" />
+                <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/30 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_4px_16px_-4px_hsl(var(--primary)/0.5)] backdrop-blur-sm before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/15 before:to-transparent before:pointer-events-none">
+                  <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_6px_hsl(var(--primary)/0.6)]" />
                 </div>
                 <h3 className="mt-4 text-sm font-semibold">{t}</h3>
                 <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{d}</p>
