@@ -457,6 +457,8 @@ function ItemCard({
                     </span>
                   </div>
                   <p className="text-sm leading-relaxed text-muted-foreground">{item.meta.description}</p>
+                </div>
+              )}
               <div>
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Keywords ({item.meta.keywords.length})
