@@ -30,7 +30,7 @@ interface Props {
 }
 
 const PLATFORMS: { id: ExportPlatform; label: string; abbr: string; available: boolean }[] = [
-  { id: "general", label: "General", abbr: "✦", available: false },
+  { id: "general", label: "General", abbr: "✦", available: true },
   { id: "adobe", label: "Adobe Stock", abbr: "St", available: true },
   { id: "shutterstock", label: "Shutterstock", abbr: "Ss", available: false },
   { id: "freepik", label: "FreePik", abbr: "Fp", available: false },

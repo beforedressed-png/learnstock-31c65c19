@@ -21,6 +21,7 @@ export interface StockMetadata {
   keywords: string[];
   category: number;
   categoryLabel: string;
+  description?: string; // 150-char marketing description (only when includeDescription=true)
 }
 
 // Adobe Stock categories (1-21, official)
@@ -55,7 +56,10 @@ export interface GenerateOptions {
   negativeKeywords?: string; // comma/space separated keywords to avoid
   customPrompt?: string; // user instruction injected into the system prompt
   requiredKeywords?: string; // keywords the model MUST include
+  includeDescription?: boolean; // when true, also generate a 150-char description
 }
+
+const DESCRIPTION_CAP = 150;
 
 // Prompt follows Adobe Stock's official guidance:
 // https://helpx.adobe.com/stock/contributor/help/titles-and-keyword.html
