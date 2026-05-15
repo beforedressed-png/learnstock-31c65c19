@@ -121,7 +121,7 @@ function Landing() {
               { v: "49", l: "Keywords per image" },
               { v: "4", l: "Stock platforms supported" },
             ].map((s) => (
-              <div key={s.l} className="glass-glow rounded-xl px-4 py-5 text-center">
+              <div key={s.l} className="glass rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
               </div>
