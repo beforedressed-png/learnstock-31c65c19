@@ -273,7 +273,12 @@ function Landing() {
 
       <footer className="border-t border-primary/15">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground md:flex-row lg:px-6">
-          <img src={logoWhite} alt="Learn Stock" className="h-5 w-auto opacity-90" />
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow">
+              <img src={logoIcon} alt="" className="h-3.5 w-3.5" />
+            </div>
+            <span className="font-semibold text-foreground">Learn Stock</span>
+          </div>
           <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
         </div>
       </footer>
