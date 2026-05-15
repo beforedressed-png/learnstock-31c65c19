@@ -115,10 +115,10 @@ function Landing() {
         <section className="mx-auto max-w-6xl px-4 py-10 lg:px-6">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {[
-              { v: "500+", l: "Files per batch" },
-              { v: "Gemini", l: "Powered by Google AI" },
+              { v: "100", l: "Files per batch" },
+              { v: "AI-powered", l: "SEO-friendly metadata" },
               { v: "49", l: "Keywords per image" },
-              { v: "100%", l: "Single-word keywords" },
+              { v: "4", l: "Stock platforms supported" },
             ].map((s) => (
               <div key={s.l} className="glass rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
