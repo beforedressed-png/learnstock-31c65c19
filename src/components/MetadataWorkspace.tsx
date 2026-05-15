@@ -17,7 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { generateMetadata, type StockMetadata } from "@/lib/gemini";
+import { generateMetadata, type GeminiModel, type StockMetadata } from "@/lib/gemini";
+import { generateMetadataGrok, type GrokModel } from "@/lib/grok";
 import { useKeyStore } from "@/lib/keys-store";
 import { buildAdobeCsv, downloadText } from "@/lib/csv";
 import type { GenSettings } from "@/lib/gen-settings";
