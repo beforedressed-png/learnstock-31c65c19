@@ -17,7 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { generateMetadata, type StockMetadata } from "@/lib/gemini";
+import { generateMetadata, type GeminiModel, type StockMetadata } from "@/lib/gemini";
+import { generateMetadataGrok, type GrokModel } from "@/lib/grok";
 import { useKeyStore } from "@/lib/keys-store";
 import { buildAdobeCsv, downloadText } from "@/lib/csv";
 import type { GenSettings } from "@/lib/gen-settings";
@@ -137,7 +138,7 @@ export function MetadataWorkspace({ settings }: Props) {
 
   const runGeneration = async () => {
     if (!store.activeKey) {
-      toast.error("Add a Gemini API key first (Controls → API Keys)");
+      toast.error(`Add a ${store.provider === "grok" ? "Grok" : "Gemini"} API key first (Controls → API Keys)`);
       return;
     }
     const queue = items.filter((i) => i.status === "pending" || i.status === "error");
@@ -149,14 +150,18 @@ export function MetadataWorkspace({ settings }: Props) {
     for (const item of queue) {
       setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "running", error: undefined } : i)));
       try {
-        const raw = await generateMetadata(item.file, store.activeKey.key, store.model, {
+        const genOpts = {
           titleLength: settings.titleLength,
           keywordCount: settings.keywordCount,
           negativeTitleWords: settings.negativeTitleEnabled ? settings.negativeTitleWords : "",
           negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
           customPrompt: settings.customPromptEnabled ? settings.customPrompt : "",
           requiredKeywords: settings.customKeywordsEnabled ? settings.customKeywords : "",
-        });
+        };
+        const raw =
+          store.provider === "grok"
+            ? await generateMetadataGrok(item.file, store.activeKey.key, store.model as GrokModel, genOpts)
+            : await generateMetadata(item.file, store.activeKey.key, store.model as GeminiModel, genOpts);
         const meta = applyPostProcessing(raw, settings);
         setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "done", meta } : i)));
       } catch (e) {
