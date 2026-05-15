@@ -16,18 +16,16 @@ function escape(field: string): string {
 }
 
 export function buildAdobeCsv(rows: CsvRow[]): string {
-  const header = ["Filename", "Title", "Keywords", "Category", "Releases"];
+  const hasDescription = rows.some((r) => r.meta.description);
+  const header = hasDescription
+    ? ["Filename", "Title", "Description", "Keywords", "Category", "Releases"]
+    : ["Filename", "Title", "Keywords", "Category", "Releases"];
   const lines = [header.join(",")];
   for (const r of rows) {
-    lines.push(
-      [
-        escape(r.filename),
-        escape(r.meta.title),
-        escape(r.meta.keywords.join(", ")),
-        String(r.meta.category),
-        "",
-      ].join(","),
-    );
+    const base = [escape(r.filename), escape(r.meta.title)];
+    if (hasDescription) base.push(escape(r.meta.description ?? ""));
+    base.push(escape(r.meta.keywords.join(", ")), String(r.meta.category), "");
+    lines.push(base.join(","));
   }
   return lines.join("\r\n");
 }

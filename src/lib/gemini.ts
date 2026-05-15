@@ -21,6 +21,7 @@ export interface StockMetadata {
   keywords: string[];
   category: number;
   categoryLabel: string;
+  description?: string; // 150-char marketing description (only when includeDescription=true)
 }
 
 // Adobe Stock categories (1-21, official)
@@ -55,7 +56,10 @@ export interface GenerateOptions {
   negativeKeywords?: string; // comma/space separated keywords to avoid
   customPrompt?: string; // user instruction injected into the system prompt
   requiredKeywords?: string; // keywords the model MUST include
+  includeDescription?: boolean; // when true, also generate a 150-char description
 }
+
+const DESCRIPTION_CAP = 150;
 
 // Prompt follows Adobe Stock's official guidance:
 // https://helpx.adobe.com/stock/contributor/help/titles-and-keyword.html
@@ -139,9 +143,17 @@ Bad title examples (do NOT write like this):
 Pick the SINGLE best id (1-21):
 1 Animals, 2 Buildings and Architecture, 3 Business, 4 Drinks, 5 The Environment, 6 States of Mind, 7 Food, 8 Graphic Resources, 9 Hobbies and Leisure, 10 Industry, 11 Landscapes, 12 Lifestyle, 13 People, 14 Plants and Flowers, 15 Culture and Religion, 16 Science, 17 Social Issues, 18 Sports, 19 Technology, 20 Transport, 21 Travel.${customBlock}
 
+${opts.includeDescription ? `
+# DESCRIPTION
+- Write ONE marketing description sentence about the image, ${DESCRIPTION_CAP} characters or fewer (hard limit).
+- Plain English, no quotes, no emojis, no hashtags, no trailing period.
+- Should read like a stock-photo caption a buyer would see (subject, action/setting, mood).
+` : ""}
 # OUTPUT
 Respond with VALID JSON only, no commentary, matching this shape:
-{"title": string, "keywords": string[], "category": number}`;
+${opts.includeDescription
+    ? `{"title": string, "keywords": string[], "category": number, "description": string}`
+    : `{"title": string, "keywords": string[], "category": number}`}`;
 }
 
 async function fileToBase64(file: File): Promise<{ data: string; mimeType: string }> {
@@ -204,7 +216,7 @@ export async function generateMetadata(
   const json = await res.json();
   const text =
     json?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text || "").join("") ?? "";
-  let parsed: { title?: string; keywords?: string[]; category?: number };
+  let parsed: { title?: string; keywords?: string[]; category?: number; description?: string };
   try {
     parsed = JSON.parse(text);
   } catch {
@@ -241,7 +253,11 @@ export async function generateMetadata(
   if (!title) throw new Error("Model returned empty title");
   if (keywords.length < 5) throw new Error("Model returned too few keywords");
 
-  return { title, keywords, category: categoryId, categoryLabel };
+  const description = opts.includeDescription
+    ? String(parsed.description ?? "").replace(/\s+/g, " ").trim().slice(0, DESCRIPTION_CAP) || undefined
+    : undefined;
+
+  return { title, keywords, category: categoryId, categoryLabel, description };
 }
 
 export async function verifyApiKey(apiKey: string): Promise<boolean> {

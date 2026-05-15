@@ -157,6 +157,7 @@ export function MetadataWorkspace({ settings }: Props) {
           negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
           customPrompt: settings.customPromptEnabled ? settings.customPrompt : "",
           requiredKeywords: settings.customKeywordsEnabled ? settings.customKeywords : "",
+          includeDescription: settings.platform === "general",
         };
         const raw =
           store.provider === "grok"
@@ -445,6 +446,19 @@ function ItemCard({
                 </div>
                 <p className="text-sm leading-relaxed text-foreground">{item.meta.title}</p>
               </div>
+              {item.meta.description && (
+                <div>
+                  <div className="mb-1 flex items-center justify-between">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Description
+                    </p>
+                    <span className="text-[10px] tabular-nums text-muted-foreground">
+                      {item.meta.description.length}/150 chars
+                    </span>
+                  </div>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{item.meta.description}</p>
+                </div>
+              )}
               <div>
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Keywords ({item.meta.keywords.length})
