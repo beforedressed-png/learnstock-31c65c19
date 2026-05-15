@@ -9,6 +9,10 @@ import {
   Layers,
   ShieldCheck,
   FileSpreadsheet,
+  ChevronRight,
+  Check,
+  X,
+  Lock,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 
