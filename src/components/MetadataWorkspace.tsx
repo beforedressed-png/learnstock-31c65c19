@@ -154,6 +154,8 @@ export function MetadataWorkspace({ settings }: Props) {
           keywordCount: settings.keywordCount,
           negativeTitleWords: settings.negativeTitleEnabled ? settings.negativeTitleWords : "",
           negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
+          customPrompt: settings.customPromptEnabled ? settings.customPrompt : "",
+          requiredKeywords: settings.customKeywordsEnabled ? settings.customKeywords : "",
         });
         const meta = applyPostProcessing(raw, settings);
         setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "done", meta } : i)));
