@@ -44,7 +44,14 @@ function buildPrompt(opts: GenerateOptions): string {
   const reqKwLine = reqKw.length ? `\n- ALWAYS include these keywords: ${reqKw.join(", ")}.` : "";
   const customBlock = customInstr ? `\n\n# ADDITIONAL USER INSTRUCTIONS\n${customInstr}` : "";
 
-  return `You generate Adobe Stock metadata. Return VALID JSON ONLY: {"title": string, "keywords": string[], "category": number}.
+  const descBlock = opts.includeDescription
+    ? `\n\n# DESCRIPTION\n- ONE marketing sentence, 150 chars or fewer (hard limit). Plain English, no quotes/emojis/hashtags/trailing period.`
+    : "";
+  const outputShape = opts.includeDescription
+    ? `{"title": string, "keywords": string[], "category": number, "description": string}`
+    : `{"title": string, "keywords": string[], "category": number}`;
+
+  return `You generate Adobe Stock metadata. Return VALID JSON ONLY: ${outputShape}.
 
 # TITLE
 - Marketable English phrase, ${titleCap} chars or fewer (aim under 70).
@@ -58,7 +65,7 @@ function buildPrompt(opts: GenerateOptions): string {
 - Lowercase, no punctuation, no duplicates. No brands or IPs.${negKwLine}${reqKwLine}
 
 # CATEGORY (id 1-21)
-1 Animals, 2 Buildings and Architecture, 3 Business, 4 Drinks, 5 The Environment, 6 States of Mind, 7 Food, 8 Graphic Resources, 9 Hobbies and Leisure, 10 Industry, 11 Landscapes, 12 Lifestyle, 13 People, 14 Plants and Flowers, 15 Culture and Religion, 16 Science, 17 Social Issues, 18 Sports, 19 Technology, 20 Transport, 21 Travel.${customBlock}`;
+1 Animals, 2 Buildings and Architecture, 3 Business, 4 Drinks, 5 The Environment, 6 States of Mind, 7 Food, 8 Graphic Resources, 9 Hobbies and Leisure, 10 Industry, 11 Landscapes, 12 Lifestyle, 13 People, 14 Plants and Flowers, 15 Culture and Religion, 16 Science, 17 Social Issues, 18 Sports, 19 Technology, 20 Transport, 21 Travel.${customBlock}${descBlock}`;
 }
 
 export async function generateMetadataGrok(
@@ -107,7 +114,7 @@ export async function generateMetadataGrok(
 
   const json = await res.json();
   const text = json?.choices?.[0]?.message?.content ?? "";
-  let parsed: { title?: string; keywords?: string[]; category?: number };
+  let parsed: { title?: string; keywords?: string[]; category?: number; description?: string };
   try {
     parsed = JSON.parse(text);
   } catch {
@@ -136,7 +143,11 @@ export async function generateMetadataGrok(
   if (!title) throw new Error("Grok returned empty title");
   if (keywords.length < 5) throw new Error("Grok returned too few keywords");
 
-  return { title, keywords, category: categoryId, categoryLabel };
+  const description = opts.includeDescription
+    ? String(parsed.description ?? "").replace(/\s+/g, " ").trim().slice(0, 150) || undefined
+    : undefined;
+
+  return { title, keywords, category: categoryId, categoryLabel, description };
 }
 
 export async function verifyGrokKey(apiKey: string): Promise<boolean> {
