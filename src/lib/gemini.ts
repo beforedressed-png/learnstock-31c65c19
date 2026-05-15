@@ -69,12 +69,21 @@ function buildPrompt(opts: GenerateOptions): string {
     .split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
   const negKw = (opts.negativeKeywords ?? "")
     .split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
+  const reqKw = (opts.requiredKeywords ?? "")
+    .split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
+  const customInstr = (opts.customPrompt ?? "").trim();
 
   const negTitleLine = negTitle.length
     ? `\n- NEVER use these words in the title: ${negTitle.join(", ")}.`
     : "";
   const negKwLine = negKw.length
     ? `\n- NEVER include these keywords (or close synonyms): ${negKw.join(", ")}.`
+    : "";
+  const reqKwLine = reqKw.length
+    ? `\n- ALWAYS include these keywords (place them naturally, prefer top half): ${reqKw.join(", ")}.`
+    : "";
+  const customBlock = customInstr
+    ? `\n\n# ADDITIONAL USER INSTRUCTIONS (highest priority, override defaults if conflicting except CATEGORY/JSON shape)\n${customInstr}`
     : "";
 
   return `You generate Adobe Stock metadata that strictly follows Adobe's official Title and Keyword guidelines. Analyze the image and return a title, an ordered keyword list, and a category id.
