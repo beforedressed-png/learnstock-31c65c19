@@ -53,6 +53,8 @@ export interface GenerateOptions {
   keywordCount: number; // target, 10..49
   negativeTitleWords?: string; // comma/space separated words to avoid in title
   negativeKeywords?: string; // comma/space separated keywords to avoid
+  customPrompt?: string; // user instruction injected into the system prompt
+  requiredKeywords?: string; // keywords the model MUST include
 }
 
 // Prompt follows Adobe Stock's official guidance:
