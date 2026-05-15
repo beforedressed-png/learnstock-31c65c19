@@ -150,14 +150,18 @@ export function MetadataWorkspace({ settings }: Props) {
     for (const item of queue) {
       setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "running", error: undefined } : i)));
       try {
-        const raw = await generateMetadata(item.file, store.activeKey.key, store.model, {
+        const genOpts = {
           titleLength: settings.titleLength,
           keywordCount: settings.keywordCount,
           negativeTitleWords: settings.negativeTitleEnabled ? settings.negativeTitleWords : "",
           negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
           customPrompt: settings.customPromptEnabled ? settings.customPrompt : "",
           requiredKeywords: settings.customKeywordsEnabled ? settings.customKeywords : "",
-        });
+        };
+        const raw =
+          store.provider === "grok"
+            ? await generateMetadataGrok(item.file, store.activeKey.key, store.model as GrokModel, genOpts)
+            : await generateMetadata(item.file, store.activeKey.key, store.model as GeminiModel, genOpts);
         const meta = applyPostProcessing(raw, settings);
         setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "done", meta } : i)));
       } catch (e) {
