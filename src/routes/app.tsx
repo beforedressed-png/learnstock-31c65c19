@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, ArrowLeft } from "lucide-react";
+import logoWhite from "@/assets/logo-white.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
 import { Toaster } from "@/components/ui/sonner";
@@ -27,14 +28,9 @@ function AppPage() {
       <Toaster />
       <header className="sticky top-0 z-30 glass border-b border-primary/20">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3 lg:px-6">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] glow-ring">
-              <Sparkles className="h-4.5 w-4.5" />
-            </div>
-            <div className="leading-tight">
-              <h1 className="text-base font-bold tracking-tight text-glow">Learn Stock</h1>
-              <p className="text-[11px] text-muted-foreground">AI metadata for stock contributors</p>
-            </div>
+          <Link to="/" className="flex items-center gap-3 group" aria-label="Learn Stock home">
+            <img src={logoWhite} alt="Learn Stock" className="h-8 w-auto" />
+            <span className="hidden text-[11px] text-muted-foreground sm:inline">AI metadata for stock contributors</span>
           </Link>
           <Link
             to="/"
