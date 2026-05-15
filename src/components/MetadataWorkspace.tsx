@@ -10,6 +10,8 @@ import {
   Sparkles,
   Trash2,
   Upload,
+  Video,
+  FileImage,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { generateMetadata, type StockMetadata } from "@/lib/gemini";
 import { useKeyStore } from "@/lib/keys-store";
 import { buildAdobeCsv, downloadText } from "@/lib/csv";
+import type { GenSettings } from "@/lib/gen-settings";
 import { toast } from "sonner";
 
 type Status = "pending" | "running" | "done" | "error";
@@ -33,8 +36,36 @@ interface Item {
 
 const ACCEPT = "image/jpeg,image/png,image/webp";
 const MAX_BYTES = 10 * 1024 * 1024;
+const MAX_FILES = 100;
 
-export function MetadataWorkspace() {
+function applyPostProcessing(meta: StockMetadata, settings: GenSettings): StockMetadata {
+  let title = meta.title;
+  if (settings.prefixEnabled && settings.prefix.trim()) {
+    title = `${settings.prefix.trim()} ${title}`;
+  }
+  if (settings.suffixEnabled && settings.suffix.trim()) {
+    title = `${title} ${settings.suffix.trim()}`;
+  }
+  title = title.slice(0, settings.titleLength);
+
+  let keywords = meta.keywords;
+  if (settings.negativeKeywordsEnabled && settings.negativeKeywords.trim()) {
+    const blocked = new Set(
+      settings.negativeKeywords
+        .split(/[,\n]+/)
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean),
+    );
+    keywords = keywords.filter((k) => !blocked.has(k.toLowerCase()));
+  }
+  return { ...meta, title, keywords };
+}
+
+interface Props {
+  settings: GenSettings;
+}
+
+export function MetadataWorkspace({ settings }: Props) {
   const store = useKeyStore();
   const [items, setItems] = useState<Item[]>([]);
   const [dragOver, setDragOver] = useState(false);
@@ -64,7 +95,15 @@ export function MetadataWorkspace() {
       });
     }
     if (accepted.length === 0) return;
-    setItems((prev) => [...prev, ...accepted]);
+    setItems((prev) => {
+      const combined = [...prev, ...accepted];
+      if (combined.length > MAX_FILES) {
+        toast.error(`Max ${MAX_FILES} files — extra files were dropped`);
+        combined.slice(MAX_FILES).forEach((i) => URL.revokeObjectURL(i.previewUrl));
+        return combined.slice(0, MAX_FILES);
+      }
+      return combined;
+    });
   }, []);
 
   const removeItem = (id: string) => {
@@ -82,7 +121,7 @@ export function MetadataWorkspace() {
 
   const runGeneration = async () => {
     if (!store.activeKey) {
-      toast.error("Add a Gemini API key first (top-right → API Keys)");
+      toast.error("Add a Gemini API key first (Controls → API Keys)");
       return;
     }
     const queue = items.filter((i) => i.status === "pending" || i.status === "error");
@@ -94,7 +133,13 @@ export function MetadataWorkspace() {
     for (const item of queue) {
       setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "running", error: undefined } : i)));
       try {
-        const meta = await generateMetadata(item.file, store.activeKey.key, store.model);
+        const raw = await generateMetadata(item.file, store.activeKey.key, store.model, {
+          titleLength: settings.titleLength,
+          keywordCount: settings.keywordCount,
+          negativeTitleWords: settings.negativeTitleEnabled ? settings.negativeTitleWords : "",
+          negativeKeywords: settings.negativeKeywordsEnabled ? settings.negativeKeywords : "",
+        });
+        const meta = applyPostProcessing(raw, settings);
         setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "done", meta } : i)));
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Generation failed";
@@ -139,114 +184,182 @@ export function MetadataWorkspace() {
   };
 
   return (
-    <div className="space-y-6">
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={onDrop}
-        onClick={() => inputRef.current?.click()}
-        className={cn(
-          "group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-card px-6 py-12 text-center transition-all",
-          dragOver
-            ? "border-primary bg-primary/5 scale-[1.01]"
-            : "border-border hover:border-primary/50 hover:bg-accent/30",
-        )}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept={ACCEPT}
-          multiple
-          className="hidden"
-          onChange={(e) => {
-            if (e.target.files) addFiles(e.target.files);
-            e.target.value = "";
+    <div className="space-y-4">
+      {/* Upload card */}
+      <section className="rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+        <header className="flex items-center gap-2 border-b border-border px-4 py-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted">
+            <Upload className="h-3.5 w-3.5" />
+          </div>
+          <h2 className="text-sm font-bold">Upload Files</h2>
+        </header>
+
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
           }}
-        />
-        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)]">
-          <Upload className="h-6 w-6" />
-        </div>
-        <p className="text-base font-semibold text-foreground">
-          Drop images here or click to browse
-        </p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          JPG, PNG or WebP · up to 10 MB each · batch as many as you like
-        </p>
-      </div>
-
-      {items.length > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3">
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <Badge variant="secondary" className="gap-1.5">
-              <ImageIcon className="h-3.5 w-3.5" />
-              {stats.total} image{stats.total === 1 ? "" : "s"}
-            </Badge>
-            {stats.done > 0 && (
-              <Badge className="gap-1.5 bg-success text-success-foreground hover:bg-success/90">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                {stats.done} ready
-              </Badge>
-            )}
-            {stats.errors > 0 && (
-              <Badge variant="destructive" className="gap-1.5">
-                <AlertCircle className="h-3.5 w-3.5" />
-                {stats.errors} failed
-              </Badge>
-            )}
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={clearAll} disabled={running}>
-              <Trash2 className="mr-1.5 h-4 w-4" /> Clear
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportCsv}
-              disabled={stats.done === 0}
-              className="gap-1.5"
-            >
-              <FileSpreadsheet className="h-4 w-4" />
-              Export Adobe CSV
-            </Button>
-            <Button
-              size="sm"
-              onClick={runGeneration}
-              disabled={running || items.length === 0}
-              className="gap-1.5 bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
-            >
-              {running ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Generating…
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4" /> Generate metadata
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      <div className="grid gap-4">
-        {items.map((item) => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            onRemove={() => removeItem(item.id)}
-            onCopy={() => item.meta && copyMeta(item.meta)}
-            onDownload={() => {
-              if (!item.meta) return;
-              const csv = buildAdobeCsv([{ filename: item.file.name, meta: item.meta }]);
-              downloadText(`${item.file.name.replace(/\.[^.]+$/, "")}.csv`, csv);
+          onDragLeave={() => setDragOver(false)}
+          onDrop={onDrop}
+          onClick={() => inputRef.current?.click()}
+          className={cn(
+            "m-4 cursor-pointer rounded-2xl border-2 border-dashed bg-muted/30 px-6 py-10 text-center transition-all",
+            dragOver
+              ? "border-primary bg-primary/5"
+              : "border-border hover:border-primary/50 hover:bg-accent/30",
+          )}
+        >
+          <input
+            ref={inputRef}
+            type="file"
+            accept={ACCEPT}
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files) addFiles(e.target.files);
+              e.target.value = "";
             }}
           />
-        ))}
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-card shadow-[var(--shadow-card)]">
+            <Upload className="h-5 w-5 text-foreground" />
+          </div>
+          <div className="mb-3 flex flex-wrap items-center justify-center gap-1.5">
+            <FormatChip icon={<ImageIcon className="h-3 w-3" />} label="Images" active />
+            <FormatChip icon={<Video className="h-3 w-3" />} label="Videos" />
+            <FormatChip icon={<FileImage className="h-3 w-3" />} label="SVG" />
+            <FormatChip icon={<FileImage className="h-3 w-3" />} label="EPS" />
+          </div>
+          <p className="text-sm text-foreground">
+            Drag &amp; drop files here, or{" "}
+            <span className="font-semibold text-primary underline underline-offset-2">browse</span>
+          </p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Supports image · JPG, PNG &amp; WebP up to 10 MB · Max {MAX_FILES} files
+          </p>
+        </div>
+      </section>
+
+      {/* Action bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-card)]">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {items.length === 0 ? (
+            <span className="text-muted-foreground">Upload files to begin.</span>
+          ) : (
+            <>
+              <Badge variant="secondary" className="gap-1.5">
+                <ImageIcon className="h-3 w-3" />
+                {stats.total} file{stats.total === 1 ? "" : "s"}
+              </Badge>
+              {stats.done > 0 && (
+                <Badge className="gap-1.5 bg-success text-success-foreground hover:bg-success/90">
+                  <CheckCircle2 className="h-3 w-3" />
+                  {stats.done} ready
+                </Badge>
+              )}
+              {stats.errors > 0 && (
+                <Badge variant="destructive" className="gap-1.5">
+                  <AlertCircle className="h-3 w-3" />
+                  {stats.errors} failed
+                </Badge>
+              )}
+            </>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={clearAll}
+            disabled={running || items.length === 0}
+            className="gap-1.5 border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/15 hover:text-destructive disabled:opacity-50"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Clear All
+          </Button>
+          <Button
+            size="sm"
+            onClick={runGeneration}
+            disabled={running || items.length === 0}
+            className="gap-1.5 bg-foreground text-background shadow-sm hover:bg-foreground/90"
+          >
+            {running ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Generating…
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-3.5 w-3.5" /> Generate All
+              </>
+            )}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={exportCsv}
+            disabled={stats.done === 0}
+            className="gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Export CSV
+          </Button>
+        </div>
       </div>
+
+      {/* Results */}
+      {items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card px-6 py-20 text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <p className="text-base font-semibold text-foreground">
+            Your generated results will appear here.
+          </p>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Upload some files and click &ldquo;Generate All&rdquo; to get started.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-3">
+          {items.map((item) => (
+            <ItemCard
+              key={item.id}
+              item={item}
+              onRemove={() => removeItem(item.id)}
+              onCopy={() => item.meta && copyMeta(item.meta)}
+              onDownload={() => {
+                if (!item.meta) return;
+                const csv = buildAdobeCsv([{ filename: item.file.name, meta: item.meta }]);
+                downloadText(`${item.file.name.replace(/\.[^.]+$/, "")}.csv`, csv);
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
+  );
+}
+
+function FormatChip({
+  icon,
+  label,
+  active,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium",
+        active
+          ? "bg-foreground text-background"
+          : "bg-muted text-muted-foreground line-through opacity-60",
+      )}
+    >
+      {icon}
+      {label}
+    </span>
   );
 }
 
@@ -263,7 +376,7 @@ function ItemCard({
 }) {
   return (
     <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition-shadow hover:shadow-md">
-      <div className="grid gap-4 p-4 sm:grid-cols-[140px_1fr]">
+      <div className="grid gap-4 p-4 sm:grid-cols-[120px_1fr]">
         <div className="relative">
           <div className="aspect-square overflow-hidden rounded-xl bg-muted">
             <img
@@ -298,7 +411,17 @@ function ItemCard({
 
           {item.status === "done" && item.meta && (
             <div className="space-y-3">
-              <Field label="Title" value={item.meta.title} mono={false} />
+              <div>
+                <div className="mb-1 flex items-center justify-between">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Title
+                  </p>
+                  <span className="text-[10px] tabular-nums text-muted-foreground">
+                    {item.meta.title.length} chars
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed text-foreground">{item.meta.title}</p>
+              </div>
               <div>
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Keywords ({item.meta.keywords.length})
@@ -329,7 +452,7 @@ function ItemCard({
                     <Copy className="h-3.5 w-3.5" /> Copy
                   </Button>
                   <Button size="sm" variant="outline" onClick={onDownload} className="h-7 gap-1 text-xs">
-                    <Download className="h-3.5 w-3.5" /> CSV
+                    <FileSpreadsheet className="h-3.5 w-3.5" /> CSV
                   </Button>
                 </div>
               </div>
@@ -351,17 +474,6 @@ function ItemCard({
         </div>
       </div>
     </article>
-  );
-}
-
-function Field({ label, value }: { label: string; value: string; mono?: boolean }) {
-  return (
-    <div>
-      <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </p>
-      <p className="text-sm leading-relaxed text-foreground">{value}</p>
-    </div>
   );
 }
 
