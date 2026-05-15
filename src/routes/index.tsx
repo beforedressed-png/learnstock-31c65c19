@@ -38,9 +38,7 @@ function Landing() {
       <header className="sticky top-0 z-30 glass border-b border-primary/15">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)]">
-              <img src={logoIcon} alt="" className="h-5 w-5" />
-            </div>
+            <img src={logoIcon} alt="Learn Stock" className="h-7 w-7" />
             <span className="text-sm font-bold tracking-tight">Learn Stock</span>
           </Link>
           <nav className="hidden items-center gap-6 text-xs text-muted-foreground md:flex">
@@ -274,9 +272,7 @@ function Landing() {
       <footer className="border-t border-primary/15">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground md:flex-row lg:px-6">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow">
-              <img src={logoIcon} alt="" className="h-3.5 w-3.5" />
-            </div>
+            <img src={logoIcon} alt="" className="h-5 w-5" />
             <span className="font-semibold text-foreground">Learn Stock</span>
           </div>
           <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
