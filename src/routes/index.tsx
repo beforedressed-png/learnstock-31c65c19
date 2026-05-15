@@ -137,10 +137,11 @@ function Landing() {
         {/* Features */}
         <section id="features" className="mx-auto max-w-6xl px-4 py-16 lg:px-6">
           <div className="text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-primary-glow">
-              Features
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
+            <span className="glass-glow inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary-glow">
+              <Sparkles className="h-3 w-3" />
+              Our features
+            </span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">
               Everything you need to ship faster
             </h2>
           </div>
@@ -306,10 +307,11 @@ function Landing() {
         {/* How it works */}
         <section id="how" className="mx-auto max-w-6xl px-4 py-16 lg:px-6">
           <div className="text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-primary-glow">
+            <span className="glass-glow inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary-glow">
+              <Sparkles className="h-3 w-3" />
               How it works
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Three simple steps</h2>
+            </span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Three simple steps</h2>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
@@ -334,8 +336,11 @@ function Landing() {
         {/* FAQ */}
         <section id="faq" className="mx-auto max-w-3xl px-4 py-16 lg:px-6">
           <div className="text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-primary-glow">FAQ</p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Good to know</h2>
+            <span className="glass-glow inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary-glow">
+              <Sparkles className="h-3 w-3" />
+              Frequently asked questions
+            </span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Good to know</h2>
           </div>
           <div className="mt-8 space-y-3">
             {[
