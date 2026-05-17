@@ -131,7 +131,7 @@ function Landing() {
               { v: "100", l: "Daily users" },
               { v: "Top 5%", l: "Search ranking" },
             ].map((s) => (
-              <div key={s.l} className="glass rounded-xl px-4 py-5 text-center">
+              <div key={s.l} data-reveal className="glass lift rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
               </div>
