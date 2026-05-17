@@ -326,7 +326,7 @@ function Landing() {
               { Icon: Wand2, t: "AI generates metadata", d: "Gemini analyzes each image and writes title + keywords." },
               { Icon: Download, t: "Export & upload", d: "Download a CSV ready for Adobe Stock." },
             ].map(({ Icon, t, d }, i) => (
-              <div key={t} className="glass rounded-xl p-6 text-center">
+              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift rounded-xl p-6 text-center">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
                   <Icon className="h-4.5 w-4.5" />
                 </div>
