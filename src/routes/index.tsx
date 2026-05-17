@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useReveal } from "@/hooks/use-reveal";
+import { BackToTop } from "@/components/BackToTop";
 
 export const Route = createFileRoute("/")({
   component: Landing,
