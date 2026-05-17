@@ -98,24 +98,26 @@
     color: var(--color-foreground);
     font-feature-settings: "cv11", "ss01";
     background-image: var(--gradient-surface);
-    background-attachment: fixed;
+    /* background-attachment: fixed removed — causes repaint on every scroll */
   }
 }
 
 @layer utilities {
+  /* Glass utilities: solid translucent fills (no backdrop-filter) for performance.
+     backdrop-filter forces per-frame GPU re-sampling and was the main source of lag. */
   .glass {
     position: relative;
-    background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 9%, transparent), color-mix(in oklab, white 3%, transparent));
-    backdrop-filter: blur(10px) saturate(130%);
-    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    background:
+      linear-gradient(135deg, color-mix(in oklab, var(--primary) 9%, transparent), color-mix(in oklab, white 3%, transparent)),
+      color-mix(in oklab, var(--card) 75%, transparent);
     border: 1px solid color-mix(in oklab, white 9%, transparent);
     box-shadow: 0 4px 18px -10px color-mix(in oklab, var(--primary) 35%, transparent), inset 0 1px 0 0 color-mix(in oklab, white 10%, transparent);
   }
   .glass-glow {
     position: relative;
-    background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 14%, transparent), color-mix(in oklab, white 5%, transparent));
-    backdrop-filter: blur(10px) saturate(135%);
-    -webkit-backdrop-filter: blur(10px) saturate(135%);
+    background:
+      linear-gradient(135deg, color-mix(in oklab, var(--primary) 14%, transparent), color-mix(in oklab, white 5%, transparent)),
+      color-mix(in oklab, var(--card) 78%, transparent);
     border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent);
     box-shadow: 0 6px 24px -10px color-mix(in oklab, var(--primary) 50%, transparent), inset 0 1px 0 0 color-mix(in oklab, white 14%, transparent);
   }
