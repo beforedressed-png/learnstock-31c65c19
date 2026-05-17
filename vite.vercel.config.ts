@@ -8,6 +8,9 @@ export default defineConfig({
   build: {
     outDir: "dist/vercel",
     emptyOutDir: true,
+    rollupOptions: {
+      input: "index.vercel.html",
+    },
   },
   plugins: [
     tanstackRouter({
