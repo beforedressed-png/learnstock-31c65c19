@@ -146,7 +146,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               Our features
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">
               Everything you need to ship faster
             </h2>
           </div>
@@ -206,7 +206,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               See what changes
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Before vs. After</h2>
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Before vs. After</h2>
           </div>
 
           <div className="relative mt-10 grid gap-6 md:grid-cols-2">
@@ -318,7 +318,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               How it works
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Three simple steps</h2>
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Three simple steps</h2>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
@@ -347,7 +347,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               Frequently asked questions
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Good to know</h2>
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Good to know</h2>
           </div>
           <div className="mt-8 space-y-3">
             {[
