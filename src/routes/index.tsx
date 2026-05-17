@@ -441,7 +441,7 @@ function MagneticLink({
   className?: string;
   children: React.ReactNode;
 }) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  const ref = useMagnetic<HTMLAnchorElement>(0.15, 5);
   return (
     <Link to={to} ref={ref} className={className}>
       {children}
@@ -450,7 +450,7 @@ function MagneticLink({
 }
 
 function MagneticAnchor({ className, children, ...rest }: AnchorAttrs) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  const ref = useMagnetic<HTMLAnchorElement>(0.15, 5);
   return (
     <a ref={ref} className={className} {...rest}>
       {children}
@@ -463,7 +463,7 @@ type TiltCardProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 function TiltCard({ children, ...rest }: TiltCardProps) {
-  const ref = useTilt<HTMLDivElement>(5);
+  const ref = useTilt<HTMLDivElement>(8);
   return (
     <div ref={ref} {...rest}>
       {children}
