@@ -177,7 +177,7 @@
     transform-origin: left;
   }
 
-  /* Gradient shimmer for hero accent */
+  /* Gradient shimmer for hero accent — brighter, more visible */
   @keyframes shimmer-pan {
     0% { background-position: 0% 50%; }
     100% { background-position: 200% 50%; }
@@ -185,17 +185,20 @@
   .text-shimmer {
     background: linear-gradient(
       90deg,
-      var(--primary) 0%,
-      var(--primary-glow) 25%,
-      oklch(0.92 0.12 305) 50%,
-      var(--primary-glow) 75%,
-      var(--primary) 100%
+      oklch(0.82 0.22 295) 0%,
+      oklch(0.92 0.18 305) 20%,
+      oklch(0.98 0.08 305) 40%,
+      oklch(0.92 0.18 305) 60%,
+      oklch(0.82 0.22 295) 80%,
+      oklch(0.78 0.18 305) 100%
     );
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: shimmer-pan 6s linear infinite;
+    animation: shimmer-pan 5s linear infinite;
+    /* subtle outer glow for extra pop */
+    text-shadow: 0 0 32px color-mix(in oklab, var(--primary-glow) 35%, transparent);
   }
 
   /* Scroll-driven progress bar (CSS only, no JS frames) */
