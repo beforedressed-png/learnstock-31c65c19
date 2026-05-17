@@ -16,7 +16,12 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useReveal } from "@/hooks/use-reveal";
+import { useMagnetic } from "@/hooks/use-magnetic";
+import { useTilt } from "@/hooks/use-tilt";
 import { BackToTop } from "@/components/BackToTop";
+import { MeshBackground } from "@/components/MeshBackground";
+import { MarqueeStrip } from "@/components/MarqueeStrip";
+import { CountUpStat } from "@/components/CountUpStat";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -67,7 +72,8 @@ function Landing() {
 
       <main>
         {/* Hero */}
-        <section className="mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
+        <section className="relative mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
+          <MeshBackground intensity={0.9} />
           <div data-reveal className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
             <Sparkles className="h-3 w-3 text-primary-glow" />
             AI-powered stock metadata
@@ -84,18 +90,23 @@ function Landing() {
             seconds. Bring your own AI key, export a contributor-perfect CSV, and ship batches faster.
           </p>
           <div data-reveal data-reveal-delay="3" className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link
+            <MagneticLink
               to="/app"
-              className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
+              className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
             >
               Start for free <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
+            </MagneticLink>
+            <MagneticAnchor
               href="#how"
-              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground hover:-translate-y-0.5 transition-all duration-300"
+              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground"
             >
               How it works
-            </a>
+            </MagneticAnchor>
+          </div>
+
+          {/* Marquee strip */}
+          <div data-reveal data-reveal-delay="4" className="mt-10">
+            <MarqueeStrip />
           </div>
 
           {/* Preview mock */}
@@ -125,15 +136,20 @@ function Landing() {
         <section className="mx-auto max-w-6xl px-4 py-10 lg:px-6">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {[
-              { v: "100", l: "Files per batch" },
-              { v: "AI-powered", l: "SEO-friendly metadata" },
-              { v: "100", l: "Daily users" },
+              { v: <CountUpStat target={100} suffix="+" />, l: "Files per batch" },
+              { v: "AI", l: "SEO-friendly metadata" },
+              { v: <CountUpStat target={100} suffix="+" />, l: "Daily users" },
               { v: "Top 5%", l: "Search ranking" },
-            ].map((s) => (
-              <div key={s.l} data-reveal className="glass lift rounded-xl px-4 py-5 text-center">
+            ].map((s, i) => (
+              <TiltCard
+                key={s.l}
+                data-reveal
+                data-reveal-delay={String((i % 4) + 1)}
+                className="glass lift tilt-card rounded-xl px-4 py-5 text-center"
+              >
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </section>
@@ -182,18 +198,18 @@ function Landing() {
                 d: "Inject your own style instructions and mandatory keywords.",
               },
             ].map(({ Icon, t, d }, i) => (
-              <div
+              <TiltCard
                 key={t}
                 data-reveal
                 data-reveal-delay={String((i % 3) + 1)}
-                className="glass lift rounded-xl p-5 hover:border-primary/40"
+                className="glass lift tilt-card rounded-xl p-5 hover:border-primary/40"
               >
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
                   <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" />
                 </div>
                 <h3 className="mt-4 text-sm font-semibold">{t}</h3>
                 <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{d}</p>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </section>
@@ -325,7 +341,7 @@ function Landing() {
               { Icon: Wand2, t: "AI generates metadata", d: "Gemini analyzes each image and writes title + keywords." },
               { Icon: Download, t: "Export & upload", d: "Download a CSV ready for Adobe Stock." },
             ].map(({ Icon, t, d }, i) => (
-              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift rounded-xl p-6 text-center">
+              <TiltCard key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift tilt-card rounded-xl p-6 text-center">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
                   <Icon className="h-4.5 w-4.5" />
                 </div>
@@ -334,7 +350,7 @@ function Landing() {
                 </p>
                 <h3 className="mt-1 text-sm font-semibold">{t}</h3>
                 <p className="mt-1.5 text-xs text-muted-foreground">{d}</p>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </section>
@@ -388,12 +404,12 @@ function Landing() {
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
                 Start generating Adobe Stock metadata in seconds.
               </p>
-              <Link
+              <MagneticLink
                 to="/app"
-                className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+                className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
               >
                 Get started <ArrowRight className="h-4 w-4" />
-              </Link>
+              </MagneticLink>
             </div>
           </div>
         </section>
@@ -414,3 +430,45 @@ function Landing() {
     </div>
   );
 }
+
+type AnchorAttrs = React.AnchorHTMLAttributes<HTMLAnchorElement>;
+
+function MagneticLink({
+  to,
+  className,
+  children,
+}: {
+  to: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  return (
+    <Link to={to} ref={ref} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+function MagneticAnchor({ className, children, ...rest }: AnchorAttrs) {
+  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  return (
+    <a ref={ref} className={className} {...rest}>
+      {children}
+    </a>
+  );
+}
+
+type TiltCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  children: React.ReactNode;
+};
+
+function TiltCard({ children, ...rest }: TiltCardProps) {
+  const ref = useTilt<HTMLDivElement>(5);
+  return (
+    <div ref={ref} {...rest}>
+      {children}
+    </div>
+  );
+}
+
