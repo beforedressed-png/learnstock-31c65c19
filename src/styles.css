@@ -125,25 +125,25 @@
     text-shadow: 0 0 24px color-mix(in oklab, var(--primary-glow) 60%, transparent);
   }
 
-  /* Scroll reveal (one-shot, GPU-cheap) */
-  [data-reveal] {
+  /* Scroll reveal — only hides content AFTER JS has booted (.js-ready on <html>).
+     This prevents a blank flash on first paint / slow connections. */
+  .js-ready [data-reveal] {
     opacity: 0;
-    transform: translate3d(0, 18px, 0);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
+    transform: translate3d(0, 14px, 0);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  [data-reveal].is-visible {
+  .js-ready [data-reveal].is-visible {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
-  [data-reveal-delay="1"] { transition-delay: 0.06s; }
-  [data-reveal-delay="2"] { transition-delay: 0.12s; }
-  [data-reveal-delay="3"] { transition-delay: 0.18s; }
-  [data-reveal-delay="4"] { transition-delay: 0.24s; }
-  [data-reveal-delay="5"] { transition-delay: 0.30s; }
+  .js-ready [data-reveal-delay="1"] { transition-delay: 0.05s; }
+  .js-ready [data-reveal-delay="2"] { transition-delay: 0.10s; }
+  .js-ready [data-reveal-delay="3"] { transition-delay: 0.15s; }
+  .js-ready [data-reveal-delay="4"] { transition-delay: 0.20s; }
+  .js-ready [data-reveal-delay="5"] { transition-delay: 0.25s; }
   @media (prefers-reduced-motion: reduce) {
-    [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .js-ready [data-reveal] { opacity: 1; transform: none; transition: none; }
   }
 
   /* Hover lift for cards — subtle, no layout shift */
@@ -201,16 +201,44 @@
     text-shadow: 0 0 32px color-mix(in oklab, var(--primary-glow) 35%, transparent);
   }
 
-  /* Scroll-driven progress bar (CSS only, no JS frames) */
-  @supports (animation-timeline: scroll()) {
-    @keyframes scroll-progress {
-      from { transform: scaleX(0); }
-      to   { transform: scaleX(1); }
-    }
-    .scroll-progress {
-      animation: scroll-progress linear both;
-      animation-timeline: scroll(root);
-    }
+  /* Cursor spotlight — soft glow that follows the mouse.
+     Driven by --mx/--my CSS variables set on mousemove (one cheap write per frame,
+     no layout, no scroll-linked work). */
+  .cursor-spotlight {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(
+      400px circle at var(--mx, 50%) var(--my, 30%),
+      color-mix(in oklab, var(--primary-glow) 18%, transparent),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .cursor-spotlight.is-active { opacity: 1; }
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .cursor-spotlight { display: none; }
+  }
+
+  /* Interactive card sheen — light streak follows mouse across .sheen elements. */
+  .sheen { position: relative; overflow: hidden; }
+  .sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      220px circle at var(--sx, 50%) var(--sy, 50%),
+      color-mix(in oklab, white 10%, transparent),
+      transparent 55%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sheen:hover::before { opacity: 1; }
   }
 
   @media (prefers-reduced-motion: reduce) {
