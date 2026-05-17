@@ -69,39 +69,39 @@ function Landing() {
       <main>
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
-          <div className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
+          <div data-reveal className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
             <Sparkles className="h-3 w-3 text-primary-glow" />
             AI-powered stock metadata
           </div>
-          <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
+          <h1 data-reveal data-reveal-delay="1" className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
             Stock metadata that{" "}
             <br className="hidden md:block" />
-            <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent text-glow">
+            <span className="text-shimmer">
               sells itself
             </span>
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-sm text-muted-foreground md:text-base">
+          <p data-reveal data-reveal-delay="2" className="mx-auto mt-5 max-w-xl text-sm text-muted-foreground md:text-base">
             Drop your images, get Adobe-ready titles, single-word keywords and the right category in
             seconds. Bring your own AI key, export a contributor-perfect CSV, and ship batches faster.
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <div data-reveal data-reveal-delay="3" className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/app"
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
             >
               Start for free <ArrowRight className="h-4 w-4" />
             </Link>
             <a
               href="#how"
-              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground transition-colors"
+              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground hover:-translate-y-0.5 transition-all duration-300"
             >
               How it works
             </a>
           </div>
 
           {/* Preview mock */}
-          <div className="mx-auto mt-14 max-w-4xl">
-            <div className="glass rounded-2xl p-3 shadow-[var(--shadow-card)]">
+          <div data-reveal data-reveal-delay="4" className="mx-auto mt-14 max-w-4xl">
+            <div className="glass lift rounded-2xl p-3 shadow-[var(--shadow-card)]">
               <div className="flex items-center gap-1.5 px-2 pb-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
