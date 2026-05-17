@@ -1,6 +1,6 @@
 // Browser-local API key storage. Keys never leave the user's browser
 // except in direct calls to the chosen provider.
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import type { GeminiModel } from "./gemini";
 import type { GrokModel } from "./grok";
 
