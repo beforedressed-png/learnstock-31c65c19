@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useReveal } from "@/hooks/use-reveal";
+import { useCursorSpotlight } from "@/hooks/use-cursor-spotlight";
 import { BackToTop } from "@/components/BackToTop";
 
 export const Route = createFileRoute("/")({
