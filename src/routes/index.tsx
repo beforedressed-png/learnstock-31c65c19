@@ -182,7 +182,7 @@ function Landing() {
                 key={t}
                 className="glass rounded-xl p-5 transition-colors hover:border-primary/40"
               >
-                <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] backdrop-blur-sm before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
+                <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
                   <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" />
                 </div>
                 <h3 className="mt-4 text-sm font-semibold">{t}</h3>
@@ -204,7 +204,7 @@ function Landing() {
 
           <div className="relative mt-10 grid gap-6 md:grid-cols-2">
             {/* BEFORE */}
-            <div className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 backdrop-blur-sm shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
+            <div className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-destructive">
                 <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
                 Before
@@ -240,7 +240,7 @@ function Landing() {
             </div>
 
             {/* AFTER */}
-            <div className="relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 backdrop-blur-sm shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
+            <div className="relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-success">
                 <span className="h-1.5 w-1.5 rounded-full bg-success" />
                 After — Learn Stock <Sparkles className="h-3 w-3 text-primary-glow" />
