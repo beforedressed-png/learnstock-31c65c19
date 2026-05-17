@@ -1,23 +1,7 @@
-import { useState } from "react";
-import { Check, Eye, EyeOff, KeyRound, Plus, Trash2, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Eye, EyeOff, KeyRound, Plus, Trash2, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { GEMINI_MODELS, verifyApiKey, type GeminiModel } from "@/lib/gemini";
