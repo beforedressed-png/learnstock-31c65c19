@@ -15,6 +15,7 @@ import {
   Lock,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import { useReveal } from "@/hooks/use-reveal";
 
 export const Route = createFileRoute("/")({
   component: Landing,
