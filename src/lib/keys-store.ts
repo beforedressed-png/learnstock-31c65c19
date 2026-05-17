@@ -139,12 +139,21 @@ export function useKeyStore() {
     setModels((cur) => ({ ...cur, [p]: m }));
   }, []);
 
-  const keysFor = (p: Provider) => keys.filter((k) => k.provider === p);
-  const activeIdFor = (p: Provider) => activeMap[p] ?? keysFor(p)[0]?.id ?? null;
-  const activeKeyFor = (p: Provider) => keys.find((k) => k.id === activeIdFor(p)) ?? null;
+  const keysFor = useCallback(
+    (p: Provider) => keys.filter((k) => k.provider === p),
+    [keys],
+  );
+  const activeIdFor = useCallback(
+    (p: Provider) => activeMap[p] ?? keys.find((k) => k.provider === p)?.id ?? null,
+    [activeMap, keys],
+  );
+  const activeKeyFor = useCallback(
+    (p: Provider) => keys.find((k) => k.id === (activeMap[p] ?? keys.find((x) => x.provider === p)?.id)) ?? null,
+    [activeMap, keys],
+  );
 
   // Currently selected provider's active key (used by the workspace).
-  const activeKey = activeKeyFor(provider);
+  const activeKey = useMemo(() => activeKeyFor(provider), [activeKeyFor, provider]);
   const model = models[provider];
 
   return {
