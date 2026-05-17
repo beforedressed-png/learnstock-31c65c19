@@ -450,7 +450,7 @@ function MagneticLink({
 }
 
 function MagneticAnchor({ className, children, ...rest }: AnchorAttrs) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  const ref = useMagnetic<HTMLAnchorElement>(0.15, 5);
   return (
     <a ref={ref} className={className} {...rest}>
       {children}
