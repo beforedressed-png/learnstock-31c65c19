@@ -247,7 +247,7 @@ function Landing() {
             </div>
 
             {/* AFTER */}
-            <div className="relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
+            <div data-reveal data-reveal-delay="2" className="lift relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-success">
                 <span className="h-1.5 w-1.5 rounded-full bg-success" />
                 After — Learn Stock <Sparkles className="h-3 w-3 text-primary-glow" />
