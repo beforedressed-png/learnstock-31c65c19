@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useReveal } from "@/hooks/use-reveal";
-import { useCursorSpotlight } from "@/hooks/use-cursor-spotlight";
 import { BackToTop } from "@/components/BackToTop";
 
 export const Route = createFileRoute("/")({
@@ -41,11 +40,8 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   useReveal();
-  useCursorSpotlight();
   return (
     <div className="relative min-h-screen text-foreground">
-      {/* Cursor-following soft spotlight (desktop only) */}
-      <div className="cursor-spotlight" aria-hidden="true" />
       <header className="sticky top-0 z-30 glass border-b border-primary/15">
 
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
@@ -62,7 +58,7 @@ function Landing() {
           </nav>
           <Link
             to="/app"
-            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+            className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
           >
             Open App <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -90,7 +86,7 @@ function Landing() {
           <div data-reveal data-reveal-delay="3" className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/app"
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
+              className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
             >
               Start for free <ArrowRight className="h-4 w-4" />
             </Link>
@@ -134,7 +130,7 @@ function Landing() {
               { v: "100", l: "Daily users" },
               { v: "Top 5%", l: "Search ranking" },
             ].map((s) => (
-              <div key={s.l} data-reveal className="glass lift sheen rounded-xl px-4 py-5 text-center">
+              <div key={s.l} data-reveal className="glass lift rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
               </div>
@@ -190,7 +186,7 @@ function Landing() {
                 key={t}
                 data-reveal
                 data-reveal-delay={String((i % 3) + 1)}
-                className="glass lift sheen rounded-xl p-5 hover:border-primary/40"
+                className="glass lift rounded-xl p-5 hover:border-primary/40"
               >
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
                   <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" />
@@ -329,7 +325,7 @@ function Landing() {
               { Icon: Wand2, t: "AI generates metadata", d: "Gemini analyzes each image and writes title + keywords." },
               { Icon: Download, t: "Export & upload", d: "Download a CSV ready for Adobe Stock." },
             ].map(({ Icon, t, d }, i) => (
-              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift sheen rounded-xl p-6 text-center">
+              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift rounded-xl p-6 text-center">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
                   <Icon className="h-4.5 w-4.5" />
                 </div>
@@ -394,7 +390,7 @@ function Landing() {
               </p>
               <Link
                 to="/app"
-                className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+                className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
               >
                 Get started <ArrowRight className="h-4 w-4" />
               </Link>
