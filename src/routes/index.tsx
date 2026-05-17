@@ -137,15 +137,20 @@ function Landing() {
         <section className="mx-auto max-w-6xl px-4 py-10 lg:px-6">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {[
-              { v: "100", l: "Files per batch" },
-              { v: "AI-powered", l: "SEO-friendly metadata" },
-              { v: "100", l: "Daily users" },
+              { v: <CountUpStat target={100} suffix="+" />, l: "Files per batch" },
+              { v: "AI", l: "SEO-friendly metadata" },
+              { v: <CountUpStat target={100} suffix="+" />, l: "Daily users" },
               { v: "Top 5%", l: "Search ranking" },
-            ].map((s) => (
-              <div key={s.l} data-reveal className="glass lift rounded-xl px-4 py-5 text-center">
+            ].map((s, i) => (
+              <TiltCard
+                key={s.l}
+                data-reveal
+                data-reveal-delay={String((i % 4) + 1)}
+                className="glass lift tilt-card rounded-xl px-4 py-5 text-center"
+              >
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </section>
