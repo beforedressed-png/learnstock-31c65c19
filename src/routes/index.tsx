@@ -38,9 +38,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  useReveal();
   return (
     <div className="min-h-screen text-foreground">
+      {/* Scroll-driven progress bar (no JS per-frame) */}
+      <div className="pointer-events-none fixed left-0 top-0 z-50 h-0.5 w-full origin-left scroll-progress bg-gradient-to-r from-primary via-primary-glow to-primary" />
       <header className="sticky top-0 z-30 glass border-b border-primary/15">
+
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link to="/" className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)]">
