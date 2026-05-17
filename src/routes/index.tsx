@@ -412,6 +412,7 @@ function Landing() {
           <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
         </div>
       </footer>
+      <BackToTop />
     </div>
   );
 }
