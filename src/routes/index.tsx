@@ -182,10 +182,12 @@ function Landing() {
                 t: "Custom prompts",
                 d: "Inject your own style instructions and mandatory keywords.",
               },
-            ].map(({ Icon, t, d }) => (
+            ].map(({ Icon, t, d }, i) => (
               <div
                 key={t}
-                className="glass rounded-xl p-5 transition-colors hover:border-primary/40"
+                data-reveal
+                data-reveal-delay={String((i % 3) + 1)}
+                className="glass lift rounded-xl p-5 hover:border-primary/40"
               >
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
                   <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" />
