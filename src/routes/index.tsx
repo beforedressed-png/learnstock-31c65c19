@@ -16,7 +16,13 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useReveal } from "@/hooks/use-reveal";
+import { useMagnetic } from "@/hooks/use-magnetic";
+import { useTilt } from "@/hooks/use-tilt";
 import { BackToTop } from "@/components/BackToTop";
+import { MeshBackground } from "@/components/MeshBackground";
+import { MarqueeStrip } from "@/components/MarqueeStrip";
+import { CountUpStat } from "@/components/CountUpStat";
+import type { LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Landing,
