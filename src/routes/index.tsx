@@ -463,7 +463,7 @@ type TiltCardProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 function TiltCard({ children, ...rest }: TiltCardProps) {
-  const ref = useTilt<HTMLDivElement>(5);
+  const ref = useTilt<HTMLDivElement>(8);
   return (
     <div ref={ref} {...rest}>
       {children}
