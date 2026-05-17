@@ -53,9 +53,9 @@ function Landing() {
             <span className="text-sm font-bold tracking-tight">Learn Stock</span>
           </Link>
           <nav className="hidden items-center gap-6 text-xs text-muted-foreground md:flex">
-            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-            <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
-            <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
+            <a href="#features" className="link-underline hover:text-foreground transition-colors">Features</a>
+            <a href="#how" className="link-underline hover:text-foreground transition-colors">How it works</a>
+            <a href="#faq" className="link-underline hover:text-foreground transition-colors">FAQ</a>
           </nav>
           <Link
             to="/app"
