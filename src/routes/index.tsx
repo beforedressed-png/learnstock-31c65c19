@@ -40,11 +40,8 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   useReveal();
-  useCursorSpotlight();
   return (
     <div className="relative min-h-screen text-foreground">
-      {/* Cursor-following soft spotlight (desktop only) */}
-      <div className="cursor-spotlight" aria-hidden="true" />
       <header className="sticky top-0 z-30 glass border-b border-primary/15">
 
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
