@@ -73,7 +73,8 @@ function Landing() {
 
       <main>
         {/* Hero */}
-        <section className="mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
+        <section className="relative mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
+          <MeshBackground intensity={0.9} />
           <div data-reveal className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
             <Sparkles className="h-3 w-3 text-primary-glow" />
             AI-powered stock metadata
