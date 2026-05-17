@@ -321,7 +321,7 @@ export function MetadataWorkspace({ settings }: Props) {
             variant="outline"
             onClick={exportCsv}
             disabled={stats.done === 0}
-            className="gap-1.5"
+            className="btn-shimmer gap-1.5"
           >
             <Download className="h-3.5 w-3.5" />
             Export CSV
