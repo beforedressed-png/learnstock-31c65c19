@@ -304,7 +304,7 @@ export function MetadataWorkspace({ settings }: Props) {
             size="sm"
             onClick={runGeneration}
             disabled={running || items.length === 0}
-            className="gap-1.5 bg-foreground text-background shadow-sm hover:bg-foreground/90"
+            className="btn-shimmer gap-1.5 bg-foreground text-background shadow-sm hover:bg-foreground/90"
           >
             {running ? (
               <>
