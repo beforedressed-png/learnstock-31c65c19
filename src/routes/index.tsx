@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useReveal } from "@/hooks/use-reveal";
+import { BackToTop } from "@/components/BackToTop";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -411,6 +412,7 @@ function Landing() {
           <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
         </div>
       </footer>
+      <BackToTop />
     </div>
   );
 }
