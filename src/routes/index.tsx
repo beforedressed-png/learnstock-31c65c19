@@ -431,3 +431,45 @@ function Landing() {
     </div>
   );
 }
+
+type AnchorAttrs = React.AnchorHTMLAttributes<HTMLAnchorElement>;
+
+function MagneticLink({
+  to,
+  className,
+  children,
+}: {
+  to: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  return (
+    <Link to={to} ref={ref} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+function MagneticAnchor({ className, children, ...rest }: AnchorAttrs) {
+  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  return (
+    <a ref={ref} className={className} {...rest}>
+      {children}
+    </a>
+  );
+}
+
+type TiltCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  children: React.ReactNode;
+};
+
+function TiltCard({ children, ...rest }: TiltCardProps) {
+  const ref = useTilt<HTMLDivElement>(5);
+  return (
+    <div ref={ref} {...rest}>
+      {children}
+    </div>
+  );
+}
+
