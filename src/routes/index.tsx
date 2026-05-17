@@ -405,12 +405,12 @@ function Landing() {
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
                 Start generating Adobe Stock metadata in seconds.
               </p>
-              <Link
+              <MagneticLink
                 to="/app"
-                className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+                className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
               >
                 Get started <ArrowRight className="h-4 w-4" />
-              </Link>
+              </MagneticLink>
             </div>
           </div>
         </section>
