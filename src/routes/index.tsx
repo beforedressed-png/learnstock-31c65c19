@@ -211,7 +211,7 @@ function Landing() {
 
           <div className="relative mt-10 grid gap-6 md:grid-cols-2">
             {/* BEFORE */}
-            <div className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
+            <div data-reveal className="lift relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-destructive">
                 <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
                 Before
