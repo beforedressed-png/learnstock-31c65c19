@@ -130,7 +130,7 @@ function Landing() {
               { v: "100", l: "Daily users" },
               { v: "Top 5%", l: "Search ranking" },
             ].map((s) => (
-              <div key={s.l} data-reveal className="glass lift sheen rounded-xl px-4 py-5 text-center">
+              <div key={s.l} data-reveal className="glass lift rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
               </div>
@@ -186,7 +186,7 @@ function Landing() {
                 key={t}
                 data-reveal
                 data-reveal-delay={String((i % 3) + 1)}
-                className="glass lift sheen rounded-xl p-5 hover:border-primary/40"
+                className="glass lift rounded-xl p-5 hover:border-primary/40"
               >
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
                   <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" />
@@ -325,7 +325,7 @@ function Landing() {
               { Icon: Wand2, t: "AI generates metadata", d: "Gemini analyzes each image and writes title + keywords." },
               { Icon: Download, t: "Export & upload", d: "Download a CSV ready for Adobe Stock." },
             ].map(({ Icon, t, d }, i) => (
-              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift sheen rounded-xl p-6 text-center">
+              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift rounded-xl p-6 text-center">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
                   <Icon className="h-4.5 w-4.5" />
                 </div>
