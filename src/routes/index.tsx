@@ -441,7 +441,7 @@ function MagneticLink({
   className?: string;
   children: React.ReactNode;
 }) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.3, 8);
+  const ref = useMagnetic<HTMLAnchorElement>(0.15, 5);
   return (
     <Link to={to} ref={ref} className={className}>
       {children}
