@@ -91,18 +91,23 @@ function Landing() {
             seconds. Bring your own AI key, export a contributor-perfect CSV, and ship batches faster.
           </p>
           <div data-reveal data-reveal-delay="3" className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link
+            <MagneticLink
               to="/app"
-              className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
+              className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
             >
               Start for free <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
+            </MagneticLink>
+            <MagneticAnchor
               href="#how"
-              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground hover:-translate-y-0.5 transition-all duration-300"
+              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground"
             >
               How it works
-            </a>
+            </MagneticAnchor>
+          </div>
+
+          {/* Marquee strip */}
+          <div data-reveal data-reveal-delay="4" className="mt-10">
+            <MarqueeStrip />
           </div>
 
           {/* Preview mock */}
