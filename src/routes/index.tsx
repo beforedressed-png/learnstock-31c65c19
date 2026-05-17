@@ -58,7 +58,7 @@ function Landing() {
           </nav>
           <Link
             to="/app"
-            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+            className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
           >
             Open App <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -86,7 +86,7 @@ function Landing() {
           <div data-reveal data-reveal-delay="3" className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/app"
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
+              className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
             >
               Start for free <ArrowRight className="h-4 w-4" />
             </Link>
@@ -390,7 +390,7 @@ function Landing() {
               </p>
               <Link
                 to="/app"
-                className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+                className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
               >
                 Get started <ArrowRight className="h-4 w-4" />
               </Link>
