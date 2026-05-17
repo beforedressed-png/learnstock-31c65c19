@@ -15,6 +15,7 @@ import {
   Lock,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import { useReveal } from "@/hooks/use-reveal";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -37,9 +38,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  useReveal();
   return (
     <div className="min-h-screen text-foreground">
+      {/* Scroll-driven progress bar (no JS per-frame) */}
+      <div className="pointer-events-none fixed left-0 top-0 z-50 h-0.5 w-full origin-left scroll-progress bg-gradient-to-r from-primary via-primary-glow to-primary" />
       <header className="sticky top-0 z-30 glass border-b border-primary/15">
+
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link to="/" className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)]">
@@ -48,9 +53,9 @@ function Landing() {
             <span className="text-sm font-bold tracking-tight">Learn Stock</span>
           </Link>
           <nav className="hidden items-center gap-6 text-xs text-muted-foreground md:flex">
-            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-            <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
-            <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
+            <a href="#features" className="link-underline hover:text-foreground transition-colors">Features</a>
+            <a href="#how" className="link-underline hover:text-foreground transition-colors">How it works</a>
+            <a href="#faq" className="link-underline hover:text-foreground transition-colors">FAQ</a>
           </nav>
           <Link
             to="/app"
@@ -64,39 +69,39 @@ function Landing() {
       <main>
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-4 pt-16 pb-12 text-center lg:px-6 lg:pt-24">
-          <div className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
+          <div data-reveal className="glass-glow mx-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] text-foreground/85">
             <Sparkles className="h-3 w-3 text-primary-glow" />
             AI-powered stock metadata
           </div>
-          <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
+          <h1 data-reveal data-reveal-delay="1" className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
             Stock metadata that{" "}
             <br className="hidden md:block" />
-            <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent text-glow">
+            <span className="text-shimmer">
               sells itself
             </span>
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-sm text-muted-foreground md:text-base">
+          <p data-reveal data-reveal-delay="2" className="mx-auto mt-5 max-w-xl text-sm text-muted-foreground md:text-base">
             Drop your images, get Adobe-ready titles, single-word keywords and the right category in
             seconds. Bring your own AI key, export a contributor-perfect CSV, and ship batches faster.
           </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <div data-reveal data-reveal-delay="3" className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/app"
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
+              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 hover:-translate-y-0.5 transition-all duration-300"
             >
               Start for free <ArrowRight className="h-4 w-4" />
             </Link>
             <a
               href="#how"
-              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground transition-colors"
+              className="glass-glow inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground hover:-translate-y-0.5 transition-all duration-300"
             >
               How it works
             </a>
           </div>
 
           {/* Preview mock */}
-          <div className="mx-auto mt-14 max-w-4xl">
-            <div className="glass rounded-2xl p-3 shadow-[var(--shadow-card)]">
+          <div data-reveal data-reveal-delay="4" className="mx-auto mt-14 max-w-4xl">
+            <div className="glass lift rounded-2xl p-3 shadow-[var(--shadow-card)]">
               <div className="flex items-center gap-1.5 px-2 pb-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
@@ -126,7 +131,7 @@ function Landing() {
               { v: "100", l: "Daily users" },
               { v: "Top 5%", l: "Search ranking" },
             ].map((s) => (
-              <div key={s.l} className="glass rounded-xl px-4 py-5 text-center">
+              <div key={s.l} data-reveal className="glass lift rounded-xl px-4 py-5 text-center">
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
               </div>
@@ -141,7 +146,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               Our features
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">
               Everything you need to ship faster
             </h2>
           </div>
@@ -177,10 +182,12 @@ function Landing() {
                 t: "Custom prompts",
                 d: "Inject your own style instructions and mandatory keywords.",
               },
-            ].map(({ Icon, t, d }) => (
+            ].map(({ Icon, t, d }, i) => (
               <div
                 key={t}
-                className="glass rounded-xl p-5 transition-colors hover:border-primary/40"
+                data-reveal
+                data-reveal-delay={String((i % 3) + 1)}
+                className="glass lift rounded-xl p-5 hover:border-primary/40"
               >
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-primary-glow ring-1 ring-inset ring-white/10 shadow-[0_2px_8px_-3px_hsl(var(--primary)/0.35)] before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none">
                   <Icon className="relative h-4.5 w-4.5 drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" />
@@ -199,12 +206,12 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               See what changes
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Before vs. After</h2>
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Before vs. After</h2>
           </div>
 
           <div className="relative mt-10 grid gap-6 md:grid-cols-2">
             {/* BEFORE */}
-            <div className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
+            <div data-reveal className="lift relative overflow-hidden rounded-2xl border border-destructive/30 bg-gradient-to-br from-destructive/10 to-transparent p-6 shadow-[0_0_40px_-15px_hsl(var(--destructive)/0.4)]">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-destructive">
                 <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
                 Before
@@ -240,7 +247,7 @@ function Landing() {
             </div>
 
             {/* AFTER */}
-            <div className="relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
+            <div data-reveal data-reveal-delay="2" className="lift relative overflow-hidden rounded-2xl border border-success/30 bg-gradient-to-br from-success/10 to-primary/5 p-6 shadow-[0_0_40px_-15px_hsl(var(--success)/0.5)]">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-success">
                 <span className="h-1.5 w-1.5 rounded-full bg-success" />
                 After — Learn Stock <Sparkles className="h-3 w-3 text-primary-glow" />
@@ -311,7 +318,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               How it works
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Three simple steps</h2>
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Three simple steps</h2>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {[
@@ -319,7 +326,7 @@ function Landing() {
               { Icon: Wand2, t: "AI generates metadata", d: "Gemini analyzes each image and writes title + keywords." },
               { Icon: Download, t: "Export & upload", d: "Download a CSV ready for Adobe Stock." },
             ].map(({ Icon, t, d }, i) => (
-              <div key={t} className="glass rounded-xl p-6 text-center">
+              <div key={t} data-reveal data-reveal-delay={String(i + 1)} className="glass lift rounded-xl p-6 text-center">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
                   <Icon className="h-4.5 w-4.5" />
                 </div>
@@ -340,7 +347,7 @@ function Landing() {
               <Sparkles className="h-3 w-3" />
               Frequently asked questions
             </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Good to know</h2>
+            <h2 data-reveal className="mt-4 text-3xl font-bold tracking-tight md:text-4xl">Good to know</h2>
           </div>
           <div className="mt-8 space-y-3">
             {[
