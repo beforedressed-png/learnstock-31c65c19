@@ -20,6 +20,8 @@ type ProviderMeta = {
   description: string;
 };
 
+const MAX_API_KEY_CHARS = 512;
+
 const PROVIDERS: ProviderMeta[] = [
   {
     id: "gemini",
@@ -50,10 +52,12 @@ export function ApiKeysDialog() {
   const [verifying, setVerifying] = useState<string | null>(null);
   const inputRefs = useRef<Partial<Record<Provider, HTMLInputElement | null>>>({});
 
+  const normalizeKeyInput = (value: string) => value.trim().slice(0, MAX_API_KEY_CHARS);
+
   const handleAdd = (provider: Provider) => {
     const meta = PROVIDERS.find((p) => p.id === provider)!;
     const input = inputRefs.current[provider];
-    const trimmed = (input?.value ?? "").trim().slice(0, 512);
+    const trimmed = normalizeKeyInput(input?.value ?? "");
     if (!trimmed) return;
     if (!trimmed.toLowerCase().startsWith(meta.keyPrefix.toLowerCase())) {
       toast.error(`That doesn't look like a ${meta.label} key (should start with ${meta.keyPrefix}...)`);
@@ -204,12 +208,24 @@ export function ApiKeysDialog() {
                           ref={(node) => {
                             inputRefs.current[meta.id] = node;
                           }}
-                          type="password"
+                          type="text"
                           placeholder={meta.keyHint}
-                          maxLength={512}
-                          autoComplete="off"
+                          maxLength={MAX_API_KEY_CHARS}
+                          autoComplete="new-password"
                           autoCapitalize="none"
+                          autoCorrect="off"
+                          data-1p-ignore="true"
+                          data-lpignore="true"
+                          data-form-type="other"
                           spellCheck={false}
+                          className="font-mono [-webkit-text-security:disc]"
+                          onPaste={(event) => {
+                            event.preventDefault();
+                            const value = normalizeKeyInput(event.clipboardData.getData("text"));
+                            const input = event.currentTarget;
+                            input.value = value;
+                            requestAnimationFrame(() => input.focus());
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") handleAdd(meta.id);
                           }}
