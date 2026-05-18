@@ -69,13 +69,25 @@ export function AccessGate({ invalidKey = false }: { invalidKey?: boolean }) {
           </div>
         </div>
 
-        <form action="/app" method="get" className="space-y-3" autoComplete="off">
+        <form
+          action="/app#access"
+          method="get"
+          className="space-y-3"
+          autoComplete="off"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const formData = new FormData(form);
+            const key = String(formData.get("access") ?? "");
+            window.location.href = `/app#access=${encodeURIComponent(key)}`;
+          }}
+        >
           <div className="relative">
             <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
             <input
               autoFocus
               type="text"
-              name="accessKey"
+              name="access"
               defaultValue=""
               placeholder="Access key"
               maxLength={128}
