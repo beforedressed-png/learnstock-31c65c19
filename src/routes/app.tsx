@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
+import { AccessGate, hasAccess } from "@/components/AccessGate";
 import { Toaster } from "@/components/ui/sonner";
 import { useGenSettings } from "@/lib/gen-settings";
 
@@ -22,6 +24,16 @@ export const Route = createFileRoute("/app")({
 
 function AppPage() {
   const { settings, update } = useGenSettings();
+  const [unlocked, setUnlocked] = useState(() => hasAccess());
+
+  if (!unlocked) {
+    return (
+      <>
+        <Toaster />
+        <AccessGate onUnlock={() => setUnlocked(true)} />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen text-foreground">
