@@ -12,6 +12,4 @@ if (!rootElement) {
 
 const router = getRouter();
 
-createRoot(rootElement).render(
-  <RouterProvider router={router} />,
-);
+createRoot(rootElement).render(<RouterProvider router={router} />);
