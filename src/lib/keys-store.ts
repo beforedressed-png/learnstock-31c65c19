@@ -23,7 +23,7 @@ export interface StoredKey {
   id: string;
   key: string;
   provider: Provider;
-  status: "unverified" | "healthy" | "invalid";
+  status: "unverified" | "healthy" | "invalid" | "exhausted";
   addedAt: number;
 }
 
