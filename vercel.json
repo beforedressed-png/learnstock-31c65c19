@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist/vercel",
   "rewrites": [
     {
       "source": "/((?!assets/|favicon.ico|robots.txt|sitemap.xml).*)",
