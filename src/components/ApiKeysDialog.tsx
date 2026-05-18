@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Eye, EyeOff, KeyRound, Plus, Trash2, ExternalLink, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Clipboard, Eye, EyeOff, KeyRound, Trash2, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { GEMINI_MODELS, verifyApiKey, type GeminiModel } from "@/lib/gemini";
@@ -50,22 +49,28 @@ export function ApiKeysDialog() {
   const [open, setOpen] = useState(false);
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
   const [verifying, setVerifying] = useState<string | null>(null);
-  const inputRefs = useRef<Partial<Record<Provider, HTMLInputElement | null>>>({});
 
   const normalizeKeyInput = (value: string) => value.trim().slice(0, MAX_API_KEY_CHARS);
 
-  const handleAdd = (provider: Provider) => {
+  const addKeyValue = (provider: Provider, rawValue: string) => {
     const meta = PROVIDERS.find((p) => p.id === provider)!;
-    const input = inputRefs.current[provider];
-    const trimmed = normalizeKeyInput(input?.value ?? "");
+    const trimmed = normalizeKeyInput(rawValue);
     if (!trimmed) return;
     if (!trimmed.toLowerCase().startsWith(meta.keyPrefix.toLowerCase())) {
       toast.error(`That doesn't look like a ${meta.label} key (should start with ${meta.keyPrefix}...)`);
       return;
     }
     store.addKey(trimmed, provider);
-    if (input) input.value = "";
     toast.success("Key added");
+  };
+
+  const handleClipboardPaste = async (provider: Provider) => {
+    try {
+      const value = await navigator.clipboard.readText();
+      addKeyValue(provider, value);
+    } catch {
+      toast.error("Clipboard permission was blocked. Click the paste zone and press Ctrl+V / Cmd+V.");
+    }
   };
 
   const handleVerify = async (id: string, key: string, provider: Provider) => {
@@ -203,37 +208,19 @@ export function ApiKeysDialog() {
                       <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                         Add API key
                       </label>
-                      <div className="flex gap-2">
-                        <Input
-                          ref={(node) => {
-                            inputRefs.current[meta.id] = node;
-                          }}
-                          type="text"
-                          placeholder={meta.keyHint}
-                          maxLength={MAX_API_KEY_CHARS}
-                          autoComplete="new-password"
-                          autoCapitalize="none"
-                          autoCorrect="off"
-                          data-1p-ignore="true"
-                          data-lpignore="true"
-                          data-form-type="other"
-                          spellCheck={false}
-                          className="font-mono [-webkit-text-security:disc]"
-                          onPaste={(event) => {
-                            event.preventDefault();
-                            const value = normalizeKeyInput(event.clipboardData.getData("text"));
-                            const input = event.currentTarget;
-                            input.value = value;
-                            requestAnimationFrame(() => input.focus());
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleAdd(meta.id);
-                          }}
-                        />
-                        <Button size="icon" onClick={() => handleAdd(meta.id)} aria-label="Add key">
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <button
+                        type="button"
+                        aria-label={`Paste ${meta.label} API key`}
+                        className="flex h-16 w-full items-center justify-center gap-2 rounded-md border border-dashed border-input bg-background/60 px-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                        onClick={() => handleClipboardPaste(meta.id)}
+                        onPaste={(event) => {
+                          event.preventDefault();
+                          addKeyValue(meta.id, event.clipboardData.getData("text"));
+                        }}
+                      >
+                        <Clipboard className="h-4 w-4" />
+                        Paste key from clipboard
+                      </button>
                       <a
                         href={meta.getKeyUrl}
                         target="_blank"
