@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
