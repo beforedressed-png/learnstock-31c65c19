@@ -208,37 +208,19 @@ export function ApiKeysDialog() {
                       <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
                         Add API key
                       </label>
-                      <div className="flex gap-2">
-                        <Input
-                          ref={(node) => {
-                            inputRefs.current[meta.id] = node;
-                          }}
-                          type="text"
-                          placeholder={meta.keyHint}
-                          maxLength={MAX_API_KEY_CHARS}
-                          autoComplete="new-password"
-                          autoCapitalize="none"
-                          autoCorrect="off"
-                          data-1p-ignore="true"
-                          data-lpignore="true"
-                          data-form-type="other"
-                          spellCheck={false}
-                          className="font-mono [-webkit-text-security:disc]"
-                          onPaste={(event) => {
-                            event.preventDefault();
-                            const value = normalizeKeyInput(event.clipboardData.getData("text"));
-                            const input = event.currentTarget;
-                            input.value = value;
-                            requestAnimationFrame(() => input.focus());
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleAdd(meta.id);
-                          }}
-                        />
-                        <Button size="icon" onClick={() => handleAdd(meta.id)} aria-label="Add key">
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <button
+                        type="button"
+                        aria-label={`Paste ${meta.label} API key`}
+                        className="flex h-16 w-full items-center justify-center gap-2 rounded-md border border-dashed border-input bg-background/60 px-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                        onClick={() => handleClipboardPaste(meta.id)}
+                        onPaste={(event) => {
+                          event.preventDefault();
+                          addKeyValue(meta.id, event.clipboardData.getData("text"));
+                        }}
+                      >
+                        <Clipboard className="h-4 w-4" />
+                        Paste key from clipboard
+                      </button>
                       <a
                         href={meta.getKeyUrl}
                         target="_blank"
