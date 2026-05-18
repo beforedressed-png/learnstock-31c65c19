@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
-import { AccessGate, hasAccess } from "@/components/AccessGate";
+import { AccessGate, grantAccessFromKey, hasAccess } from "@/components/AccessGate";
 import { Toaster } from "@/components/ui/sonner";
 import { useGenSettings } from "@/lib/gen-settings";
 
@@ -26,10 +26,22 @@ function AppPage() {
   const { settings, update } = useGenSettings();
   const [unlocked, setUnlocked] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [invalidKey, setInvalidKey] = useState(false);
 
   // Check access AFTER hydration to avoid SSR/client mismatch
   useEffect(() => {
-    if (hasAccess()) setUnlocked(true);
+    const accessKey = new URLSearchParams(window.location.search).get("accessKey");
+    if (accessKey) {
+      if (grantAccessFromKey(accessKey)) {
+        window.history.replaceState(null, "", "/app");
+        setUnlocked(true);
+      } else {
+        window.history.replaceState(null, "", "/app");
+        setInvalidKey(true);
+      }
+    } else if (hasAccess()) {
+      setUnlocked(true);
+    }
     setChecked(true);
   }, []);
 
@@ -42,7 +54,7 @@ function AppPage() {
     return (
       <>
         <Toaster />
-        <AccessGate onUnlock={() => setUnlocked(true)} />
+        <AccessGate invalidKey={invalidKey} />
       </>
     );
   }
