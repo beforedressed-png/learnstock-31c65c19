@@ -53,6 +53,12 @@ function buildPrompt(opts: GenerateOptions): string {
 
   return `You generate Adobe Stock metadata. Return VALID JSON ONLY: ${outputShape}.
 
+# VISUAL STYLE DETECTION (MANDATORY — DO FIRST)
+Identify the rendering style and reflect it in BOTH title and top keywords. Never omit it.
+- 3D render / 3D icon / 3D illustration / 3D background / 3D character / clay: title MUST contain "3D"; top keywords MUST include "3d", "render", "rendering" plus the style word ("icon","illustration","character","background","clay").
+- isometric, low poly, flat, line, outline, minimalist, cartoon, watercolor, oil, pixel, sketch, vector, photo, photorealistic, AI generated: name the style in title AND top 10 keywords.
+3D cues: shading, cast shadows, depth, glossy/matte plastic or clay material, volumetric rounded forms, ambient occlusion. If any volume/shadow is present, treat as 3D.
+
 # TITLE
 - Marketable English phrase, ${titleCap} chars or fewer (aim under 70).
 - Subject + short qualifier, comma, secondary clause. No "image of", "showing", "depicting".
