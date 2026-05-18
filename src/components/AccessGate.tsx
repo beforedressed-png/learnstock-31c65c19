@@ -1,4 +1,4 @@
-import { ClipboardEvent, useRef, useState } from "react";
+import { useRef, useState, type ClipboardEvent } from "react";
 import { Lock, KeyRound, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
