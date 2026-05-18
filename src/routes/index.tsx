@@ -65,7 +65,7 @@ function Landing() {
             to="/app"
             className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
           >
-            Open App <ArrowRight className="h-3.5 w-3.5" />
+            Get Access <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </header>
