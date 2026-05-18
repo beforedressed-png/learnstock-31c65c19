@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Eye, EyeOff, KeyRound, Plus, Trash2, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,20 +46,21 @@ const PROVIDERS: ProviderMeta[] = [
 export function ApiKeysDialog() {
   const store = useKeyStore();
   const [open, setOpen] = useState(false);
-  const [drafts, setDrafts] = useState<Record<Provider, string>>({ gemini: "", grok: "" });
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
   const [verifying, setVerifying] = useState<string | null>(null);
+  const inputRefs = useRef<Partial<Record<Provider, HTMLInputElement | null>>>({});
 
   const handleAdd = (provider: Provider) => {
     const meta = PROVIDERS.find((p) => p.id === provider)!;
-    const trimmed = drafts[provider].trim();
+    const input = inputRefs.current[provider];
+    const trimmed = (input?.value ?? "").trim().slice(0, 512);
     if (!trimmed) return;
     if (!trimmed.toLowerCase().startsWith(meta.keyPrefix.toLowerCase())) {
       toast.error(`That doesn't look like a ${meta.label} key (should start with ${meta.keyPrefix}...)`);
       return;
     }
     store.addKey(trimmed, provider);
-    setDrafts((d) => ({ ...d, [provider]: "" }));
+    if (input) input.value = "";
     toast.success("Key added");
   };
 
@@ -200,10 +201,15 @@ export function ApiKeysDialog() {
                       </label>
                       <div className="flex gap-2">
                         <Input
+                          ref={(node) => {
+                            inputRefs.current[meta.id] = node;
+                          }}
                           type="password"
                           placeholder={meta.keyHint}
-                          value={drafts[meta.id]}
-                          onChange={(e) => setDrafts((d) => ({ ...d, [meta.id]: e.target.value }))}
+                          maxLength={512}
+                          autoComplete="off"
+                          autoCapitalize="none"
+                          spellCheck={false}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") handleAdd(meta.id);
                           }}

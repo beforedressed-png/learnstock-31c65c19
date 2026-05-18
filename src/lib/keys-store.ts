@@ -1,6 +1,6 @@
 // Browser-local API key storage. Keys never leave the user's browser
 // except in direct calls to the chosen provider.
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 import type { GeminiModel } from "./gemini";
 import type { GrokModel } from "./grok";
 
@@ -10,6 +10,8 @@ const KEYS_LS = "learnstock.keys.v2";
 const ACTIVE_LS = "learnstock.activeKey.v2";
 const MODEL_LS = "learnstock.model.v2";
 const PROVIDER_LS = "learnstock.provider.v1";
+const MAX_KEYS_PER_PROVIDER = 20;
+const MAX_KEY_LENGTH = 512;
 
 // Legacy v1 (Gemini-only) keys, migrated on first load.
 const LEGACY_KEYS_LS = "learnstock.gemini.keys.v1";
@@ -26,6 +28,13 @@ export interface StoredKey {
 
 type ActiveMap = Partial<Record<Provider, string | null>>;
 type ModelMap = { gemini: GeminiModel; grok: GrokModel };
+type StoreState = {
+  keys: StoredKey[];
+  activeMap: ActiveMap;
+  models: ModelMap;
+  provider: Provider;
+  hydrated: boolean;
+};
 
 const DEFAULT_MODELS: ModelMap = {
   gemini: "gemini-3.1-flash-lite-preview",
@@ -34,6 +43,7 @@ const DEFAULT_MODELS: ModelMap = {
 
 function read<T>(k: string, fallback: T): T {
   try {
+    if (typeof window === "undefined") return fallback;
     const v = localStorage.getItem(k);
     return v ? (JSON.parse(v) as T) : fallback;
   } catch {
@@ -42,6 +52,7 @@ function read<T>(k: string, fallback: T): T {
 }
 function write(k: string, v: unknown) {
   try {
+    if (typeof window === "undefined") return;
     localStorage.setItem(k, JSON.stringify(v));
   } catch {
     /* quota */
@@ -54,6 +65,7 @@ function migrateLegacy(): {
   models: ModelMap;
 } | null {
   try {
+    if (typeof window === "undefined") return null;
     const legacyKeys = localStorage.getItem(LEGACY_KEYS_LS);
     if (!legacyKeys) return null;
     const parsed = JSON.parse(legacyKeys) as Array<Omit<StoredKey, "provider">>;
@@ -70,73 +82,138 @@ function migrateLegacy(): {
   }
 }
 
+const defaultState: StoreState = {
+  keys: [],
+  activeMap: {},
+  models: DEFAULT_MODELS,
+  provider: "gemini",
+  hydrated: false,
+};
+
+let currentState: StoreState = defaultState;
+const listeners = new Set<() => void>();
+
+function sanitizeKeys(keys: StoredKey[]): StoredKey[] {
+  const counts: Record<Provider, number> = { gemini: 0, grok: 0 };
+  return keys.filter((item) => {
+    if (item.provider !== "gemini" && item.provider !== "grok") return false;
+    if (!item.key || item.key.length > MAX_KEY_LENGTH) return false;
+    counts[item.provider] += 1;
+    return counts[item.provider] <= MAX_KEYS_PER_PROVIDER;
+  });
+}
+
+function loadStoredState(): StoreState {
+  const migrated = migrateLegacy();
+  const storedKeys = read<StoredKey[] | null>(KEYS_LS, null);
+  const storedActive = read<ActiveMap | null>(ACTIVE_LS, null);
+  const storedModels = read<ModelMap | null>(MODEL_LS, null);
+  const storedProvider = read<Provider>(PROVIDER_LS, "gemini");
+
+  return {
+    keys: sanitizeKeys(storedKeys ?? migrated?.keys ?? []),
+    activeMap: storedActive ?? migrated?.active ?? {},
+    models: { ...DEFAULT_MODELS, ...(storedModels ?? migrated?.models ?? {}) },
+    provider: storedProvider === "grok" ? "grok" : "gemini",
+    hydrated: true,
+  };
+}
+
+function persistState(state: StoreState) {
+  if (!state.hydrated) return;
+  write(KEYS_LS, state.keys);
+  write(ACTIVE_LS, state.activeMap);
+  write(MODEL_LS, state.models);
+  write(PROVIDER_LS, state.provider);
+}
+
+function emit() {
+  for (const listener of listeners) listener();
+}
+
+function updateStore(updater: (state: StoreState) => StoreState) {
+  currentState = updater(currentState);
+  persistState(currentState);
+  emit();
+}
+
+function hydrateStore() {
+  if (currentState.hydrated || typeof window === "undefined") return;
+  currentState = loadStoredState();
+  emit();
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  hydrateStore();
+  return () => listeners.delete(listener);
+}
+
+function getSnapshot() {
+  return currentState;
+}
+
+function getServerSnapshot() {
+  return defaultState;
+}
+
 export function useKeyStore() {
-  const [keys, setKeys] = useState<StoredKey[]>(() => {
-    const v2 = read<StoredKey[] | null>(KEYS_LS, null);
-    if (v2 && v2.length >= 0) return v2;
-    return migrateLegacy()?.keys ?? [];
-  });
-  const [activeMap, setActiveMap] = useState<ActiveMap>(() => {
-    const v2 = read<ActiveMap | null>(ACTIVE_LS, null);
-    if (v2) return v2;
-    return migrateLegacy()?.active ?? {};
-  });
-  const [models, setModels] = useState<ModelMap>(() => {
-    const v2 = read<ModelMap | null>(MODEL_LS, null);
-    if (v2) return { ...DEFAULT_MODELS, ...v2 };
-    return migrateLegacy()?.models ?? DEFAULT_MODELS;
-  });
-  const [provider, setProvider] = useState<Provider>(
-    () => read<Provider>(PROVIDER_LS, "gemini"),
+  const { keys, activeMap, models, provider, hydrated } = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
   );
 
-  useEffect(() => write(KEYS_LS, keys), [keys]);
-  useEffect(() => write(ACTIVE_LS, activeMap), [activeMap]);
-  useEffect(() => write(MODEL_LS, models), [models]);
-  useEffect(() => write(PROVIDER_LS, provider), [provider]);
-
   const addKey = useCallback((key: string, forProvider: Provider) => {
-    const trimmed = key.trim();
+    const trimmed = key.trim().slice(0, MAX_KEY_LENGTH);
     if (!trimmed) return;
-    let newId: string | null = null;
-    setKeys((prev) => {
-      if (prev.some((k) => k.key === trimmed && k.provider === forProvider)) return prev;
-      newId = crypto.randomUUID();
-      return [
-        ...prev,
-        { id: newId, key: trimmed, provider: forProvider, status: "unverified" as const, addedAt: Date.now() },
-      ];
+    updateStore((state) => {
+      if (state.keys.some((k) => k.key === trimmed && k.provider === forProvider)) return state;
+      const providerKeys = state.keys.filter((k) => k.provider === forProvider);
+      const id = crypto.randomUUID();
+      const nextKeys = sanitizeKeys([
+        ...state.keys,
+        { id, key: trimmed, provider: forProvider, status: "unverified", addedAt: Date.now() },
+      ]);
+      return {
+        ...state,
+        keys: nextKeys,
+        activeMap: providerKeys.length === 0 ? { ...state.activeMap, [forProvider]: id } : state.activeMap,
+      };
     });
-    setActiveMap((cur) => (cur[forProvider] ? cur : { ...cur, [forProvider]: newId }));
   }, []);
 
   const removeKey = useCallback((id: string) => {
-    setKeys((prev) => prev.filter((k) => k.id !== id));
-    setActiveMap((cur) => {
-      const next: ActiveMap = { ...cur };
-      for (const p of Object.keys(next) as Provider[]) {
-        if (next[p] === id) next[p] = null;
+    updateStore((state) => {
+      const nextActive: ActiveMap = { ...state.activeMap };
+      for (const p of Object.keys(nextActive) as Provider[]) {
+        if (nextActive[p] === id) nextActive[p] = null;
       }
-      return next;
+      return { ...state, keys: state.keys.filter((k) => k.id !== id), activeMap: nextActive };
     });
   }, []);
 
   const setStatus = useCallback((id: string, status: StoredKey["status"]) => {
-    setKeys((prev) => prev.map((k) => (k.id === id ? { ...k, status } : k)));
+    updateStore((state) => ({
+      ...state,
+      keys: state.keys.map((k) => (k.id === id ? { ...k, status } : k)),
+    }));
   }, []);
 
   const setActiveId = useCallback((id: string) => {
-    setKeys((prev) => {
-      const target = prev.find((k) => k.id === id);
-      if (target) {
-        setActiveMap((cur) => ({ ...cur, [target.provider]: id }));
-      }
-      return prev;
+    updateStore((state) => {
+      const target = state.keys.find((k) => k.id === id);
+      if (!target) return state;
+      return { ...state, activeMap: { ...state.activeMap, [target.provider]: id } };
     });
   }, []);
 
   const setModelFor = useCallback(<P extends Provider>(p: P, m: ModelMap[P]) => {
-    setModels((cur) => ({ ...cur, [p]: m }));
+    updateStore((state) => ({ ...state, models: { ...state.models, [p]: m } }));
+  }, []);
+
+  const setProvider = useCallback((p: Provider) => {
+    updateStore((state) => ({ ...state, provider: p }));
   }, []);
 
   const keysFor = useCallback(
@@ -171,6 +248,7 @@ export function useKeyStore() {
     setModelFor,
     provider,
     setProvider,
+    hydrated,
   };
 }
 
