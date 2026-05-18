@@ -158,72 +158,62 @@ function getServerSnapshot() {
 }
 
 export function useKeyStore() {
-  const [keys, setKeys] = useState<StoredKey[]>(() => {
-    const v2 = read<StoredKey[] | null>(KEYS_LS, null);
-    if (v2 && v2.length >= 0) return v2;
-    return migrateLegacy()?.keys ?? [];
-  });
-  const [activeMap, setActiveMap] = useState<ActiveMap>(() => {
-    const v2 = read<ActiveMap | null>(ACTIVE_LS, null);
-    if (v2) return v2;
-    return migrateLegacy()?.active ?? {};
-  });
-  const [models, setModels] = useState<ModelMap>(() => {
-    const v2 = read<ModelMap | null>(MODEL_LS, null);
-    if (v2) return { ...DEFAULT_MODELS, ...v2 };
-    return migrateLegacy()?.models ?? DEFAULT_MODELS;
-  });
-  const [provider, setProvider] = useState<Provider>(
-    () => read<Provider>(PROVIDER_LS, "gemini"),
+  const { keys, activeMap, models, provider, hydrated } = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
   );
 
-  useEffect(() => write(KEYS_LS, keys), [keys]);
-  useEffect(() => write(ACTIVE_LS, activeMap), [activeMap]);
-  useEffect(() => write(MODEL_LS, models), [models]);
-  useEffect(() => write(PROVIDER_LS, provider), [provider]);
-
   const addKey = useCallback((key: string, forProvider: Provider) => {
-    const trimmed = key.trim();
+    const trimmed = key.trim().slice(0, MAX_KEY_LENGTH);
     if (!trimmed) return;
-    let newId: string | null = null;
-    setKeys((prev) => {
-      if (prev.some((k) => k.key === trimmed && k.provider === forProvider)) return prev;
-      newId = crypto.randomUUID();
-      return [
-        ...prev,
-        { id: newId, key: trimmed, provider: forProvider, status: "unverified" as const, addedAt: Date.now() },
-      ];
+    updateStore((state) => {
+      if (state.keys.some((k) => k.key === trimmed && k.provider === forProvider)) return state;
+      const providerKeys = state.keys.filter((k) => k.provider === forProvider);
+      const id = crypto.randomUUID();
+      const nextKeys = sanitizeKeys([
+        ...state.keys,
+        { id, key: trimmed, provider: forProvider, status: "unverified", addedAt: Date.now() },
+      ]);
+      return {
+        ...state,
+        keys: nextKeys,
+        activeMap: providerKeys.length === 0 ? { ...state.activeMap, [forProvider]: id } : state.activeMap,
+      };
     });
-    setActiveMap((cur) => (cur[forProvider] ? cur : { ...cur, [forProvider]: newId }));
   }, []);
 
   const removeKey = useCallback((id: string) => {
-    setKeys((prev) => prev.filter((k) => k.id !== id));
-    setActiveMap((cur) => {
-      const next: ActiveMap = { ...cur };
+    updateStore((state) => {
+      const nextActive: ActiveMap = { ...state.activeMap };
       for (const p of Object.keys(next) as Provider[]) {
-        if (next[p] === id) next[p] = null;
+        if (nextActive[p] === id) nextActive[p] = null;
       }
-      return next;
+      return { ...state, keys: state.keys.filter((k) => k.id !== id), activeMap: nextActive };
     });
   }, []);
 
   const setStatus = useCallback((id: string, status: StoredKey["status"]) => {
-    setKeys((prev) => prev.map((k) => (k.id === id ? { ...k, status } : k)));
+    updateStore((state) => ({
+      ...state,
+      keys: state.keys.map((k) => (k.id === id ? { ...k, status } : k)),
+    }));
   }, []);
 
   const setActiveId = useCallback((id: string) => {
-    setKeys((prev) => {
-      const target = prev.find((k) => k.id === id);
-      if (target) {
-        setActiveMap((cur) => ({ ...cur, [target.provider]: id }));
-      }
-      return prev;
+    updateStore((state) => {
+      const target = state.keys.find((k) => k.id === id);
+      if (!target) return state;
+      return { ...state, activeMap: { ...state.activeMap, [target.provider]: id } };
     });
   }, []);
 
   const setModelFor = useCallback(<P extends Provider>(p: P, m: ModelMap[P]) => {
-    setModels((cur) => ({ ...cur, [p]: m }));
+    updateStore((state) => ({ ...state, models: { ...state.models, [p]: m } }));
+  }, []);
+
+  const setProvider = useCallback((p: Provider) => {
+    updateStore((state) => ({ ...state, provider: p }));
   }, []);
 
   const keysFor = useCallback(
@@ -258,6 +248,7 @@ export function useKeyStore() {
     setModelFor,
     provider,
     setProvider,
+    hydrated,
   };
 }
 
