@@ -1,48 +1,28 @@
-# Make it modern & interactive
+I found the likely Vercel-specific problem: the current gate still depends on the React/TanStack route mounting and client-side `useEffect` reading `?accessKey=...`. If Vercel serves `/app?accessKey=...` differently, hydrates late, or the static fallback is misconfigured, the unlock can appear stuck even though it works on Lovable hosting.
 
-Motion register: bold (4/5) — visible but never gimmicky. Scope: landing + dashboard polish. All effects respect `prefers-reduced-motion` and are GPU-only (transform/opacity).
+Plan to make this reliable on Vercel:
 
-## Landing (`src/routes/index.tsx`)
+1. Replace the `/app` access-key submit flow with a plain browser-safe hash flow
+   - The form will submit to `/app#access=learnstockbatch1accesskey343` instead of `/app?accessKey=...`.
+   - This avoids Vercel query-string routing/caching/fallback issues entirely.
+   - Hash values never hit the server, so Vercel cannot rewrite, cache, or mishandle them.
 
-1. **Animated gradient mesh hero background**
-   Two slowly drifting radial-gradient blobs behind the hero, blurred and blended. Pure CSS keyframes, no JS. Replaces the static background.
+2. Add an earliest-possible unlock script to `index.vercel.html`
+   - Before React loads, a tiny inline script checks `location.hash` for `access=`.
+   - If the key is correct, it writes the access flag to `localStorage` and removes the hash.
+   - This makes Vercel unlock before TanStack Router/React starts.
 
-2. **Magnetic CTA buttons**
-   New `useMagnetic` hook translates the button toward the cursor (max ~8px) on `mousemove`, springs back on leave. Applied to the 3 primary CTAs.
+3. Keep the React gate as backup only
+   - `/app` will still check `localStorage` after hydration.
+   - If the user already unlocked once, `/app` opens directly.
+   - If the key is wrong, the gate still shows the error.
 
-3. **3D tilt feature cards**
-   New `useTilt` hook reads pointer position and applies `rotateX/rotateY` (max ~6°) with perspective. Applied to feature, step, and stat cards. Pairs with existing `btn-shimmer`.
+4. Add Vercel static SPA fallback if missing
+   - Add a small `vercel.json` rewrite so `/app` always serves `/index.html` on Vercel.
+   - This prevents direct `/app` visits from failing or serving the wrong file.
 
-4. **Count-up stat numbers**
-   New `useCountUp` hook animates numbers from 0 → target over ~1.2s once the stat enters view (IntersectionObserver, runs once).
+5. Verify locally against the Vercel build path
+   - Check lint for changed files.
+   - Test the exact Vercel-style URL flow: `/app#access=learnstockbatch1accesskey343` opens the dashboard.
 
-5. **Marquee trust strip**
-   Thin infinite-scroll row of tags ("OpenAI · Anthropic · Gemini · Mistral · …") between hero and features. CSS `@keyframes` translate, duplicated content for seamless loop, pauses on hover.
-
-6. **Smooth in-page scroll + section anchor offsets**
-   `scroll-behavior: smooth` and refined `scroll-margin-top` so header CTAs / back-to-top feel polished.
-
-## Dashboard polish (`src/components/MetadataWorkspace.tsx` + related)
-
-- Reuse `useTilt` (very subtle, ~2°) on the main workspace panels.
-- Add `btn-shimmer` to remaining primary actions that don't have it.
-- Soft hover lift (`translateY(-2px)` + shadow) on result/list cards.
-- Same gradient-mesh wash, much dimmer, behind the dashboard header.
-
-## Tokens / CSS (`src/styles.css`)
-
-- New `--gradient-mesh-a`, `--gradient-mesh-b` color tokens (oklch).
-- `.mesh-bg`, `.marquee`, `.tilt-card`, `.magnetic` utility classes.
-- All animations gated behind `@media (prefers-reduced-motion: no-preference)`.
-
-## New files
-
-- `src/hooks/use-magnetic.ts`
-- `src/hooks/use-tilt.ts`
-- `src/hooks/use-count-up.ts`
-- `src/components/MarqueeStrip.tsx`
-- `src/components/MeshBackground.tsx`
-
-## Out of scope
-
-No parallax, no cursor spotlight, no scroll-snap (jumpy), no heavy libs (Three.js/Lottie). Pure CSS + tiny rAF hooks.
+This is intentionally not another React input fix. It removes Vercel from the unlock path as much as possible.

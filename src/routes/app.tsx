@@ -30,7 +30,10 @@ function AppPage() {
 
   // Check access AFTER hydration to avoid SSR/client mismatch
   useEffect(() => {
-    const accessKey = new URLSearchParams(window.location.search).get("accessKey");
+    const hash = window.location.hash;
+    const accessKey = hash.startsWith("#access=")
+      ? decodeURIComponent(hash.slice("#access=".length))
+      : new URLSearchParams(window.location.search).get("accessKey");
     if (accessKey) {
       if (grantAccessFromKey(accessKey)) {
         window.history.replaceState(null, "", "/app");
@@ -39,6 +42,9 @@ function AppPage() {
         window.history.replaceState(null, "", "/app");
         setInvalidKey(true);
       }
+    } else if (hash === "#invalid-access") {
+      window.history.replaceState(null, "", "/app");
+      setInvalidKey(true);
     } else if (hasAccess()) {
       setUnlocked(true);
     }
