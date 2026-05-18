@@ -2,7 +2,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Lock, KeyRound, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import logoIcon from "@/assets/logo-icon.png";
 
