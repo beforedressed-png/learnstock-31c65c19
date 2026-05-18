@@ -34,8 +34,7 @@ export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
     if (hasAccess()) onUnlock();
   }, [onUnlock]);
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
+  const submit = () => {
     const trimmed = value.trim().slice(0, 128);
     if (trimmed === ACCESS_KEY) {
       try {
