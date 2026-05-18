@@ -92,6 +92,14 @@ function buildPrompt(opts: GenerateOptions): string {
 
   return `You generate Adobe Stock metadata that strictly follows Adobe's official Title and Keyword guidelines. Analyze the image and return a title, an ordered keyword list, and a category id.
 
+# VISUAL STYLE DETECTION (MANDATORY — DO THIS FIRST)
+Before writing anything, identify the rendering style of the image and you MUST reflect it in BOTH the title and the top keywords. Never omit the style.
+- 3D render / 3D icon / 3D illustration / 3D background / 3D character / clay render / claymation / plasticine: title MUST contain "3D" (uppercase). Top keywords MUST include "3d", "render", "rendering" and the style-specific word ("icon", "illustration", "character", "background", "clay" etc.).
+- Isometric: include the word "isometric" in title and top keywords.
+- Low poly: include "low" and "poly" as top keywords; title may say "low poly".
+- Flat / line / outline / minimalist / cartoon / watercolor / oil painting / pixel art / sketch / vector / photo / photorealistic / AI generated: name the style explicitly in the title and put it in the top 10 keywords.
+Detection cues for 3D: soft global shading, cast shadows, depth/perspective, glossy or matte plastic/clay material, rounded volumetric forms, ambient occlusion, studio lighting on rendered objects. When in doubt between flat vs 3D, choose 3D if any shading/volume/shadow is present.
+
 # TITLE
 - Short, marketable English phrase. NOT a formal sentence. NOT a long descriptive caption.
 - ${titleCap} CHARACTERS OR FEWER (hard limit). Adobe recommends 70 or fewer — stay well under 70 whenever possible.
