@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ClipboardEvent, useRef, useState } from "react";
 import { Lock, KeyRound, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -26,16 +26,12 @@ export function clearAccess() {
 }
 
 export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
-  const [value, setValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
 
-  useEffect(() => {
-    if (hasAccess()) onUnlock();
-  }, [onUnlock]);
-
   const submit = () => {
-    const trimmed = value.trim().slice(0, 128);
+    const trimmed = (inputRef.current?.value ?? "").trim().slice(0, 128);
     if (trimmed === ACCESS_KEY) {
       try {
         localStorage.setItem(STORAGE_KEY, ACCESS_KEY);
@@ -49,6 +45,16 @@ export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
       setShake(true);
       setTimeout(() => setShake(false), 400);
     }
+  };
+
+  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    const pasted = event.clipboardData.getData("text").slice(0, 128);
+    event.preventDefault();
+    if (inputRef.current) {
+      inputRef.current.value = pasted;
+      inputRef.current.focus();
+    }
+    if (error) setError("");
   };
 
   return (
@@ -87,14 +93,15 @@ export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
           <div className="relative">
             <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
             <input
+              ref={inputRef}
               autoFocus
               type="text"
               name="lsk-access"
-              value={value}
-              onChange={(e) => {
-                setValue(e.target.value);
+              defaultValue=""
+              onInput={() => {
                 if (error) setError("");
               }}
+              onPaste={handlePaste}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -116,7 +123,7 @@ export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
             />
           </div>
           {error && <p className="text-xs text-destructive">{error}</p>}
-          <Button type="button" onClick={submit} className="w-full" disabled={!value.trim()}>
+          <Button type="button" onClick={submit} className="w-full">
             Unlock Dashboard
           </Button>
         </div>
