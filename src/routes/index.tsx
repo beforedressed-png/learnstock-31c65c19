@@ -93,7 +93,7 @@ function Landing() {
               to="/app"
               className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
             >
-              Start for free <ArrowRight className="h-4 w-4" />
+              Get Access <ArrowRight className="h-4 w-4" />
             </MagneticLink>
             <MagneticAnchor
               href="#how"
