@@ -12,6 +12,7 @@ const MODEL_LS = "learnstock.model.v2";
 const PROVIDER_LS = "learnstock.provider.v1";
 const MAX_KEYS_PER_PROVIDER = 20;
 const MAX_KEY_LENGTH = 512;
+const MAX_STORAGE_LENGTH = 128_000;
 
 // Legacy v1 (Gemini-only) keys, migrated on first load.
 const LEGACY_KEYS_LS = "learnstock.gemini.keys.v1";
@@ -45,6 +46,10 @@ function read<T>(k: string, fallback: T): T {
   try {
     if (typeof window === "undefined") return fallback;
     const v = localStorage.getItem(k);
+    if (v && v.length > MAX_STORAGE_LENGTH) {
+      localStorage.removeItem(k);
+      return fallback;
+    }
     return v ? (JSON.parse(v) as T) : fallback;
   } catch {
     return fallback;
@@ -68,6 +73,10 @@ function migrateLegacy(): {
     if (typeof window === "undefined") return null;
     const legacyKeys = localStorage.getItem(LEGACY_KEYS_LS);
     if (!legacyKeys) return null;
+    if (legacyKeys.length > MAX_STORAGE_LENGTH) {
+      localStorage.removeItem(LEGACY_KEYS_LS);
+      return null;
+    }
     const parsed = JSON.parse(legacyKeys) as Array<Omit<StoredKey, "provider">>;
     const migrated: StoredKey[] = parsed.map((k) => ({ ...k, provider: "gemini" }));
     const legacyActive = read<string | null>(LEGACY_ACTIVE_LS, null);
