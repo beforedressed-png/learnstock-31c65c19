@@ -1,4 +1,4 @@
-import { useRef, useState, type ClipboardEvent } from "react";
+import { useState } from "react";
 import { Lock, KeyRound, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -25,37 +25,24 @@ export function clearAccess() {
   }
 }
 
-export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
+export function grantAccessFromKey(key: string): boolean {
+  const normalized = key.trim().slice(0, 128);
+  if (normalized !== ACCESS_KEY) return false;
+  try {
+    localStorage.setItem(STORAGE_KEY, ACCESS_KEY);
+  } catch {
+    /* ignore quota */
+  }
+  return true;
+}
+
+export function AccessGate({ invalidKey = false }: { invalidKey?: boolean }) {
+  const [error] = useState(invalidKey ? "Invalid access key" : "");
   const [shake, setShake] = useState(false);
 
-  const submit = () => {
-    const trimmed = (inputRef.current?.value ?? "").trim().slice(0, 128);
-    if (trimmed === ACCESS_KEY) {
-      try {
-        localStorage.setItem(STORAGE_KEY, ACCESS_KEY);
-      } catch {
-        /* ignore quota */
-      }
-      toast.success("Access granted");
-      onUnlock();
-    } else {
-      setError("Invalid access key");
-      setShake(true);
-      setTimeout(() => setShake(false), 400);
-    }
-  };
-
-  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
-    const pasted = event.clipboardData.getData("text").slice(0, 128);
-    event.preventDefault();
-    if (inputRef.current) {
-      inputRef.current.value = pasted;
-      inputRef.current.focus();
-    }
-    if (error) setError("");
-  };
+  useState(() => {
+    if (invalidKey) window.setTimeout(() => setShake(true), 0);
+  });
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-foreground">
