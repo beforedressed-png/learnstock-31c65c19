@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowLeft, LogOut, Shield } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
-import { AccessGate, grantAccessFromKey, hasAccess } from "@/components/AccessGate";
+import { SignInGate } from "@/components/SignInGate";
 import { Toaster } from "@/components/ui/sonner";
 import { useGenSettings } from "@/lib/gen-settings";
+import { useAuth, signOut } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/app")({
   component: AppPage,
@@ -24,46 +24,23 @@ export const Route = createFileRoute("/app")({
 
 function AppPage() {
   const { settings, update } = useGenSettings();
-  const [unlocked, setUnlocked] = useState(false);
-  const [checked, setChecked] = useState(false);
-  const [invalidKey, setInvalidKey] = useState(false);
+  const auth = useAuth();
 
-  // Check access AFTER hydration to avoid SSR/client mismatch
-  useEffect(() => {
-    const hash = window.location.hash;
-    const accessKey = hash.startsWith("#access=")
-      ? decodeURIComponent(hash.slice("#access=".length))
-      : new URLSearchParams(window.location.search).get("accessKey");
-    if (accessKey) {
-      if (grantAccessFromKey(accessKey)) {
-        window.history.replaceState(null, "", "/app");
-        setUnlocked(true);
-      } else {
-        window.history.replaceState(null, "", "/app");
-        setInvalidKey(true);
-      }
-    } else if (hash === "#invalid-access") {
-      window.history.replaceState(null, "", "/app");
-      setInvalidKey(true);
-    } else if (hasAccess()) {
-      setUnlocked(true);
-    }
-    setChecked(true);
-  }, []);
-
-  if (!checked) {
-    // Render nothing extra during SSR/first paint — matches server output
+  if (auth.loading) {
     return <div className="min-h-screen text-foreground" />;
   }
 
-  if (!unlocked) {
+  const approved = auth.request?.status === "approved";
+  if (!approved) {
     return (
       <>
         <Toaster />
-        <AccessGate invalidKey={invalidKey} />
+        <SignInGate state={auth} />
       </>
     );
   }
+
+  const isAdmin = auth.request?.is_admin === true;
 
   return (
     <div className="min-h-screen text-foreground">
@@ -81,12 +58,31 @@ function AppPage() {
               </p>
             </div>
           </Link>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Home
-          </Link>
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:inline text-[11px] text-muted-foreground font-mono">
+              {auth.session?.user.email}
+            </span>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Shield className="h-3.5 w-3.5" /> Admin
+              </Link>
+            )}
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Home
+            </Link>
+            <button
+              onClick={signOut}
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5" /> Sign out
+            </button>
+          </div>
         </div>
       </header>
 
