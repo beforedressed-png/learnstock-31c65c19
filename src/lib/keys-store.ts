@@ -58,10 +58,19 @@ function read<T>(k: string, fallback: T): T {
 function write(k: string, v: unknown) {
   try {
     if (typeof window === "undefined") return;
-    localStorage.setItem(k, JSON.stringify(v));
+    const serialized = JSON.stringify(v);
+    if (serialized.length > MAX_STORAGE_LENGTH) return;
+    localStorage.setItem(k, serialized);
   } catch {
     /* quota */
   }
+}
+
+function safeRandomId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
 
 function migrateLegacy(): {
@@ -105,8 +114,9 @@ const listeners = new Set<() => void>();
 function sanitizeKeys(keys: StoredKey[]): StoredKey[] {
   const counts: Record<Provider, number> = { gemini: 0, grok: 0 };
   return keys.filter((item) => {
+    if (!item || typeof item !== "object") return false;
     if (item.provider !== "gemini" && item.provider !== "grok") return false;
-    if (!item.key || item.key.length > MAX_KEY_LENGTH) return false;
+    if (typeof item.key !== "string" || !item.key || item.key.length > MAX_KEY_LENGTH) return false;
     counts[item.provider] += 1;
     return counts[item.provider] <= MAX_KEYS_PER_PROVIDER;
   });
@@ -179,7 +189,7 @@ export function useKeyStore() {
     updateStore((state) => {
       if (state.keys.some((k) => k.key === trimmed && k.provider === forProvider)) return state;
       const providerKeys = state.keys.filter((k) => k.provider === forProvider);
-      const id = crypto.randomUUID();
+      const id = safeRandomId();
       const nextKeys = sanitizeKeys([
         ...state.keys,
         { id, key: trimmed, provider: forProvider, status: "unverified", addedAt: Date.now() },
