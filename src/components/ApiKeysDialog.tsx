@@ -280,6 +280,11 @@ export function ApiKeysDialog() {
                                 <span className="h-1.5 w-1.5 rounded-full bg-warning" /> Quota
                               </span>
                             )}
+                            {k.status === "invalid" && (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-destructive">
+                                <span className="h-1.5 w-1.5 rounded-full bg-destructive" /> Invalid
+                              </span>
+                            )}
                             <Button
                               size="icon"
                               variant="ghost"
