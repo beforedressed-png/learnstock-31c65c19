@@ -152,9 +152,14 @@ export function MetadataWorkspace({ settings }: Props) {
     const isAuthError = (msg: string) =>
       /api key|invalid|permission|unauthor|forbidden|401|403/i.test(msg) && !isQuotaError(msg);
 
-    const pickNextKey = (excludeId: string | null) => {
+    // Track key locally to avoid stale closure during async loop
+    const usedIds = new Set<string>();
+    let currentKey = store.activeKey;
+    usedIds.add(currentKey.id);
+
+    const pickNextKey = () => {
       const pool = store.keysFor(store.provider).filter(
-        (k) => k.id !== excludeId && k.status !== "exhausted" && k.status !== "invalid",
+        (k) => !usedIds.has(k.id) && k.status !== "exhausted" && k.status !== "invalid",
       );
       return pool[0] ?? null;
     };
@@ -171,31 +176,30 @@ export function MetadataWorkspace({ settings }: Props) {
         includeDescription: settings.platform === "general",
       };
 
-      let attempts = 0;
       let lastError = "";
       let success = false;
       let stopBatch = false;
 
-      while (attempts < 5 && store.activeKey) {
-        attempts++;
+      while (currentKey) {
         try {
           const raw =
             store.provider === "grok"
-              ? await generateMetadataGrok(item.file, store.activeKey.key, store.model as GrokModel, genOpts)
-              : await generateMetadata(item.file, store.activeKey.key, store.model as GeminiModel, genOpts);
+              ? await generateMetadataGrok(item.file, currentKey.key, store.model as GrokModel, genOpts)
+              : await generateMetadata(item.file, currentKey.key, store.model as GeminiModel, genOpts);
           const meta = applyPostProcessing(raw, settings);
           setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: "done", meta } : i)));
           success = true;
           break;
         } catch (e) {
           lastError = e instanceof Error ? e.message : "Generation failed";
-          const currentId = store.activeKey.id;
           if (isQuotaError(lastError)) {
-            store.setStatus(currentId, "exhausted");
-            const next = pickNextKey(currentId);
+            store.setStatus(currentKey.id, "exhausted");
+            const next = pickNextKey();
             if (next) {
+              usedIds.add(next.id);
               store.setActiveId(next.id);
-              toast.info(`API key limit reached — switching to next key (${next.key.slice(0, 4)}…${next.key.slice(-4)})`);
+              currentKey = next;
+              toast.info(`Quota reached — switched to next key (…${next.key.slice(-4)})`);
               continue;
             }
             toast.error("All API keys exhausted — add a new key");
@@ -203,11 +207,13 @@ export function MetadataWorkspace({ settings }: Props) {
             break;
           }
           if (isAuthError(lastError)) {
-            store.setStatus(currentId, "invalid");
-            const next = pickNextKey(currentId);
+            store.setStatus(currentKey.id, "invalid");
+            const next = pickNextKey();
             if (next) {
+              usedIds.add(next.id);
               store.setActiveId(next.id);
-              toast.warning(`Key rejected — switching to next key`);
+              currentKey = next;
+              toast.warning(`Key rejected — switched to next key`);
               continue;
             }
             toast.error("API key rejected — no other keys available");
