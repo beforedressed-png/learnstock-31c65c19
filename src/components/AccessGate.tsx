@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { Lock, KeyRound, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import logoIcon from "@/assets/logo-icon.png";
 
 const ACCESS_KEY = "learnstockbatch1accesskey343";
@@ -28,6 +25,7 @@ export function clearAccess() {
 export function grantAccessFromKey(key: string): boolean {
   const normalized = key.trim().slice(0, 128);
   if (normalized !== ACCESS_KEY) return false;
+  if (typeof window === "undefined") return false;
   try {
     localStorage.setItem(STORAGE_KEY, ACCESS_KEY);
   } catch {
@@ -37,12 +35,7 @@ export function grantAccessFromKey(key: string): boolean {
 }
 
 export function AccessGate({ invalidKey = false }: { invalidKey?: boolean }) {
-  const [error] = useState(invalidKey ? "Invalid access key" : "");
-  const [shake, setShake] = useState(false);
-
-  useState(() => {
-    if (invalidKey) window.setTimeout(() => setShake(true), 0);
-  });
+  const error = invalidKey ? "Invalid access key" : "";
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-foreground">
@@ -55,11 +48,11 @@ export function AccessGate({ invalidKey = false }: { invalidKey?: boolean }) {
 
       <div
         className={`w-full max-w-md rounded-2xl border border-primary/20 glass p-8 shadow-[var(--shadow-elegant)] ${
-          shake ? "animate-[shake_0.4s_ease-in-out]" : ""
+          invalidKey ? "animate-[shake_0.4s_ease-in-out]" : ""
         }`}
         style={{
           // inline keyframes fallback
-          animationName: shake ? "shake" : undefined,
+          animationName: invalidKey ? "shake" : undefined,
         }}
       >
         <div className="flex flex-col items-center text-center gap-3 mb-6">
@@ -76,25 +69,14 @@ export function AccessGate({ invalidKey = false }: { invalidKey?: boolean }) {
           </div>
         </div>
 
-        <div className="space-y-3">
+        <form action="/app" method="get" className="space-y-3" autoComplete="off">
           <div className="relative">
             <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
             <input
-              ref={inputRef}
               autoFocus
               type="text"
-              name="lsk-access"
+              name="accessKey"
               defaultValue=""
-              onInput={() => {
-                if (error) setError("");
-              }}
-              onPaste={handlePaste}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  submit();
-                }
-              }}
               placeholder="Access key"
               maxLength={128}
               autoComplete="off"
@@ -110,10 +92,13 @@ export function AccessGate({ invalidKey = false }: { invalidKey?: boolean }) {
             />
           </div>
           {error && <p className="text-xs text-destructive">{error}</p>}
-          <Button type="button" onClick={submit} className="w-full">
+          <button
+            type="submit"
+            className="inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
             Unlock Dashboard
-          </Button>
-        </div>
+          </button>
+        </form>
 
         <p className="mt-4 text-[11px] text-muted-foreground text-center">
           Don't have a key? Contact the Learn Stock admin.
