@@ -98,7 +98,7 @@ export function AccessGate({ onUnlock }: { onUnlock: () => void }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  submit(e as unknown as FormEvent);
+                  submit();
                 }
               }}
               placeholder="Access key"
