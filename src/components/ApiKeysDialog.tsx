@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Eye, EyeOff, KeyRound, Plus, Trash2, ExternalLink, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Clipboard, Eye, EyeOff, KeyRound, Trash2, ExternalLink, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { GEMINI_MODELS, verifyApiKey, type GeminiModel } from "@/lib/gemini";
@@ -50,22 +49,28 @@ export function ApiKeysDialog() {
   const [open, setOpen] = useState(false);
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
   const [verifying, setVerifying] = useState<string | null>(null);
-  const inputRefs = useRef<Partial<Record<Provider, HTMLInputElement | null>>>({});
 
   const normalizeKeyInput = (value: string) => value.trim().slice(0, MAX_API_KEY_CHARS);
 
-  const handleAdd = (provider: Provider) => {
+  const addKeyValue = (provider: Provider, rawValue: string) => {
     const meta = PROVIDERS.find((p) => p.id === provider)!;
-    const input = inputRefs.current[provider];
-    const trimmed = normalizeKeyInput(input?.value ?? "");
+    const trimmed = normalizeKeyInput(rawValue);
     if (!trimmed) return;
     if (!trimmed.toLowerCase().startsWith(meta.keyPrefix.toLowerCase())) {
       toast.error(`That doesn't look like a ${meta.label} key (should start with ${meta.keyPrefix}...)`);
       return;
     }
     store.addKey(trimmed, provider);
-    if (input) input.value = "";
     toast.success("Key added");
+  };
+
+  const handleClipboardPaste = async (provider: Provider) => {
+    try {
+      const value = await navigator.clipboard.readText();
+      addKeyValue(provider, value);
+    } catch {
+      toast.error("Clipboard permission was blocked. Click the paste zone and press Ctrl+V / Cmd+V.");
+    }
   };
 
   const handleVerify = async (id: string, key: string, provider: Provider) => {
