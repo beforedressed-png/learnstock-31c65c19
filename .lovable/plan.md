@@ -1,28 +1,23 @@
-I found the likely Vercel-specific problem: the current gate still depends on the React/TanStack route mounting and client-side `useEffect` reading `?accessKey=...`. If Vercel serves `/app?accessKey=...` differently, hydrates late, or the static fallback is misconfigured, the unlock can appear stuck even though it works on Lovable hosting.
+## Fix Vercel freeze
 
-Plan to make this reliable on Vercel:
+The freeze on `learnstock-*.vercel.app/app` is caused by a custom static SPA bootstrap (`index.vercel.html` + `src/vercel-client.tsx` + a manual `vercel.json` rewrite) that boots TanStack Router on the client without the TanStack Start SSR/server entry. That hybrid setup runs a busy render path in production and hangs the page.
 
-1. Replace the `/app` access-key submit flow with a plain browser-safe hash flow
-   - The form will submit to `/app#access=learnstockbatch1accesskey343` instead of `/app?accessKey=...`.
-   - This avoids Vercel query-string routing/caching/fallback issues entirely.
-   - Hash values never hit the server, so Vercel cannot rewrite, cache, or mishandle them.
+### Changes
 
-2. Add an earliest-possible unlock script to `index.vercel.html`
-   - Before React loads, a tiny inline script checks `location.hash` for `access=`.
-   - If the key is correct, it writes the access flag to `localStorage` and removes the hash.
-   - This makes Vercel unlock before TanStack Router/React starts.
+1. **Delete the custom Vercel client entry**
+   - Remove `index.vercel.html`
+   - Remove `src/vercel-client.tsx`
 
-3. Keep the React gate as backup only
-   - `/app` will still check `localStorage` after hydration.
-   - If the user already unlocked once, `/app` opens directly.
-   - If the key is wrong, the gate still shows the error.
+2. **Simplify `vercel.json`**
+   - Remove the rewrite to `index.vercel.html`
+   - Use TanStack Start's standard Vercel output (framework auto-detect, no custom rewrites). The build already emits the proper Vercel handler.
 
-4. Add Vercel static SPA fallback if missing
-   - Add a small `vercel.json` rewrite so `/app` always serves `/index.html` on Vercel.
-   - This prevents direct `/app` visits from failing or serving the wrong file.
+3. **Restore `src/routes/app.tsx` and `src/components/AccessGate.tsx`** to use the normal router (no vercel-only branches), so the same code path runs in preview and on Vercel.
 
-5. Verify locally against the Vercel build path
-   - Check lint for changed files.
-   - Test the exact Vercel-style URL flow: `/app#access=learnstockbatch1accesskey343` opens the dashboard.
+4. **Verify** by rebuilding and reloading the Vercel URL — the `/app` route should hydrate normally instead of freezing.
 
-This is intentionally not another React input fix. It removes Vercel from the unlock path as much as possible.
+### Why this works
+
+TanStack Start is a full-stack framework. Bypassing its server entry with a hand-rolled SPA HTML file means the router boots without the data/SSR shell it expects, which is what causes the production hang you're seeing (and why preview works fine — preview uses the correct entry).
+
+After this, redeploy on Vercel and the freeze is gone.
