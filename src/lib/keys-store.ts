@@ -186,7 +186,7 @@ export function useKeyStore() {
   const removeKey = useCallback((id: string) => {
     updateStore((state) => {
       const nextActive: ActiveMap = { ...state.activeMap };
-      for (const p of Object.keys(next) as Provider[]) {
+      for (const p of Object.keys(nextActive) as Provider[]) {
         if (nextActive[p] === id) nextActive[p] = null;
       }
       return { ...state, keys: state.keys.filter((k) => k.id !== id), activeMap: nextActive };
