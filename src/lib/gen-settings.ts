@@ -1,6 +1,6 @@
 // Generation settings — title length, keyword count, prefix/suffix, negatives,
 // custom prompt and custom keywords. Persisted to localStorage.
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export type ExportPlatform = "adobe" | "shutterstock" | "freepik" | "vecteezy" | "pond5" | "general";
 
@@ -43,7 +43,7 @@ const DEFAULTS: GenSettings = {
 const LS_KEY = "learnstock.gen-settings.v2";
 
 export function useGenSettings() {
-  const hydrated = useRef(false);
+  const [hydrated, setHydrated] = useState(false);
   const [settings, setSettings] = useState<GenSettings>(DEFAULTS);
 
   useEffect(() => {
@@ -53,18 +53,18 @@ export function useGenSettings() {
     } catch {
       /* ignore invalid storage */
     } finally {
-      hydrated.current = true;
+      setHydrated(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!hydrated.current) return;
+    if (!hydrated) return;
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(settings));
     } catch {
       /* quota */
     }
-  }, [settings]);
+  }, [hydrated, settings]);
 
   const update = useCallback(
     <K extends keyof GenSettings>(key: K, value: GenSettings[K]) =>
