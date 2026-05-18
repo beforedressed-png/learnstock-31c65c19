@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
@@ -24,7 +24,19 @@ export const Route = createFileRoute("/app")({
 
 function AppPage() {
   const { settings, update } = useGenSettings();
-  const [unlocked, setUnlocked] = useState(() => hasAccess());
+  const [unlocked, setUnlocked] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  // Check access AFTER hydration to avoid SSR/client mismatch
+  useEffect(() => {
+    if (hasAccess()) setUnlocked(true);
+    setChecked(true);
+  }, []);
+
+  if (!checked) {
+    // Render nothing extra during SSR/first paint — matches server output
+    return <div className="min-h-screen text-foreground" />;
+  }
 
   if (!unlocked) {
     return (
