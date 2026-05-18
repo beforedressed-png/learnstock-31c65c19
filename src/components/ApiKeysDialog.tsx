@@ -276,8 +276,8 @@ export function ApiKeysDialog() {
                               </span>
                             )}
                             {k.status === "exhausted" && (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-warning">
-                                <span className="h-1.5 w-1.5 rounded-full bg-warning" /> Quota
+                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-500">
+                                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> Quota
                               </span>
                             )}
                             {k.status === "invalid" && (
