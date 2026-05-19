@@ -4,7 +4,6 @@ import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
 import { Toaster } from "@/components/ui/sonner";
-import { useGenSettings } from "@/lib/gen-settings";
 
 export const Route = createFileRoute("/app")({
   component: AppPage,
@@ -21,8 +20,6 @@ export const Route = createFileRoute("/app")({
 });
 
 function AppPage() {
-  const { settings, update } = useGenSettings();
-
   return (
     <div className="min-h-screen text-foreground">
       <Toaster />
@@ -51,8 +48,8 @@ function AppPage() {
       </header>
 
       <main className="mx-auto grid max-w-[1400px] gap-4 px-4 py-6 lg:grid-cols-[340px_1fr] lg:gap-6 lg:px-6">
-        <ControlsSidebar settings={settings} update={update} />
-        <MetadataWorkspace settings={settings} />
+        <ControlsSidebar />
+        <MetadataWorkspace />
       </main>
     </div>
   );

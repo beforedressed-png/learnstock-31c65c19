@@ -21,7 +21,7 @@ import { generateMetadata, type GeminiModel, type StockMetadata } from "@/lib/ge
 import { generateMetadataGrok, type GrokModel } from "@/lib/grok";
 import { useKeyStore } from "@/lib/keys-store";
 import { buildAdobeCsv, downloadText } from "@/lib/csv";
-import type { GenSettings } from "@/lib/gen-settings";
+import { getGenSettings, type GenSettings } from "@/lib/gen-settings";
 import { toast } from "sonner";
 
 type Status = "pending" | "running" | "done" | "error";
@@ -78,11 +78,7 @@ function applyPostProcessing(meta: StockMetadata, settings: GenSettings): StockM
   return { ...meta, title, keywords };
 }
 
-interface Props {
-  settings: GenSettings;
-}
-
-export function MetadataWorkspace({ settings }: Props) {
+export function MetadataWorkspace() {
   const store = useKeyStore();
   const [items, setItems] = useState<Item[]>([]);
   const [dragOver, setDragOver] = useState(false);
@@ -146,6 +142,7 @@ export function MetadataWorkspace({ settings }: Props) {
       toast.info("Nothing to generate — all items are done");
       return;
     }
+    const settings = getGenSettings();
     setRunning(true);
     const isQuotaError = (msg: string) =>
       /quota|rate.?limit|exceed|429|resource.?exhausted|too many requests|insufficient/i.test(msg);

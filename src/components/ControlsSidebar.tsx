@@ -19,15 +19,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ApiKeysDialog } from "./ApiKeysDialog";
 import { cn } from "@/lib/utils";
-import type { ExportPlatform, GenSettings } from "@/lib/gen-settings";
+import { useGenSettings, type ExportPlatform } from "@/lib/gen-settings";
 import { GEMINI_MODELS } from "@/lib/gemini";
 import { GROK_MODELS } from "@/lib/grok";
 import { useKeyStore } from "@/lib/keys-store";
-
-interface Props {
-  settings: GenSettings;
-  update: <K extends keyof GenSettings>(k: K, v: GenSettings[K]) => void;
-}
 
 const PLATFORMS: { id: ExportPlatform; label: string; abbr: string; available: boolean }[] = [
   { id: "general", label: "General", abbr: "✦", available: true },
@@ -41,7 +36,8 @@ const PLATFORMS: { id: ExportPlatform; label: string; abbr: string; available: b
 const cardCls =
   "glass rounded-2xl shadow-[var(--shadow-card)]";
 
-export function ControlsSidebar({ settings, update }: Props) {
+export function ControlsSidebar() {
+  const { settings, update } = useGenSettings();
   const [tab, setTab] = useState<"metadata" | "prompt">("metadata");
   const [open, setOpen] = useState(true);
   const keyStore = useKeyStore();
