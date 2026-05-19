@@ -1,47 +1,54 @@
-## Why Vercel now shows NOT_FOUND
+## What's happening
 
-When we removed `vercel.json`, `build:vercel`, `index.vercel.html`, `vite.vercel.config.ts`, and `src/vercel-client.tsx`, Vercel lost its build instructions. The default `vite build` in this project produces a **Cloudflare Worker** bundle (via `@cloudflare/vite-plugin`) — not a static site or a Vercel function. So Vercel deploys, finds no `index.html` and no serverless function at `/`, and returns `NOT_FOUND`.
+The 404 URL is:
 
-This is the fundamental mismatch: **this project is TanStack Start configured for Cloudflare Workers. Vercel is a different runtime.** There is no "just deploy it" path.
+```
+https://learnstock-…vercel.app/~oauth/initiate?provider=google&redirect_uri=…
+```
 
-### Your two real options
+`/~oauth/initiate` is **not** a route in your app. It's a special path that Lovable's edge proxy intercepts and forwards to `oauth.lovable.app` (the OAuth broker). That proxy only runs on Lovable-hosted domains (`*.lovable.app` and Lovable custom domains).
 
-**Option A — Use Lovable hosting (recommended, zero work)**
-Your app already works perfectly at `https://learnstock.lovable.app`. Lovable runs the exact runtime this project is built for. Click Publish and you're done. Custom domain support is available in Project Settings → Domains.
+Vercel has no such proxy, so:
+1. Browser hits `/~oauth/initiate` on `*.vercel.app`.
+2. Vercel SPA fallback serves `index.html`.
+3. TanStack Router has no `/~oauth/initiate` route → renders your 404 page.
 
-**Option B — Make it deploy to Vercel properly**
-This is a real migration, not a config tweak. We'd need to:
-1. Remove `@cloudflare/vite-plugin` from `vite.config.ts`
-2. Add the TanStack Start Vercel preset (`target: 'vercel'` in the Start config)
-3. Re-test all server functions (`/integrations/supabase/auth-middleware`, AI gateway calls, etc.) under Vercel's Node runtime
-4. Move any Cloudflare-specific bindings to Vercel env vars
-5. Add a minimal `vercel.json` only if needed
+This is a hosting-architecture limit, not a code bug. **Managed Google sign-in via Lovable Cloud cannot work on a Vercel domain.** No amount of `vercel.json` rewrites or client code changes will fix it — the OAuth broker simply isn't reachable from there.
 
-Risk: server functions that worked on Cloudflare may behave differently on Vercel (cold starts, env-var injection timing, edge vs node runtime). Expect a debug cycle.
+## Your options (pick one)
 
-### Recommendation
+### Option A — Use the Lovable-hosted site (recommended, zero work)
 
-Go with **Option A**. The app already works on Lovable hosting — same code, same runtime as the preview. Vercel here adds engineering cost without benefit unless you have a specific reason (existing Vercel org, team workflow, etc.).
+Stop using the Vercel URL for the app and use:
 
-### If you want Option B
+- `https://learnstock.lovable.app` (already published)
 
-Reply "do option B" and I'll plan the migration in detail (separate plan, since it's non-trivial). Before I do, tell me **why** you need Vercel specifically — if it's just "I want a public URL", Lovable's Publish does that immediately.
+Google sign-in + admin panel will Just Work there because the `/~oauth/*` proxy exists. You can keep Vercel for nothing, or delete the project on Vercel and remove `vercel.json`, `index.vercel.html`, `vite.vercel.config.ts`, `src/vercel-client.tsx`, and the `build:vercel` script to clean the repo.
 
----
+### Option B — Keep Vercel, switch to "bring-your-own" Google OAuth
 
-### Teaching the concepts (per your request)
+Replace Lovable's managed OAuth with direct Supabase OAuth. This means:
 
-**Why NOT_FOUND on Vercel:** Vercel's edge router looks for either (a) a static file matching the URL in your output directory, or (b) a serverless/edge function registered for the route. With no build output and no functions, every URL is unrouted → `NOT_FOUND` (not 500, not blank — specifically "I have nothing to serve here").
+1. You create a Google Cloud OAuth client (Console → APIs & Services → Credentials).
+2. Add the Supabase callback URL (`https://tpwpgqskhjwctubfiyeh.supabase.co/auth/v1/callback`) to "Authorized redirect URIs" in Google.
+3. Paste the Google **Client ID** and **Client Secret** into Lovable Cloud → Users → Auth Settings → Google provider.
+4. In code, swap `lovable.auth.signInWithOAuth("google", …)` for `supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin + "/app" } })`.
+5. Add `https://learnstock-…vercel.app/app` (and any other Vercel URLs) to Supabase Auth → URL Configuration → Redirect URLs.
 
-**Mental model — "runtime ≠ framework":** TanStack Start is the framework. The *runtime* (where the server code actually runs) is configured separately: Cloudflare Workers, Node on Vercel, Bun, Deno, etc. Each runtime has different APIs, env-var semantics, and build outputs. A build configured for one runtime won't run on another.
+Trade-offs:
+- You need a Google Cloud account and have to manage the OAuth consent screen yourself.
+- Every new Vercel preview URL is different — you'd need to add each one to Supabase redirect URLs, or use Vercel's stable production URL only.
 
-**Warning signs in the future:**
-- A project has a `wrangler.toml`, `@cloudflare/vite-plugin`, or `cloudflare:` imports → it's targeting Workers. Don't drop it on Vercel/Netlify without a target switch.
-- A `vercel.json` with a hand-written `rewrites` rule pointing every URL to `index.html` → someone is forcing an SSR app to behave as a SPA. Usually breaks because the SSR app expects a server entry.
-- "It works in preview but 404s in production" → almost always a runtime/build mismatch, not application code.
+### Option C — Hybrid: Vercel as a redirect to Lovable
 
-**Alternative approaches & trade-offs:**
-- **Lovable hosting:** Zero config, matches dev environment. Trade-off: tied to Lovable.
-- **Vercel with proper Start preset:** Industry-standard host, good DX. Trade-off: real migration work.
-- **Cloudflare Pages (the native target):** This project is already built for Workers — Pages would deploy with minimal changes. Trade-off: less mainstream than Vercel.
-- **Static export + any CDN:** Only works if you remove all server functions. You have auth and AI gateway server fns, so this isn't viable here.
+Replace the Vercel SPA with a tiny `index.html` that does `window.location.href = "https://learnstock.lovable.app"`. The Vercel URL keeps working as a bookmark but the real app lives on Lovable.
+
+## Recommendation
+
+**Option A.** You already have `learnstock.lovable.app` published, OAuth works there, the admin panel works there, and there's no extra config. Vercel adds nothing here besides a second URL that breaks auth.
+
+If you specifically need a `.vercel.app` (or your own custom domain) and want to keep Vercel: go with **Option B** and I'll wire up the code + give you the exact Google Cloud + Supabase steps.
+
+## Which do you want?
+
+Reply with **A**, **B**, or **C** and I'll execute it.
