@@ -65,7 +65,7 @@ function Landing() {
             to="/app"
             className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95 transition-opacity"
           >
-            Get Access <ArrowRight className="h-3.5 w-3.5" />
+            Get Started Free <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </header>
@@ -93,7 +93,7 @@ function Landing() {
               to="/app"
               className="btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
             >
-              Get Access <ArrowRight className="h-4 w-4" />
+              Get Started Free <ArrowRight className="h-4 w-4" />
             </MagneticLink>
             <MagneticAnchor
               href="#how"
@@ -407,7 +407,7 @@ function Landing() {
                 to="/app"
                 className="mt-6 btn-shimmer inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary-glow px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-elegant)] hover:opacity-95"
               >
-                Get Access <ArrowRight className="h-4 w-4" />
+                Get Started Free <ArrowRight className="h-4 w-4" />
               </MagneticLink>
             </div>
           </div>
