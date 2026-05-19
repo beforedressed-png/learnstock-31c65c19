@@ -1,33 +1,24 @@
-The backend is healthy, and I tested the exact URL from your screenshot. The current failure is confirmed:
+## Goal
+Make the dashboard fully public (no sign-in, no approval gate) and rename all "Get Access" CTAs to "Get Started Free".
 
-```text
-Unsupported provider: missing OAuth secret
-```
+## Changes
 
-That means the app code is reaching the auth backend correctly, but Google OAuth is not configured with a Google OAuth client secret for the direct Vercel flow.
+### 1. `src/routes/app.tsx` — remove the auth gate
+- Delete the `useAuth` / `signOut` / `SignInGate` imports.
+- Remove the `auth.loading` spinner branch and the `if (!approved) return <SignInGate />` block.
+- Remove the header pieces that depend on auth: user email, "Admin" link, "Sign out" button. Keep the logo, "Home" link, and the rest of the dashboard UI.
+- Result: anyone visiting `/app` immediately sees the Metadata Workspace.
 
-Plan:
+### 2. `src/routes/index.tsx` — rename CTAs
+- Change all 3 occurrences of `Get Access` → `Get Started Free` (header CTA, hero CTA, and the final section CTA around line 410).
 
-1. Keep the current Vercel-compatible code path
-   - Continue using the direct Google OAuth call from the app.
-   - This is the correct code path for your chosen option: keeping Vercel as the frontend host.
+### 3. Leave alone (no harm, can be removed later if you want)
+- `src/components/SignInGate.tsx`, `src/hooks/use-auth.ts`, `/admin` route, `access_requests` table — unused after this change but harmless. I'll keep them so we don't break anything else and you can delete them in a follow-up if you confirm you don't want admin/approval at all.
 
-2. Complete the required Google OAuth setup
-   - In Google Cloud, create a Web application OAuth client.
-   - Add the backend callback URL shown in Lovable Cloud’s Google sign-in settings as an Authorized redirect URI.
-   - Copy the Google Client ID and Client Secret.
-   - Paste them into Lovable Cloud → Users/Auth Settings → Sign In Methods → Google.
+## What stays the same
+- Landing page design, dashboard UI, image-generation logic, Gemini key flow — all untouched.
+- No database migration needed.
 
-3. Add the Vercel redirect allowlist
-   - In Lovable Cloud → Users/Auth Settings → URL Configuration, add:
-
-```text
-https://learnstock-31c65c19-jx3mf49w5-learn-stock.vercel.app/**
-```
-
-   - If Vercel creates new preview URLs on each deploy, either add each preview URL or test on a stable production/custom domain.
-
-4. Retest the same URL
-   - After saving the Google Client ID/Secret, the same `/auth/v1/authorize?provider=google...` URL should redirect to Google instead of returning the JSON error.
-
-Important: I can’t fix `missing OAuth secret` with React code. That secret must be configured in the auth provider settings. The code is already hitting the correct backend endpoint.
+## Result
+- `/app` works for everyone, no login screen.
+- Every "Get Access" button on the landing page now reads "Get Started Free".

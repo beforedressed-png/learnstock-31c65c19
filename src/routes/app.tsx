@@ -1,12 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, LogOut, Shield } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
-import { SignInGate } from "@/components/SignInGate";
 import { Toaster } from "@/components/ui/sonner";
 import { useGenSettings } from "@/lib/gen-settings";
-import { useAuth, signOut } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/app")({
   component: AppPage,
@@ -24,23 +22,6 @@ export const Route = createFileRoute("/app")({
 
 function AppPage() {
   const { settings, update } = useGenSettings();
-  const auth = useAuth();
-
-  if (auth.loading) {
-    return <div className="min-h-screen text-foreground" />;
-  }
-
-  const approved = auth.request?.status === "approved";
-  if (!approved) {
-    return (
-      <>
-        <Toaster />
-        <SignInGate state={auth} />
-      </>
-    );
-  }
-
-  const isAdmin = auth.request?.is_admin === true;
 
   return (
     <div className="min-h-screen text-foreground">
@@ -59,29 +40,12 @@ function AppPage() {
             </div>
           </Link>
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline text-[11px] text-muted-foreground font-mono">
-              {auth.session?.user.email}
-            </span>
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Shield className="h-3.5 w-3.5" /> Admin
-              </Link>
-            )}
             <Link
               to="/"
               className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Home
             </Link>
-            <button
-              onClick={signOut}
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <LogOut className="h-3.5 w-3.5" /> Sign out
-            </button>
           </div>
         </div>
       </header>
