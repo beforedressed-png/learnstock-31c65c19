@@ -65,9 +65,13 @@ export function useAuth(): AuthState {
 }
 
 export async function signInWithGoogle() {
-  const { lovable } = await import("@/integrations/lovable/index");
-  return lovable.auth.signInWithOAuth("google", {
-    redirect_uri: window.location.origin + "/app",
+  // Use Supabase's standard OAuth flow directly (works on any host,
+  // including Vercel). The Lovable /~oauth proxy is bypassed.
+  return supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.origin + "/app",
+    },
   });
 }
 
