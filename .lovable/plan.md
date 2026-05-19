@@ -1,54 +1,33 @@
-## What's happening
+The backend is healthy, and I tested the exact URL from your screenshot. The current failure is confirmed:
 
-The 404 URL is:
-
-```
-https://learnstock-…vercel.app/~oauth/initiate?provider=google&redirect_uri=…
+```text
+Unsupported provider: missing OAuth secret
 ```
 
-`/~oauth/initiate` is **not** a route in your app. It's a special path that Lovable's edge proxy intercepts and forwards to `oauth.lovable.app` (the OAuth broker). That proxy only runs on Lovable-hosted domains (`*.lovable.app` and Lovable custom domains).
+That means the app code is reaching the auth backend correctly, but Google OAuth is not configured with a Google OAuth client secret for the direct Vercel flow.
 
-Vercel has no such proxy, so:
-1. Browser hits `/~oauth/initiate` on `*.vercel.app`.
-2. Vercel SPA fallback serves `index.html`.
-3. TanStack Router has no `/~oauth/initiate` route → renders your 404 page.
+Plan:
 
-This is a hosting-architecture limit, not a code bug. **Managed Google sign-in via Lovable Cloud cannot work on a Vercel domain.** No amount of `vercel.json` rewrites or client code changes will fix it — the OAuth broker simply isn't reachable from there.
+1. Keep the current Vercel-compatible code path
+   - Continue using the direct Google OAuth call from the app.
+   - This is the correct code path for your chosen option: keeping Vercel as the frontend host.
 
-## Your options (pick one)
+2. Complete the required Google OAuth setup
+   - In Google Cloud, create a Web application OAuth client.
+   - Add the backend callback URL shown in Lovable Cloud’s Google sign-in settings as an Authorized redirect URI.
+   - Copy the Google Client ID and Client Secret.
+   - Paste them into Lovable Cloud → Users/Auth Settings → Sign In Methods → Google.
 
-### Option A — Use the Lovable-hosted site (recommended, zero work)
+3. Add the Vercel redirect allowlist
+   - In Lovable Cloud → Users/Auth Settings → URL Configuration, add:
 
-Stop using the Vercel URL for the app and use:
+```text
+https://learnstock-31c65c19-jx3mf49w5-learn-stock.vercel.app/**
+```
 
-- `https://learnstock.lovable.app` (already published)
+   - If Vercel creates new preview URLs on each deploy, either add each preview URL or test on a stable production/custom domain.
 
-Google sign-in + admin panel will Just Work there because the `/~oauth/*` proxy exists. You can keep Vercel for nothing, or delete the project on Vercel and remove `vercel.json`, `index.vercel.html`, `vite.vercel.config.ts`, `src/vercel-client.tsx`, and the `build:vercel` script to clean the repo.
+4. Retest the same URL
+   - After saving the Google Client ID/Secret, the same `/auth/v1/authorize?provider=google...` URL should redirect to Google instead of returning the JSON error.
 
-### Option B — Keep Vercel, switch to "bring-your-own" Google OAuth
-
-Replace Lovable's managed OAuth with direct Supabase OAuth. This means:
-
-1. You create a Google Cloud OAuth client (Console → APIs & Services → Credentials).
-2. Add the Supabase callback URL (`https://tpwpgqskhjwctubfiyeh.supabase.co/auth/v1/callback`) to "Authorized redirect URIs" in Google.
-3. Paste the Google **Client ID** and **Client Secret** into Lovable Cloud → Users → Auth Settings → Google provider.
-4. In code, swap `lovable.auth.signInWithOAuth("google", …)` for `supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin + "/app" } })`.
-5. Add `https://learnstock-…vercel.app/app` (and any other Vercel URLs) to Supabase Auth → URL Configuration → Redirect URLs.
-
-Trade-offs:
-- You need a Google Cloud account and have to manage the OAuth consent screen yourself.
-- Every new Vercel preview URL is different — you'd need to add each one to Supabase redirect URLs, or use Vercel's stable production URL only.
-
-### Option C — Hybrid: Vercel as a redirect to Lovable
-
-Replace the Vercel SPA with a tiny `index.html` that does `window.location.href = "https://learnstock.lovable.app"`. The Vercel URL keeps working as a bookmark but the real app lives on Lovable.
-
-## Recommendation
-
-**Option A.** You already have `learnstock.lovable.app` published, OAuth works there, the admin panel works there, and there's no extra config. Vercel adds nothing here besides a second URL that breaks auth.
-
-If you specifically need a `.vercel.app` (or your own custom domain) and want to keep Vercel: go with **Option B** and I'll wire up the code + give you the exact Google Cloud + Supabase steps.
-
-## Which do you want?
-
-Reply with **A**, **B**, or **C** and I'll execute it.
+Important: I can’t fix `missing OAuth secret` with React code. That secret must be configured in the auth provider settings. The code is already hitting the correct backend endpoint.
