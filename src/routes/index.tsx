@@ -144,7 +144,7 @@ function Landing() {
                 key={s.l}
                 data-reveal
                 data-reveal-delay={String((i % 4) + 1)}
-                className="glass lift tilt-card rounded-xl px-4 py-5 text-center"
+                className="glass tilt-card rounded-xl px-4 py-5 text-center transition-colors duration-300 hover:bg-white/[0.03]"
               >
                 <div className="text-xl font-bold text-glow md:text-2xl">{s.v}</div>
                 <div className="mt-1 text-[11px] text-muted-foreground md:text-xs">{s.l}</div>
