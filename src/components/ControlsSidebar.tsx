@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronDown,
   Lightbulb,
@@ -102,11 +102,12 @@ export function ControlsSidebar() {
             </p>
             <Textarea
               value={settings.customPrompt}
-              onChange={(e) => update("customPrompt", e.target.value)}
+              onValueChange={(v) => update("customPrompt", v)}
               disabled={!settings.customPromptEnabled}
               placeholder="e.g. Focus on minimalist composition, mention lighting style, prefer cinematic mood…"
               rows={5}
               className="resize-none bg-background/40 text-xs leading-relaxed"
+              as={DebouncedTextarea}
             />
           </div>
 
@@ -126,11 +127,12 @@ export function ControlsSidebar() {
             </p>
             <Textarea
               value={settings.customKeywords}
-              onChange={(e) => update("customKeywords", e.target.value)}
+              onValueChange={(v) => update("customKeywords", v)}
               disabled={!settings.customKeywordsEnabled}
               placeholder="ai generated, concept art, isolated"
               rows={3}
               className="resize-none bg-background/40 text-xs leading-relaxed"
+              as={DebouncedTextarea}
             />
           </div>
 
