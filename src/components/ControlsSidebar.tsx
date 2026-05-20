@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronDown,
   Lightbulb,
@@ -100,9 +100,9 @@ export function ControlsSidebar() {
             <p className="mb-2 text-[11px] text-muted-foreground">
               Extra instructions for the AI when generating title and keywords.
             </p>
-            <Textarea
+            <DebouncedTextarea
               value={settings.customPrompt}
-              onChange={(e) => update("customPrompt", e.target.value)}
+              onValueChange={(v) => update("customPrompt", v)}
               disabled={!settings.customPromptEnabled}
               placeholder="e.g. Focus on minimalist composition, mention lighting style, prefer cinematic mood…"
               rows={5}
@@ -124,9 +124,9 @@ export function ControlsSidebar() {
             <p className="mb-2 text-[11px] text-muted-foreground">
               Always include these keywords (placed first, deduped).
             </p>
-            <Textarea
+            <DebouncedTextarea
               value={settings.customKeywords}
-              onChange={(e) => update("customKeywords", e.target.value)}
+              onValueChange={(v) => update("customKeywords", v)}
               disabled={!settings.customKeywordsEnabled}
               placeholder="ai generated, concept art, isolated"
               rows={3}
@@ -338,6 +338,56 @@ function SliderField({
   );
 }
 
+function DebouncedInput({
+  value,
+  onValueChange,
+  delay = 250,
+  ...props
+}: Omit<React.ComponentProps<typeof Input>, "value" | "onChange"> & {
+  value: string;
+  onValueChange: (value: string) => void;
+  delay?: number;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (draft === value) return;
+    const id = window.setTimeout(() => onValueChange(draft), delay);
+    return () => window.clearTimeout(id);
+  }, [delay, draft, onValueChange, value]);
+
+  return <Input {...props} value={draft} onChange={(e) => setDraft(e.target.value)} />;
+}
+
+function DebouncedTextarea({
+  value,
+  onValueChange,
+  delay = 250,
+  ...props
+}: Omit<React.ComponentProps<typeof Textarea>, "value" | "onChange"> & {
+  value: string;
+  onValueChange: (value: string) => void;
+  delay?: number;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (draft === value) return;
+    const id = window.setTimeout(() => onValueChange(draft), delay);
+    return () => window.clearTimeout(id);
+  }, [delay, draft, onValueChange, value]);
+
+  return <Textarea {...props} value={draft} onChange={(e) => setDraft(e.target.value)} />;
+}
+
 function ToggleRow({
   icon,
   label,
@@ -377,9 +427,9 @@ function ToggleRow({
         <Switch checked={enabled} onCheckedChange={onToggle} />
       </div>
       {enabled && (
-        <Input
+        <DebouncedInput
           value={value}
-          onChange={(e) => onChangeValue(e.target.value)}
+          onValueChange={onChangeValue}
           placeholder={placeholder}
           className="mt-2 h-8 bg-background/40 text-xs"
         />
