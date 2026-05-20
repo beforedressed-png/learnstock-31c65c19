@@ -338,6 +338,56 @@ function SliderField({
   );
 }
 
+function DebouncedInput({
+  value,
+  onValueChange,
+  delay = 250,
+  ...props
+}: Omit<React.ComponentProps<typeof Input>, "value" | "onChange"> & {
+  value: string;
+  onValueChange: (value: string) => void;
+  delay?: number;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (draft === value) return;
+    const id = window.setTimeout(() => onValueChange(draft), delay);
+    return () => window.clearTimeout(id);
+  }, [delay, draft, onValueChange, value]);
+
+  return <Input {...props} value={draft} onChange={(e) => setDraft(e.target.value)} />;
+}
+
+function DebouncedTextarea({
+  value,
+  onValueChange,
+  delay = 250,
+  ...props
+}: Omit<React.ComponentProps<typeof Textarea>, "value" | "onChange"> & {
+  value: string;
+  onValueChange: (value: string) => void;
+  delay?: number;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (draft === value) return;
+    const id = window.setTimeout(() => onValueChange(draft), delay);
+    return () => window.clearTimeout(id);
+  }, [delay, draft, onValueChange, value]);
+
+  return <Textarea {...props} value={draft} onChange={(e) => setDraft(e.target.value)} />;
+}
+
 function ToggleRow({
   icon,
   label,
@@ -377,9 +427,9 @@ function ToggleRow({
         <Switch checked={enabled} onCheckedChange={onToggle} />
       </div>
       {enabled && (
-        <Input
+        <DebouncedInput
           value={value}
-          onChange={(e) => onChangeValue(e.target.value)}
+          onValueChange={onChangeValue}
           placeholder={placeholder}
           className="mt-2 h-8 bg-background/40 text-xs"
         />
