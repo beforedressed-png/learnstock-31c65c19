@@ -100,14 +100,13 @@ export function ControlsSidebar() {
             <p className="mb-2 text-[11px] text-muted-foreground">
               Extra instructions for the AI when generating title and keywords.
             </p>
-            <Textarea
+            <DebouncedTextarea
               value={settings.customPrompt}
               onValueChange={(v) => update("customPrompt", v)}
               disabled={!settings.customPromptEnabled}
               placeholder="e.g. Focus on minimalist composition, mention lighting style, prefer cinematic mood…"
               rows={5}
               className="resize-none bg-background/40 text-xs leading-relaxed"
-              as={DebouncedTextarea}
             />
           </div>
 
@@ -125,14 +124,13 @@ export function ControlsSidebar() {
             <p className="mb-2 text-[11px] text-muted-foreground">
               Always include these keywords (placed first, deduped).
             </p>
-            <Textarea
+            <DebouncedTextarea
               value={settings.customKeywords}
               onValueChange={(v) => update("customKeywords", v)}
               disabled={!settings.customKeywordsEnabled}
               placeholder="ai generated, concept art, isolated"
               rows={3}
               className="resize-none bg-background/40 text-xs leading-relaxed"
-              as={DebouncedTextarea}
             />
           </div>
 
