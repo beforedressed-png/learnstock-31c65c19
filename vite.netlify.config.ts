@@ -19,9 +19,6 @@ export default defineConfig({
     sourcemap: false,
     minify: "esbuild",
     cssCodeSplit: true,
-    rollupOptions: {
-      input: "index.netlify.html",
-    },
   },
   plugins: [
     tanstackRouter({
