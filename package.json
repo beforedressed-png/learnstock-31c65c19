@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:vercel": "vite build --config vite.vercel.config.ts && mv dist/vercel/index.vercel.html dist/vercel/index.html",
+    "build:netlify": "vite build --config vite.netlify.config.ts && mv dist/netlify/index.netlify.html dist/netlify/index.html",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
