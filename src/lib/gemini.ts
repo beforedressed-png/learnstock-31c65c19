@@ -94,11 +94,11 @@ function buildPrompt(opts: GenerateOptions): string {
 
 # VISUAL STYLE DETECTION (MANDATORY — DO THIS FIRST)
 Before writing anything, identify the rendering style of the image and you MUST reflect it in BOTH the title and the top keywords. Never omit the style.
-- 3D render / 3D icon / 3D illustration / 3D background / 3D character / clay render / claymation / plasticine: title MUST contain "3D" (uppercase). Top keywords MUST include "3d", "render", "rendering" and the style-specific word ("icon", "illustration", "character", "background", "clay" etc.).
+- 3D render / 3D icon / 3D illustration / 3D background / 3D character / clay render / claymation / plasticine: title MUST contain "3D" (uppercase). Top keywords MUST include "3d", "render", "rendering" and the style-specific word ("icon", "illustration", "character", "background", "clay" etc.). ONLY classify as 3D if there is actual 3D depth, claymation, or computer-generated 3D realism.
 - Isometric: include the word "isometric" in title and top keywords.
 - Low poly: include "low" and "poly" as top keywords; title may say "low poly".
 - Flat / line / outline / minimalist / cartoon / watercolor / oil painting / pixel art / sketch / vector / photo / photorealistic / AI generated: name the style explicitly in the title and put it in the top 10 keywords.
-Detection cues for 3D: soft global shading, cast shadows, depth/perspective, glossy or matte plastic/clay material, rounded volumetric forms, ambient occlusion, studio lighting on rendered objects. When in doubt between flat vs 3D, choose 3D if any shading/volume/shadow is present.
+- ACCURACY WARNING: 2D vector graphics, flat icons, cartoon drawings, line art, or simple illustrations must NEVER be classified as "3D". Do not mistake simple gradients, rounded corners, or flat cartoon strokes for 3D volume.
 
 # TITLE
 - Marketable English phrase. Make it descriptive and detailed, aiming for around 80 to 100 characters (limit is ${titleCap} characters).

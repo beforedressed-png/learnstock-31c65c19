@@ -55,9 +55,9 @@ function buildPrompt(opts: GenerateOptions): string {
 
 # VISUAL STYLE DETECTION (MANDATORY — DO FIRST)
 Identify the rendering style and reflect it in BOTH title and top keywords. Never omit it.
-- 3D render / 3D icon / 3D illustration / 3D background / 3D character / clay: title MUST contain "3D"; top keywords MUST include "3d", "render", "rendering" plus the style word ("icon","illustration","character","background","clay").
+- 3D render / 3D icon / 3D illustration / 3D background / 3D character / clay: title MUST contain "3D"; top keywords MUST include "3d", "render", "rendering" plus the style word ("icon","illustration","character","background","clay"). ONLY classify as 3D if there is actual 3D depth or realism.
 - isometric, low poly, flat, line, outline, minimalist, cartoon, watercolor, oil, pixel, sketch, vector, photo, photorealistic, AI generated: name the style in title AND top 10 keywords.
-3D cues: shading, cast shadows, depth, glossy/matte plastic or clay material, volumetric rounded forms, ambient occlusion. If any volume/shadow is present, treat as 3D.
+- ACCURACY WARNING: 2D vector graphics, flat icons, cartoon drawings, line art, or simple illustrations must NEVER be classified as "3D". Do not mistake simple gradients, rounded corners, or flat cartoon strokes for 3D volume.
 
 # TITLE
 - Marketable English phrase. Make it descriptive and detailed, aiming for around 80 to 100 characters (limit is ${titleCap} chars).
