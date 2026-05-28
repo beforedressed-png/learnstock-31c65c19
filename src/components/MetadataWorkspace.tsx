@@ -37,7 +37,7 @@ interface Item {
 }
 
 const ACCEPT = "image/jpeg,image/png,image/webp";
-const MAX_BYTES = 10 * 1024 * 1024;
+const MAX_BYTES = 30 * 1024 * 1024;
 const MAX_FILES = 100;
 
 function applyPostProcessing(meta: StockMetadata, settings: GenSettings): StockMetadata {
@@ -172,7 +172,7 @@ export function MetadataWorkspace() {
     for (const f of Array.from(files)) {
       if (!f.type.startsWith("image/")) continue;
       if (f.size > MAX_BYTES) {
-        toast.error(`${f.name} is larger than 10 MB — skipped`);
+        toast.error(`${f.name} is larger than 30 MB — skipped`);
         continue;
       }
       accepted.push({
@@ -384,7 +384,7 @@ export function MetadataWorkspace() {
             <span className="font-semibold text-primary underline underline-offset-2">browse</span>
           </p>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            Supports image · JPG, PNG &amp; WebP up to 10 MB · Max {MAX_FILES} files
+            Supports image · up to 30 MB · Max {MAX_FILES} files
           </p>
         </div>
       </section>

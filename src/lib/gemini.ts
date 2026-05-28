@@ -101,9 +101,8 @@ Before writing anything, identify the rendering style of the image and you MUST 
 Detection cues for 3D: soft global shading, cast shadows, depth/perspective, glossy or matte plastic/clay material, rounded volumetric forms, ambient occlusion, studio lighting on rendered objects. When in doubt between flat vs 3D, choose 3D if any shading/volume/shadow is present.
 
 # TITLE
-- Short, marketable English phrase. NOT a formal sentence. NOT a long descriptive caption.
-- ${titleCap} CHARACTERS OR FEWER (hard limit). Adobe recommends 70 or fewer — stay well under 70 whenever possible.
-- Preferred shape: "<Subject> <short qualifier>, <secondary phrase or synonyms>". Use a comma to add a second short clause instead of long "showing/with/of" sentences.
+- Marketable English phrase. Make it descriptive and detailed, aiming for around 80 to 100 characters (limit is ${titleCap} characters).
+- Preferred shape: "<Subject> <short qualifier>, <secondary phrase or synonyms>". Use a comma to add a second clause to expand detail instead of long "showing/with/of" sentences.
 - Avoid weak filler verbs and constructions: "showing", "depicting", "featuring", "that shows", "which represents", "image of", "picture of", "illustration of", "a set of".
 - Use natural buyer-search phrasing — words a designer would type into search (e.g. "icons set", "flat icons", "line icons", "vector illustration", "seamless pattern", "isolated on white", "concept", "background").
 - Describe subject + key qualifier + style/use. Add location for travel/nature, species for animals, cuisine names for food, and "AI generated" only if clearly AI.

@@ -60,7 +60,7 @@ Identify the rendering style and reflect it in BOTH title and top keywords. Neve
 3D cues: shading, cast shadows, depth, glossy/matte plastic or clay material, volumetric rounded forms, ambient occlusion. If any volume/shadow is present, treat as 3D.
 
 # TITLE
-- Marketable English phrase, ${titleCap} chars or fewer (aim under 70).
+- Marketable English phrase. Make it descriptive and detailed, aiming for around 80 to 100 characters (limit is ${titleCap} chars).
 - Subject + short qualifier, comma, secondary clause. No "image of", "showing", "depicting".
 - No brands, IPs, real people, artists, quotes, emojis, hashtags or trailing period.${negTitleLine}
 
