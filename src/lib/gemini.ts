@@ -65,6 +65,10 @@ const DESCRIPTION_CAP = 150;
 // https://helpx.adobe.com/stock/contributor/help/titles-and-keyword.html
 function buildPrompt(opts: GenerateOptions): string {
   const titleCap = Math.max(30, Math.min(200, Math.round(opts.titleLength)));
+  const targetMin = Math.max(25, Math.round(titleCap * 0.8));
+  const targetMax = titleCap;
+  const wordMin = Math.max(5, Math.round(titleCap / 8));
+  const wordMax = Math.max(8, Math.round(titleCap / 6));
   const kwTarget = Math.max(10, Math.min(49, Math.round(opts.keywordCount)));
   const kwMin = Math.max(10, kwTarget - 5);
   const kwMax = Math.min(49, kwTarget);
@@ -101,7 +105,7 @@ Before writing anything, identify the rendering style of the image and you MUST 
 - ACCURACY WARNING: 2D vector graphics, flat icons, cartoon drawings, line art, or simple illustrations must NEVER be classified as "3D". Do not mistake simple gradients, rounded corners, or flat cartoon strokes for 3D volume.
 
 # TITLE
-- Marketable English phrase. Make it descriptive and detailed, aiming for around 80 to 100 characters (limit is ${titleCap} characters).
+- Marketable English phrase. Make it highly descriptive, detailed and keyword-rich. Aim for about ${wordMin} to ${wordMax} words (around ${targetMin} to ${targetMax} characters, limit is ${titleCap} characters). Use multiple clauses separated by commas to describe different aspects of the subject to ensure it is long and descriptive.
 - Preferred shape: "<Subject> <short qualifier>, <secondary phrase or synonyms>". Use a comma to add a second clause to expand detail instead of long "showing/with/of" sentences.
 - Avoid weak filler verbs and constructions: "showing", "depicting", "featuring", "that shows", "which represents", "image of", "picture of", "illustration of", "a set of".
 - Use natural buyer-search phrasing — words a designer would type into search (e.g. "icons set", "flat icons", "line icons", "vector illustration", "seamless pattern", "isolated on white", "concept", "background").

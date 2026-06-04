@@ -32,6 +32,10 @@ async function fileToDataUrl(file: File): Promise<string> {
 // Reuse the same prompt as Gemini for consistency.
 function buildPrompt(opts: GenerateOptions): string {
   const titleCap = Math.max(30, Math.min(200, Math.round(opts.titleLength)));
+  const targetMin = Math.max(25, Math.round(titleCap * 0.8));
+  const targetMax = titleCap;
+  const wordMin = Math.max(5, Math.round(titleCap / 8));
+  const wordMax = Math.max(8, Math.round(titleCap / 6));
   const kwTarget = Math.max(10, Math.min(49, Math.round(opts.keywordCount)));
   const kwMin = Math.max(10, kwTarget - 5);
   const kwMax = Math.min(49, kwTarget);
@@ -60,7 +64,7 @@ Identify the rendering style and reflect it in BOTH title and top keywords. Neve
 - ACCURACY WARNING: 2D vector graphics, flat icons, cartoon drawings, line art, or simple illustrations must NEVER be classified as "3D". Do not mistake simple gradients, rounded corners, or flat cartoon strokes for 3D volume.
 
 # TITLE
-- Marketable English phrase. Make it descriptive and detailed, aiming for around 80 to 100 characters (limit is ${titleCap} chars).
+- Marketable English phrase. Make it highly descriptive, detailed and keyword-rich. Aim for about ${wordMin} to ${wordMax} words (around ${targetMin} to ${targetMax} chars, limit is ${titleCap} chars). Use multiple clauses separated by commas to expand details.
 - Subject + short qualifier, comma, secondary clause. No "image of", "showing", "depicting".
 - No brands, IPs, real people, artists, quotes, emojis, hashtags or trailing period.${negTitleLine}
 

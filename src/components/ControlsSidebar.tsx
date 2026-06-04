@@ -213,7 +213,7 @@ export function ControlsSidebar() {
                 max={200}
                 step={5}
                 onChange={(v) => update("titleLength", v)}
-                hint={settings.titleLength > 70 ? "Adobe recommends ≤ 70" : undefined}
+                hint={settings.titleLength > 130 ? "Adobe recommends ≤ 130 (max 200)" : undefined}
               />
 
               <div className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2.5 text-xs">
