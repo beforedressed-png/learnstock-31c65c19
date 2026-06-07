@@ -12,7 +12,7 @@ type ProviderMeta = {
   id: Provider;
   label: string;
   keyHint: string;
-  keyPrefix: string;
+  keyPrefixes: string[];
   getKeyUrl: string;
   models: { id: string; label: string; note: string }[];
   verify: (key: string) => Promise<boolean>;
@@ -26,7 +26,7 @@ const PROVIDERS: ProviderMeta[] = [
     id: "gemini",
     label: "Google Gemini",
     keyHint: "Enter Gemini API key",
-    keyPrefix: "AIza",
+    keyPrefixes: ["AIza", "AQ."],
     getKeyUrl: "https://aistudio.google.com/apikey",
     models: GEMINI_MODELS,
     verify: verifyApiKey,
@@ -36,7 +36,7 @@ const PROVIDERS: ProviderMeta[] = [
     id: "grok",
     label: "xAI Grok",
     keyHint: "Enter Grok (xAI) API key",
-    keyPrefix: "xai-",
+    keyPrefixes: ["xai-"],
     getKeyUrl: "https://console.x.ai/",
     models: GROK_MODELS,
     verify: verifyGrokKey,
@@ -56,8 +56,14 @@ export function ApiKeysDialog() {
     const meta = PROVIDERS.find((p) => p.id === provider)!;
     const trimmed = normalizeKeyInput(rawValue);
     if (!trimmed) return;
-    if (!trimmed.toLowerCase().startsWith(meta.keyPrefix.toLowerCase())) {
-      toast.error(`That doesn't look like a ${meta.label} key (should start with ${meta.keyPrefix}...)`);
+    
+    const isValid = meta.keyPrefixes.some((prefix) => 
+      trimmed.toLowerCase().startsWith(prefix.toLowerCase())
+    );
+
+    if (!isValid) {
+      const prefixesLabel = meta.keyPrefixes.join(" or ");
+      toast.error(`That doesn't look like a ${meta.label} key (should start with ${prefixesLabel}...)`);
       return;
     }
     store.addKey(trimmed, provider);
