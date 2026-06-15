@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Sparkles, Lock, Key } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import { Logo } from "@/components/Logo";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
 import { Toaster } from "@/components/ui/sonner";
@@ -101,7 +101,7 @@ function AppPage() {
         <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-5 py-3 lg:px-8">
           <Link to="/" className="flex items-center gap-3 group">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)] glow-ring transition-transform group-hover:scale-105">
-              <img src={logoIcon} alt="" className="h-5 w-5" />
+              <Logo className="h-5 w-5" />
             </span>
             <div className="leading-tight">
               <h1 className="text-[15px] font-bold tracking-tight text-glow">Learn Stock</h1>

@@ -16,7 +16,7 @@ import {
   Star,
   Globe,
 } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import { Logo } from "@/components/Logo";
 import { useReveal } from "@/hooks/use-reveal";
 import { useMagnetic } from "@/hooks/use-magnetic";
 import { useTilt } from "@/hooks/use-tilt";
@@ -37,7 +37,7 @@ function Landing() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
           <Link to="/" className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)]">
-              <img src={logoIcon} alt="Learn Stock" className="h-5 w-5" />
+              <Logo className="h-6 w-6 drop-shadow-md" />
             </span>
             <span className="text-sm font-bold tracking-tight">Learn Stock</span>
           </Link>
@@ -364,7 +364,7 @@ function Landing() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-xs text-muted-foreground md:flex-row lg:px-8">
           <div className="flex items-center gap-2.5">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)]">
-              <img src={logoIcon} alt="" className="h-4 w-4" />
+              <Logo className="h-5 w-5" />
             </span>
             <span className="font-bold text-foreground">Learn Stock</span>
           </div>

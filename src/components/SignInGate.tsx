@@ -1,6 +1,6 @@
 import { Lock, LogOut, Clock, XCircle, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import logoIcon from "@/assets/logo-icon.png";
+import { Logo } from "@/components/Logo";
 import { signInWithGoogle, signOut, type AuthState } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
@@ -39,7 +39,7 @@ function Header({ icon, title, subtitle }: { icon: React.ReactNode; title: strin
   return (
     <div className="flex flex-col items-center text-center gap-3 mb-6">
       <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)] glow-ring">
-        <img src={logoIcon} alt="" className="h-7 w-7" />
+        <Logo className="h-7 w-7" />
       </span>
       <div>
         <h1 className="text-xl font-bold tracking-tight text-glow flex items-center justify-center gap-2">
