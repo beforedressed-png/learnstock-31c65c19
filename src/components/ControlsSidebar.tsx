@@ -33,8 +33,7 @@ const PLATFORMS: { id: ExportPlatform; label: string; abbr: string; available: b
   { id: "pond5", label: "Pond5", abbr: "P5", available: false },
 ];
 
-const cardCls =
-  "glass rounded-2xl shadow-[var(--shadow-card)]";
+const cardCls = "rounded-xl border border-border/80 bg-card p-4 shadow-sm";
 
 export function ControlsSidebar() {
   const { settings, update } = useGenSettings();
@@ -49,14 +48,14 @@ export function ControlsSidebar() {
   return (
     <aside className="space-y-4">
       {/* Controls card */}
-      <section className={cn(cardCls, "p-4")}>
-        <header className="mb-3 flex items-center justify-between gap-3">
+      <section className={cardCls}>
+        <header className="mb-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
               <SlidersHorizontal className="h-4 w-4" />
             </div>
             <div className="leading-tight">
-              <h2 className="text-sm font-bold">Controls</h2>
+              <h2 className="text-sm font-bold text-foreground">Controls</h2>
               <p className="text-[11px] text-muted-foreground">{activeModelLabel}</p>
             </div>
           </div>
@@ -64,17 +63,17 @@ export function ControlsSidebar() {
         </header>
 
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-          <TabsList className="grid w-full grid-cols-2 rounded-xl bg-muted/60 p-1">
+          <TabsList className="grid w-full grid-cols-2 rounded-lg bg-muted/60 p-1">
             <TabsTrigger
               value="metadata"
-              className="gap-1.5 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary-glow data-[state=active]:text-primary-foreground data-[state=active]:shadow-[var(--shadow-elegant)]"
+              className="gap-1.5 rounded-md text-xs font-semibold data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
             >
               <Sparkles className="h-3.5 w-3.5" />
               Metadata
             </TabsTrigger>
             <TabsTrigger
               value="prompt"
-              className="gap-1.5 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary-glow data-[state=active]:text-primary-foreground data-[state=active]:shadow-[var(--shadow-elegant)]"
+              className="gap-1.5 rounded-md text-xs font-semibold data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
             >
               <TextCursorInput className="h-3.5 w-3.5" />
               Prompt
@@ -85,11 +84,11 @@ export function ControlsSidebar() {
 
       {/* Prompt tab — custom AI prompt + custom always-include keywords */}
       {tab === "prompt" && (
-        <section className={cn(cardCls, "p-4 space-y-4")}>
+        <section className={cn(cardCls, "space-y-4")}>
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-semibold">
-                <Wand2 className="h-3.5 w-3.5 text-primary" />
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                <Wand2 className="h-3.5 w-3.5 text-foreground" />
                 Custom AI Prompt
               </span>
               <Switch
@@ -106,14 +105,14 @@ export function ControlsSidebar() {
               disabled={!settings.customPromptEnabled}
               placeholder="e.g. Focus on minimalist composition, mention lighting style, prefer cinematic mood…"
               rows={5}
-              className="resize-none bg-background/40 text-xs leading-relaxed"
+              className="resize-none rounded-lg border-border/80 bg-background text-xs leading-relaxed"
             />
           </div>
 
           <div className="border-t border-border/60 pt-4">
             <div className="mb-2 flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-semibold">
-                <Tag className="h-3.5 w-3.5 text-primary" />
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                <Tag className="h-3.5 w-3.5 text-foreground" />
                 Custom Keywords
               </span>
               <Switch
@@ -130,13 +129,13 @@ export function ControlsSidebar() {
               disabled={!settings.customKeywordsEnabled}
               placeholder="ai generated, concept art, isolated"
               rows={3}
-              className="resize-none bg-background/40 text-xs leading-relaxed"
+              className="resize-none rounded-lg border-border/80 bg-background text-xs leading-relaxed"
             />
           </div>
 
-          <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-[11px] text-muted-foreground">
-            <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-            <span>Adobe Stock guidelines stay enforced. Custom prompt only adds focus, it can't break category or JSON schema.</span>
+          <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-muted/30 p-3 text-[11px] text-muted-foreground">
+            <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            <span>Adobe Stock guidelines stay enforced. Custom prompt only adds focus without breaking JSON schema.</span>
           </div>
         </section>
       )}
@@ -146,13 +145,13 @@ export function ControlsSidebar() {
         <section className={cardCls}>
           <button
             onClick={() => setOpen((o) => !o)}
-            className="flex w-full items-center justify-between gap-3 px-4 py-3"
+            className="flex w-full items-center justify-between gap-3 text-left"
           >
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/15 text-primary">
-                <SlidersHorizontal className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                <SlidersHorizontal className="h-3 w-3" />
               </div>
-              <span className="text-sm font-semibold">Metadata Settings</span>
+              <span className="text-xs font-bold text-foreground">Metadata Settings</span>
             </div>
             <ChevronDown
               className={cn(
@@ -163,7 +162,7 @@ export function ControlsSidebar() {
           </button>
 
           {open && (
-            <div className="space-y-5 border-t border-border/60 p-4">
+            <div className="mt-4 space-y-4 border-t border-border/60 pt-4">
               {/* Export platform */}
               <div>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -178,26 +177,26 @@ export function ControlsSidebar() {
                         disabled={!p.available}
                         onClick={() => p.available && update("platform", p.id)}
                         className={cn(
-                          "group relative flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-xs transition-all",
+                          "group relative flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-xs transition-all",
                           active
-                            ? "border-transparent bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)]"
-                            : "border-border bg-background/30 hover:border-primary/40 hover:bg-primary/10",
-                          !p.available && "cursor-not-allowed opacity-45",
+                            ? "border-primary/60 bg-primary/10 text-primary font-semibold"
+                            : "border-border/80 bg-background hover:border-primary/40 hover:bg-muted",
+                          !p.available && "cursor-not-allowed opacity-40",
                         )}
                         title={p.available ? "" : "Coming soon"}
                       >
                         <span
                           className={cn(
-                            "flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold",
+                            "flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold",
                             active
-                              ? "bg-background/20 text-primary-foreground"
+                              ? "bg-primary text-primary-foreground"
                               : "bg-muted text-muted-foreground",
                           )}
                         >
                           {p.abbr}
                         </span>
-                        <span className="flex-1 truncate font-medium">{p.label}</span>
-                        {active && <span className="h-1.5 w-1.5 rounded-full bg-success" />}
+                        <span className="flex-1 truncate text-xs">{p.label}</span>
+                        {active && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
                       </button>
                     );
                   })}
@@ -216,12 +215,12 @@ export function ControlsSidebar() {
                 hint={settings.titleLength > 130 ? "Adobe recommends ≤ 130 (max 200)" : undefined}
               />
 
-              <div className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2.5 text-xs">
+              <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-xs">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Type className="h-3.5 w-3.5" />
                   <span className="font-semibold uppercase tracking-wider text-[10px]">Description</span>
                 </div>
-                <span className="text-muted-foreground">150 chars (fixed)</span>
+                <span className="text-[11px] text-muted-foreground">150 chars (fixed)</span>
               </div>
 
               <SliderField
@@ -277,8 +276,8 @@ export function ControlsSidebar() {
                 />
               </div>
 
-              <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-[11px] text-muted-foreground">
-                <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+              <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-muted/30 p-3 text-[11px] text-muted-foreground">
+                <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 <span>
                   Use the Prompt tab to add a custom AI instruction or always-include keywords.
                 </span>
@@ -320,8 +319,8 @@ function SliderField({
           {label}
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-sm font-bold text-primary tabular-nums text-glow">{value}</span>
-          <span className="text-[11px] text-muted-foreground">{unit}</span>
+          <span className="text-sm font-bold text-foreground tabular-nums">{value}</span>
+          <span className="text-[10px] text-muted-foreground">{unit}</span>
         </div>
       </div>
       <Slider
@@ -410,8 +409,8 @@ function ToggleRow({
   return (
     <div
       className={cn(
-        "rounded-lg border bg-background/30 px-3 py-2 transition-colors",
-        enabled ? "border-primary/40" : "border-border",
+        "rounded-lg border bg-background/50 px-3 py-2 transition-colors",
+        enabled ? "border-foreground/20" : "border-border/60",
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -431,7 +430,7 @@ function ToggleRow({
           value={value}
           onValueChange={onChangeValue}
           placeholder={placeholder}
-          className="mt-2 h-8 bg-background/40 text-xs"
+          className="mt-2 h-8 rounded-md border-border/80 bg-background text-xs"
         />
       )}
     </div>

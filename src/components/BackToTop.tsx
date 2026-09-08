@@ -17,12 +17,12 @@ export function BackToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Back to top"
       className={
-        "fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full " +
-        "bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] " +
-        "transition-all duration-500 ease-out hover:opacity-95 hover:scale-110 active:scale-95 " +
+        "fixed bottom-6 right-6 z-40 flex h-9 w-9 items-center justify-center rounded-lg " +
+        "bg-primary text-primary-foreground shadow-sm " +
+        "transition-all duration-300 ease-out hover:bg-primary/90 hover:scale-105 active:scale-95 " +
         (visible
           ? "translate-y-0 opacity-100 pointer-events-auto"
-          : "translate-y-4 opacity-0 pointer-events-none")
+          : "translate-y-3 opacity-0 pointer-events-none")
       }
     >
       <ArrowUp className="h-4 w-4" />

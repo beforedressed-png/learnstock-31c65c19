@@ -30,7 +30,7 @@ const PROVIDERS: ProviderMeta[] = [
     getKeyUrl: "https://aistudio.google.com/apikey",
     models: GEMINI_MODELS,
     verify: verifyApiKey,
-    description: "Bring your own Gemini API key. Stored locally, never sent to our servers.",
+    description: "Bring your own Gemini API key. Stored locally, never sent to third-party servers.",
   },
   {
     id: "grok",
@@ -40,7 +40,7 @@ const PROVIDERS: ProviderMeta[] = [
     getKeyUrl: "https://console.x.ai/",
     models: GROK_MODELS,
     verify: verifyGrokKey,
-    description: "Bring your own xAI Grok API key. Stored locally, never sent to our servers.",
+    description: "Bring your own xAI Grok API key. Stored locally, never sent to third-party servers.",
   },
 ];
 
@@ -63,7 +63,7 @@ export function ApiKeysDialog() {
 
     if (!isValid) {
       const prefixesLabel = meta.keyPrefixes.join(" or ");
-      toast.error(`That doesn't look like a ${meta.label} key (should start with ${prefixesLabel}...)`);
+      toast.error(`That doesn't look like a ${meta.label} key (starts with ${prefixesLabel}...)`);
       return;
     }
     store.addKey(trimmed, provider);
@@ -112,68 +112,66 @@ export function ApiKeysDialog() {
 
   return (
     <>
-      <Button variant="outline" size="sm" className="gap-2" onClick={() => setOpen(true)}>
-        <KeyRound className="h-4 w-4" />
+      <Button variant="outline" size="sm" className="h-8 gap-1.5 rounded-lg border-border/80 text-xs font-medium" onClick={() => setOpen(true)}>
+        <KeyRound className="h-3.5 w-3.5" />
         API Keys
         {totalKeys > 0 && (
-          <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">
+          <Badge variant="secondary" className="ml-1 h-4 px-1.5 text-[9px]">
             {totalKeys}
           </Badge>
         )}
       </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50" role="presentation">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
           <button
             aria-label="Close API key dialog"
-            className="absolute inset-0 bg-background/80"
+            className="fixed inset-0"
             onClick={() => setOpen(false)}
           />
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="api-keys-title"
-            className="fixed left-1/2 top-1/2 z-10 grid max-h-[calc(100vh-2rem)] w-[min(42rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-lg border border-border bg-background p-6 shadow-lg"
+            className="relative z-10 grid max-h-[calc(100vh-2rem)] w-[min(38rem,calc(100vw-2rem))] gap-4 overflow-y-auto rounded-xl border border-border/80 bg-card p-6 shadow-xl"
           >
-            <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-              <h2 id="api-keys-title" className="flex items-center gap-2 text-lg font-semibold leading-none tracking-tight">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
-                  <KeyRound className="h-3.5 w-3.5" />
-                </span>
-                AI Provider Keys
-                <Badge className="ml-1 bg-success text-success-foreground hover:bg-success/90">
-                  Free & Paid
-                </Badge>
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Choose a provider and bring your own API key. Keys are stored locally in your browser.
+            <div className="flex flex-col space-y-1">
+              <div className="flex items-center justify-between">
+                <h2 id="api-keys-title" className="flex items-center gap-2 text-base font-bold text-foreground">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                    <KeyRound className="h-3.5 w-3.5" />
+                  </span>
+                  AI Provider Keys
+                </h2>
+                <button
+                  aria-label="Close"
+                  className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Bring your own API key. Keys are stored locally in your browser.
               </p>
             </div>
 
-            <button
-              aria-label="Close"
-              className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-              onClick={() => setOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </button>
-
-            <div className="grid w-full grid-cols-2 rounded-md bg-muted p-1">
+            <div className="grid w-full grid-cols-2 rounded-lg bg-muted/60 p-1">
               {PROVIDERS.map((p) => (
                 <button
                   key={p.id}
                   type="button"
                   onClick={() => store.setProvider(p.id)}
                   className={cn(
-                    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all",
+                    "inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
                     store.provider === p.id
-                      ? "bg-background text-foreground shadow-sm"
+                      ? "bg-card text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {p.label}
                   {store.keysFor(p.id).length > 0 && (
-                    <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">
+                    <Badge variant="secondary" className="h-4 px-1.5 text-[9px]">
                       {store.keysFor(p.id).length}
                     </Badge>
                   )}
@@ -186,12 +184,10 @@ export function ApiKeysDialog() {
               const activeId = store.activeIdFor(meta.id);
               const currentModel = store.models[meta.id];
               return (
-                <div key={meta.id} className="space-y-5">
-                  <p className="text-xs text-muted-foreground">{meta.description}</p>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
+                <div key={meta.id} className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
                     <div>
-                      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                         Model
                       </label>
                       <select
@@ -200,7 +196,7 @@ export function ApiKeysDialog() {
                           if (meta.id === "gemini") store.setModelFor("gemini", e.target.value as GeminiModel);
                           else store.setModelFor("grok", e.target.value as GrokModel);
                         }}
-                        className="h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground shadow-sm outline-none focus:ring-1 focus:ring-ring"
+                        className="h-8 w-full rounded-lg border border-border/80 bg-background px-2.5 text-xs text-foreground outline-none focus:border-primary/60"
                       >
                         {meta.models.map((m) => (
                           <option key={m.id} value={m.id}>
@@ -208,43 +204,44 @@ export function ApiKeysDialog() {
                           </option>
                         ))}
                       </select>
-                      <p className="mt-1.5 text-[11px] text-muted-foreground">Supports image analysis</p>
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                        Add API key
+                      <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Add API Key
                       </label>
                       <button
                         type="button"
                         aria-label={`Paste ${meta.label} API key`}
-                        className="flex h-16 w-full items-center justify-center gap-2 rounded-md border border-dashed border-input bg-background/60 px-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                        className="flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border/80 bg-muted/20 px-3 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                         onClick={() => handleClipboardPaste(meta.id)}
                         onPaste={(event) => {
                           event.preventDefault();
                           addKeyValue(meta.id, event.clipboardData.getData("text"));
                         }}
                       >
-                        <Clipboard className="h-4 w-4" />
+                        <Clipboard className="h-3.5 w-3.5" />
                         Paste key from clipboard
                       </button>
-                      <a
-                        href={meta.getKeyUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
-                      >
-                        Get API key <ExternalLink className="h-3 w-3" />
-                      </a>
+                      <div className="mt-1 flex justify-end">
+                        <a
+                          href={meta.getKeyUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline"
+                        >
+                          Get API key <ExternalLink className="h-2.5 w-2.5" />
+                        </a>
+                      </div>
                     </div>
                   </div>
 
                   <div>
-                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                       Stored keys ({providerKeys.length})
                     </p>
-                    <div className="max-h-[260px] space-y-2 overflow-y-auto pr-1">
+                    <div className="max-h-[220px] space-y-2 overflow-y-auto pr-1">
                       {providerKeys.length === 0 && (
-                        <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                        <div className="rounded-lg border border-dashed border-border/80 p-5 text-center text-xs text-muted-foreground">
                           No {meta.label} keys yet. Add one above to start generating.
                         </div>
                       )}
@@ -255,69 +252,71 @@ export function ApiKeysDialog() {
                           <div
                             key={k.id}
                             className={cn(
-                              "flex items-center gap-2 rounded-lg border bg-card px-3 py-2 transition-colors",
-                              isActive ? "border-primary/60 ring-1 ring-primary/20" : "border-border",
+                              "flex items-center gap-2 rounded-lg border px-3 py-2 transition-colors",
+                              isActive
+                                ? "border-primary/60 bg-primary/5"
+                                : "border-border/80 bg-background",
                             )}
                           >
                             <button
                               onClick={() => store.setActiveId(k.id)}
                               className={cn(
-                                "flex h-5 w-5 items-center justify-center rounded-full border transition-colors",
+                                "flex h-4 w-4 items-center justify-center rounded-full border transition-colors",
                                 isActive
                                   ? "border-primary bg-primary text-primary-foreground"
-                                  : "border-border bg-background hover:border-primary/50",
+                                  : "border-border/80 bg-background hover:border-primary/50",
                               )}
                               title={isActive ? "Active key" : "Set as active"}
                             >
-                              {isActive && <Check className="h-3 w-3" />}
+                              {isActive && <Check className="h-2.5 w-2.5" />}
                             </button>
 
-                            <code className="flex-1 truncate font-mono text-xs">
+                            <code className="flex-1 truncate font-mono text-[11px]">
                               {shown ? k.key : maskKey(k.key)}
                             </code>
 
                             {k.status === "healthy" && (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-success">
-                                <span className="h-1.5 w-1.5 rounded-full bg-success" /> Healthy
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-success">
+                                <span className="h-1.5 w-1.5 rounded-full bg-success" /> Ready
                               </span>
                             )}
                             {k.status === "exhausted" && (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-500">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-500">
                                 <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> Quota
                               </span>
                             )}
                             {k.status === "invalid" && (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-destructive">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-destructive">
                                 <span className="h-1.5 w-1.5 rounded-full bg-destructive" /> Invalid
                               </span>
                             )}
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-7 w-7"
+                              className="h-6 w-6"
                               onClick={() => handleVerify(k.id, k.key, meta.id)}
                               disabled={verifying === k.id}
                               title="Verify key"
                             >
-                              <Check className="h-3.5 w-3.5" />
+                              <Check className="h-3 w-3" />
                             </Button>
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-7 w-7"
+                              className="h-6 w-6"
                               onClick={() => setReveal((r) => ({ ...r, [k.id]: !r[k.id] }))}
                               title={shown ? "Hide" : "Show"}
                             >
-                              {shown ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                              {shown ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                             </Button>
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-7 w-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              className="h-6 w-6 text-destructive hover:bg-destructive/10"
                               onClick={() => store.removeKey(k.id)}
                               title="Delete"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
                         );
@@ -328,9 +327,9 @@ export function ApiKeysDialog() {
               );
             })}
 
-            <div className="flex items-center justify-between border-t border-border pt-3 text-[11px] text-muted-foreground">
-              <span>Keys are stored locally in your browser only.</span>
-              <Button size="sm" onClick={() => setOpen(false)}>
+            <div className="flex items-center justify-between border-t border-border/60 pt-3 text-[11px] text-muted-foreground">
+              <span>Saved locally in browser storage.</span>
+              <Button size="sm" className="h-8 rounded-lg text-xs" onClick={() => setOpen(false)}>
                 Done
               </Button>
             </div>

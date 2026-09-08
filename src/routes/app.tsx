@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/app")({
   component: AppPage,
@@ -35,57 +36,57 @@ function AppPage() {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen text-foreground flex flex-col items-center justify-center p-4 bg-background relative overflow-hidden">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-foreground selection:bg-primary/20 selection:text-primary">
         <Toaster />
-        
-        {/* Decorative background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="w-full max-w-md glass rounded-3xl p-6 md:p-8 shadow-[var(--shadow-elegant)] relative z-10 border border-primary/10 text-center space-y-6">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground shadow-[var(--shadow-elegant)] glow-ring">
-            <Lock className="h-6 w-6" />
-          </div>
-          
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold tracking-tight">Access Key Required</h2>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-xs mx-auto">
-              Please enter your access key below to unlock the Learn Stock metadata dashboard.
-            </p>
+        <div className="w-full max-w-md rounded-2xl border border-border/80 bg-card p-6 shadow-sm sm:p-8">
+          <div className="flex flex-col items-center text-center space-y-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+              <Lock className="h-5 w-5" />
+            </div>
+
+            <div className="space-y-1">
+              <h2 className="text-lg font-bold tracking-tight text-foreground">Access Key Required</h2>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Please enter your contributor access key to unlock the dashboard.
+              </p>
+            </div>
           </div>
 
-          <form onSubmit={handleUnlock} className="space-y-4 text-left">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block pl-1">
+          <form onSubmit={handleUnlock} className="mt-6 space-y-4">
+            <div className="space-y-1.5 text-left">
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
                 Access Key
               </label>
               <div className="relative">
-                <Key className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="password"
                   placeholder="Enter access key..."
                   value={accessKey}
                   onChange={(e) => setAccessKey(e.target.value)}
-                  className="pl-10 h-11 bg-background/50 border-border/80 focus:border-primary/60 rounded-xl text-sm"
+                  className="pl-9 h-10 rounded-lg border-border/80 bg-background text-xs"
                   autoFocus
                 />
               </div>
             </div>
-            
-            <Button 
-              type="submit" 
-              className="w-full h-11 btn-shimmer bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-semibold rounded-xl animate-pulse hover:animate-none"
+
+            <Button
+              type="submit"
+              className="w-full h-10 rounded-lg bg-primary text-primary-foreground font-medium text-xs shadow-sm hover:bg-primary/90 active:scale-95 transition-all"
             >
               Unlock Dashboard
             </Button>
           </form>
 
-          <div className="border-t border-border/40 pt-4 flex justify-center">
+          <div className="mt-6 border-t border-border/60 pt-4 flex items-center justify-between">
             <Link
               to="/"
               className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Home
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       </div>
@@ -93,32 +94,33 @@ function AppPage() {
   }
 
   return (
-    <div className="min-h-screen text-foreground">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
       <Toaster />
 
       {/* ── App Header ── */}
-      <header className="sticky top-0 z-30 glass border-b border-primary/15">
+      <header className="sticky top-0 z-30 border-b border-border/80 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-5 py-3 lg:px-8">
-          <Link to="/" className="flex items-center gap-3 group">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-elegant)] glow-ring transition-transform group-hover:scale-105">
-              <Logo className="h-5 w-5" />
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
+              <Logo className="h-4 w-4" />
             </span>
             <div className="leading-tight">
-              <h1 className="text-[15px] font-bold tracking-tight text-glow">Learn Stock</h1>
-              <p className="text-[10px] font-medium text-muted-foreground">
+              <h1 className="text-sm font-bold tracking-tight text-foreground">Learn Stock</h1>
+              <p className="text-[10px] text-muted-foreground">
                 AI metadata for stock contributors
               </p>
             </div>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 rounded-lg glass-glow px-3 py-1.5">
-              <Sparkles className="h-3 w-3 text-primary-glow" />
-              <span className="text-[10px] font-semibold text-muted-foreground">Metadata Generator</span>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-border/60 bg-card px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span>Contributor Workspace</span>
             </div>
+            <ThemeToggle />
             <Link
               to="/"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-background/30 px-3 py-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Home
             </Link>

@@ -1,5 +1,3 @@
-import { Sparkles } from "lucide-react";
-
 const ITEMS = [
   "Gemini",
   "Adobe Stock",
@@ -18,7 +16,7 @@ export function MarqueeStrip() {
     <div className="marquee__row" aria-hidden="false">
       {ITEMS.map((t, i) => (
         <span key={`${t}-${i}`} className="marquee__item">
-          <Sparkles className="h-3 w-3 text-primary-glow" />
+          <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
           {t}
         </span>
       ))}
@@ -31,7 +29,7 @@ export function MarqueeStrip() {
         <div className="marquee__row" aria-hidden="true">
           {ITEMS.map((t, i) => (
             <span key={`dup-${t}-${i}`} className="marquee__item">
-              <Sparkles className="h-3 w-3 text-primary-glow" />
+              <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
               {t}
             </span>
           ))}
