@@ -209,25 +209,47 @@ export function ApiKeysDialog() {
                       <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                         Add API Key
                       </label>
-                      <button
-                        type="button"
-                        aria-label={`Paste ${meta.label} API key`}
-                        className="flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border/80 bg-muted/20 px-3 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
-                        onClick={() => handleClipboardPaste(meta.id)}
-                        onPaste={(event) => {
-                          event.preventDefault();
-                          addKeyValue(meta.id, event.clipboardData.getData("text"));
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const input = e.currentTarget.elements.namedItem("apiKeyInput") as HTMLInputElement;
+                          if (input?.value) {
+                            addKeyValue(meta.id, input.value);
+                            input.value = "";
+                          }
                         }}
+                        className="flex gap-1.5"
                       >
-                        <Clipboard className="h-3.5 w-3.5" />
-                        Paste key from clipboard
-                      </button>
-                      <div className="mt-1 flex justify-end">
+                        <input
+                          name="apiKeyInput"
+                          type="text"
+                          placeholder={meta.keyHint}
+                          className="h-8 flex-1 rounded-lg border border-border/80 bg-background px-2.5 text-xs text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/60 transition-colors"
+                          onPaste={(event) => {
+                            event.preventDefault();
+                            const val = event.clipboardData.getData("text");
+                            addKeyValue(meta.id, val);
+                            (event.target as HTMLInputElement).value = "";
+                          }}
+                        />
+                        <Button type="submit" size="sm" className="h-8 rounded-lg px-3 text-xs font-medium">
+                          Add
+                        </Button>
+                      </form>
+                      <div className="mt-1.5 flex items-center justify-between">
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                          onClick={() => handleClipboardPaste(meta.id)}
+                        >
+                          <Clipboard className="h-2.5 w-2.5" />
+                          Paste from clipboard
+                        </button>
                         <a
                           href={meta.getKeyUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline"
+                          className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
                         >
                           Get API key <ExternalLink className="h-2.5 w-2.5" />
                         </a>
