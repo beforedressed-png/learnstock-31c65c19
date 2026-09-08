@@ -1,4 +1,6 @@
 import JSZip from "jszip";
+// @ts-ignore
+import createGS from "@jspawn/ghostscript-wasm/gs.js";
 import { buildAdobeCsv, type CsvRow } from "./csv";
 import type { StockMetadata } from "./gemini";
 
@@ -6,6 +8,58 @@ export interface ExportItem {
   file: File;
   meta: StockMetadata;
 }
+
+// Convert vector file (.eps, .ai) via client-side Ghostscript WebAssembly
+export async function convertVectorViaWasm(file: File): Promise<Blob> {
+  const mod = await createGS({
+    locateFile: (f: string) => `https://unpkg.com/@jspawn/ghostscript-wasm@0.0.2/${f}`,
+    print: (text: string) => console.log("[WASM-GS]", text),
+    printErr: (text: string) => console.warn("[WASM-GS]", text),
+  });
+
+  const arrayBuffer = await file.arrayBuffer();
+  const fileData = new Uint8Array(arrayBuffer);
+
+  const cleanExt = (file.name.split(".").pop() || "eps").toLowerCase();
+  const id = Math.random().toString(36).substring(2, 9);
+  const inputFileName = `/input_${id}.${cleanExt}`;
+  const outputFileName = `/output_${id}.jpg`;
+
+  mod.FS.writeFile(inputFileName, fileData);
+
+  try {
+    mod.callMain([
+      "-dNOPAUSE",
+      "-dBATCH",
+      "-sDEVICE=jpeg",
+      "-dJPEGQ=95",
+      "-r300",
+      "-dEPSCrop",
+      "-dUseCropBox",
+      "-dTextAlphaBits=4",
+      "-dGraphicsAlphaBits=4",
+      "-dDOINTERPOLATE",
+      `-sOutputFile=${outputFileName}`,
+      inputFileName,
+    ]);
+
+    const jpgBytes = mod.FS.readFile(outputFileName);
+    return new Blob([jpgBytes], { type: "image/jpeg" });
+  } catch (err) {
+    console.error("Ghostscript WASM conversion failed:", err);
+    throw new Error(`Vector conversion failed: ${err instanceof Error ? err.message : String(err)}`);
+  } finally {
+    try {
+      mod.FS.unlink(inputFileName);
+    } catch (_) {}
+    try {
+      mod.FS.unlink(outputFileName);
+    } catch (_) {}
+  }
+}
+
+// Backward-compatible alias
+export const convertVectorViaBackend = convertVectorViaWasm;
 
 // Convert image File to dataURL
 export function fileToDataUrl(file: File): Promise<string> {
@@ -229,6 +283,10 @@ export async function downloadZipArchive(
           // If the file is already a JPEG, we can package the file directly, otherwise convert it
           if (item.file.name.toLowerCase().endsWith(".jpg") || item.file.name.toLowerCase().endsWith(".jpeg")) {
             zip.file(`${baseName}.jpg`, item.file);
+          } else if (item.file.name.toLowerCase().endsWith(".eps") || item.file.name.toLowerCase().endsWith(".ai")) {
+            onProgress?.(`Converting ${item.file.name} to JPG via WebAssembly...`);
+            const blob = await convertVectorViaWasm(item.file);
+            zip.file(`${baseName}.jpg`, blob);
           } else {
             const img = await loadImage(item.file);
             const blob = await imageToCanvasBlob(img, "jpeg");

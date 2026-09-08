@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Sparkles, Lock, Key } from "lucide-react";
+import { ArrowLeft, Sparkles, Image as ImageIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Logo } from "@/components/Logo";
 import { ControlsSidebar } from "@/components/ControlsSidebar";
 import { MetadataWorkspace } from "@/components/MetadataWorkspace";
+import { ConverterWorkspace } from "@/components/ConverterWorkspace";
 import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { toast } from "sonner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -15,83 +17,7 @@ export const Route = createFileRoute("/app")({
 });
 
 function AppPage() {
-  const [accessKey, setAccessKey] = useState("");
-  const [hasAccess, setHasAccess] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("learnstock_access_granted") === "true";
-    }
-    return false;
-  });
-
-  const handleUnlock = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (accessKey.trim() === "learnstockbatch1accesskey343") {
-      localStorage.setItem("learnstock_access_granted", "true");
-      setHasAccess(true);
-      toast.success("Access granted! Welcome to the Metadata Dashboard.");
-    } else {
-      toast.error("Invalid access key. Please try again.");
-    }
-  };
-
-  if (!hasAccess) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-foreground selection:bg-primary/20 selection:text-primary">
-        <Toaster />
-
-        <div className="w-full max-w-md rounded-2xl border border-border/80 bg-card p-6 shadow-sm sm:p-8">
-          <div className="flex flex-col items-center text-center space-y-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <Lock className="h-5 w-5" />
-            </div>
-
-            <div className="space-y-1">
-              <h2 className="text-lg font-bold tracking-tight text-foreground">Access Key Required</h2>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Please enter your contributor access key to unlock the dashboard.
-              </p>
-            </div>
-          </div>
-
-          <form onSubmit={handleUnlock} className="mt-6 space-y-4">
-            <div className="space-y-1.5 text-left">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
-                Access Key
-              </label>
-              <div className="relative">
-                <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="password"
-                  placeholder="Enter access key..."
-                  value={accessKey}
-                  onChange={(e) => setAccessKey(e.target.value)}
-                  className="pl-9 h-10 rounded-lg border-border/80 bg-background text-xs"
-                  autoFocus
-                />
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full h-10 rounded-lg bg-primary text-primary-foreground font-medium text-xs shadow-sm hover:bg-primary/90 active:scale-95 transition-all"
-            >
-              Unlock Dashboard
-            </Button>
-          </form>
-
-          <div className="mt-6 border-t border-border/60 pt-4 flex items-center justify-between">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" /> Back to Home
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const [appMode, setAppMode] = useState<"metadata" | "converter">("metadata");
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
@@ -113,9 +39,31 @@ function AppPage() {
           </Link>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-border/60 bg-card px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-              <Sparkles className="h-3 w-3 text-primary" />
-              <span>Contributor Workspace</span>
+            <div className="hidden sm:flex items-center rounded-lg border border-border/60 bg-card p-1">
+              <button
+                onClick={() => setAppMode("metadata")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors",
+                  appMode === "metadata"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted"
+                )}
+              >
+                <Sparkles className="h-3 w-3" />
+                <span>AI Metadata</span>
+              </button>
+              <button
+                onClick={() => setAppMode("converter")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors",
+                  appMode === "converter"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted"
+                )}
+              >
+                <ImageIcon className="h-3 w-3" />
+                <span>Vector Converter</span>
+              </button>
             </div>
             <ThemeToggle />
             <Link
@@ -130,8 +78,16 @@ function AppPage() {
 
       {/* ── App Main Layout ── */}
       <main className="mx-auto grid max-w-[1440px] gap-5 px-5 py-6 lg:grid-cols-[360px_1fr] lg:gap-6 lg:px-8">
-        <ControlsSidebar />
-        <MetadataWorkspace />
+        {appMode === "metadata" ? (
+          <>
+            <ControlsSidebar />
+            <MetadataWorkspace />
+          </>
+        ) : (
+          <div className="lg:col-span-2 max-w-4xl mx-auto w-full">
+            <ConverterWorkspace />
+          </div>
+        )}
       </main>
     </div>
   );

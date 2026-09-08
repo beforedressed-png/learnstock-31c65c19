@@ -29,6 +29,7 @@ app.get("/api/health", (req, res) => {
     uptime: process.uptime(),
     nodeVersion: process.version,
     platform: process.platform,
+    wasmEnabled: true,
   });
 });
 
