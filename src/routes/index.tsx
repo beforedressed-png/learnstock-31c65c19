@@ -1,444 +1,144 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Sparkles,
   ArrowRight,
-  Upload,
-  Wand2,
-  Download,
-  Zap,
-  Layers,
-  ShieldCheck,
-  FileSpreadsheet,
-  ChevronRight,
+  ArrowUpRight,
   Check,
-  X,
-  Lock,
+  ChevronDown,
+  FileOutput,
+  FolderOpen,
+  ImagePlus,
+  KeyRound,
+  ScanSearch,
+  ShieldCheck,
+  Sparkles,
+  Tags,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { useReveal } from "@/hooks/use-reveal";
-import { useMagnetic } from "@/hooks/use-magnetic";
-import { useTilt } from "@/hooks/use-tilt";
-import { BackToTop } from "@/components/BackToTop";
-import { MarqueeStrip } from "@/components/MarqueeStrip";
-import { CountUpStat } from "@/components/CountUpStat";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import contactSheet from "@/assets/contributor-contact-sheet.png";
 
-export const Route = createFileRoute("/")({
-  component: Landing,
-});
+export const Route = createFileRoute("/")({ component: Landing });
 
 function Landing() {
-  useReveal();
   return (
-    <div className="relative min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
-      {/* ── Navigation ── */}
-      <header className="sticky top-0 z-30 border-b border-border/80 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
-          <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-              <Logo className="h-5 w-5" />
-            </span>
-            <span className="text-sm font-semibold tracking-tight">Learn Stock</span>
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+      <header className="site-header">
+        <div className="site-shell flex h-[72px] items-center justify-between gap-5">
+          <Link to="/" className="brand-mark" aria-label="Learn Stock home">
+            <span className="brand-mark__icon"><Logo className="h-5 w-5" /></span>
+            <span>Learn Stock</span>
           </Link>
-
-          <nav className="hidden items-center gap-7 text-[13px] font-medium text-muted-foreground md:flex">
-            <a href="#features" className="link-underline hover:text-foreground transition-colors">
-              Features
-            </a>
-            <a href="#how" className="link-underline hover:text-foreground transition-colors">
-              How it works
-            </a>
-            <a href="#faq" className="link-underline hover:text-foreground transition-colors">
-              FAQ
-            </a>
+          <nav className="hidden items-center gap-7 text-sm text-foreground/70 md:flex" aria-label="Primary navigation">
+            <a href="#workflow" className="editorial-link">Workflow</a>
+            <a href="#built-for-review" className="editorial-link">Why Learn Stock</a>
+            <a href="#answers" className="editorial-link">Answers</a>
           </nav>
-
-          <div className="flex items-center gap-2.5">
-            <ThemeToggle />
-            <Link
-              to="/app"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-95"
-            >
-              Open App <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden sm:inline-flex" />
+            <Link to="/app" className="action-button action-button--small">Open workspace <ArrowUpRight className="h-3.5 w-3.5" /></Link>
           </div>
         </div>
       </header>
 
       <main>
-        {/* ── Hero ── */}
-        <section className="mx-auto max-w-6xl px-5 pt-24 pb-16 text-center lg:px-8 lg:pt-32">
-          <div data-reveal className="section-badge mx-auto">
-            AI-powered metadata
+        <section className="site-shell grid gap-12 pb-20 pt-16 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-14 lg:pb-28 lg:pt-28">
+          <div className="max-w-2xl">
+            <h1 className="display-title">Your images deserve better metadata.</h1>
+            <p className="mt-7 max-w-lg text-base leading-relaxed text-muted-foreground">Take a batch from raw images to clean, marketplace-ready metadata without losing the judgement that makes your work yours.</p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link to="/app" className="action-button">Start a batch <ArrowRight className="h-4 w-4" /></Link>
+              <a href="#workflow" className="quiet-button">See the workflow</a>
+            </div>
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-2"><KeyRound className="h-3.5 w-3.5 text-primary" /> Bring your own key</span>
+              <span className="inline-flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> Files stay in your browser</span>
+            </div>
           </div>
+          <ProductPreview />
+        </section>
 
-          <h1
-            data-reveal
-            data-reveal-delay="1"
-            className="mx-auto mt-6 max-w-3xl text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl"
-          >
-            Stock metadata{" "}
-            <br className="hidden md:block" />
-            that <span className="text-shimmer">sells itself</span>
-          </h1>
-
-          <p
-            data-reveal
-            data-reveal-delay="2"
-            className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-muted-foreground"
-          >
-            Drop your images, get Adobe-ready titles, single-word keywords, and the right category in
-            seconds. Bring your own API key, export contributor-perfect CSV, and ship batches faster.
-          </p>
-
-          <div
-            data-reveal
-            data-reveal-delay="3"
-            className="mt-8 flex flex-wrap items-center justify-center gap-3"
-          >
-            <MagneticLink
-              to="/app"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-95"
-            >
-              Get Access <ArrowRight className="h-4 w-4" />
-            </MagneticLink>
-            <MagneticAnchor
-              href="#how"
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/80 px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-            >
-              How it works
-            </MagneticAnchor>
+        <section id="workflow" className="border-y border-border bg-surface-warm">
+          <div className="site-shell grid gap-12 py-16 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20 lg:py-24">
+            <div>
+              <h2 className="section-title">From folder to final review, in the right order.</h2>
+              <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">Learn Stock gives the repetitive work to AI, then brings the details back into view before anything leaves your machine.</p>
+            </div>
+            <ol className="workflow-list">
+              <WorkflowStep number="01" icon={FolderOpen} title="Bring in the work" text="Drop in an image batch and choose the marketplace rules you are working toward." />
+              <WorkflowStep number="02" icon={Sparkles} title="Generate with intention" text="AI drafts titles, categories, and single-word keywords around the settings you set." />
+              <WorkflowStep number="03" icon={ScanSearch} title="Review the details" text="Scan every image, keep what is right, and correct what only you can know." />
+              <WorkflowStep number="04" icon={FileOutput} title="Export with confidence" text="Create a clean CSV or ZIP pack when the batch is ready for your contributor portal." />
+            </ol>
           </div>
+        </section>
 
-          {/* Marquee */}
-          <div data-reveal data-reveal-delay="4" className="mt-12">
-            <MarqueeStrip />
+        <section id="built-for-review" className="site-shell py-18 lg:py-28">
+          <div className="max-w-2xl">
+            <h2 className="section-title">The best automation leaves room for your eye.</h2>
           </div>
+          <div className="mt-12 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+            <ValueColumn icon={ImagePlus} title="See the image first" text="Every suggestion lives beside the visual it describes, not buried in an export sheet." />
+            <ValueColumn icon={Tags} title="Keep metadata legible" text="Titles, categories, and keywords are made for quick editing—not just fast generation." />
+            <ValueColumn icon={ShieldCheck} title="Stay in control" text="Your own AI key and local browser storage keep the workflow in your hands." />
+          </div>
+        </section>
 
-          {/* Preview mock */}
-          <div data-reveal data-reveal-delay="4" className="mx-auto mt-14 max-w-4xl">
-            <div className="rounded-xl border border-border/80 bg-card p-3 shadow-sm transition-all">
-              <div className="flex items-center justify-between border-b border-border/60 px-3 pb-2.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-border" />
-                  <span className="h-2 w-2 rounded-full bg-border" />
-                  <span className="h-2 w-2 rounded-full bg-border" />
-                </div>
-                <span className="text-[11px] font-medium text-muted-foreground/60">learnstock.app</span>
-                <div className="w-8" />
-              </div>
-              <div className="mt-3 rounded-lg border border-border/40 bg-muted/20 p-5">
-                <div className="grid grid-cols-3 gap-4">
-                  {[0, 1, 2].map((i) => (
-                    <div key={i} className="space-y-2.5 text-left">
-                      <div className="aspect-[4/3] rounded-lg border border-border/40 bg-card p-2">
-                        <div className="h-full w-full rounded bg-muted/60" />
-                      </div>
-                      <div className="h-2 w-4/5 rounded bg-foreground/10" />
-                      <div className="h-2 w-3/5 rounded bg-foreground/6" />
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <section className="site-shell pb-18 lg:pb-28">
+          <div className="review-manifesto">
+            <div className="review-manifesto__signal"><span className="signal-dot" /><span>Contributor review checklist</span></div>
+            <div className="review-manifesto__body">
+              <h2 className="section-title">Let AI handle the first draft. Keep the final call.</h2>
+              <ul className="mt-7 grid gap-x-8 gap-y-3 text-sm text-foreground/80 sm:grid-cols-2">
+                <li><Check className="h-4 w-4" /> Single-word keyword checks</li>
+                <li><Check className="h-4 w-4" /> Category visible at a glance</li>
+                <li><Check className="h-4 w-4" /> Custom prompt controls</li>
+                <li><Check className="h-4 w-4" /> Batch-level exports</li>
+              </ul>
+            </div>
+            <Link to="/app" className="text-link">Open the workspace <ArrowRight className="h-4 w-4" /></Link>
+          </div>
+        </section>
+
+        <section id="answers" className="border-y border-border bg-surface-muted">
+          <div className="site-shell grid gap-10 py-16 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20 lg:py-24">
+            <div><h2 className="section-title">Nothing hidden behind the workflow.</h2></div>
+            <div className="divide-y divide-border border-y border-border">
+              <Faq question="Do I need my own API key?" answer="Yes. Add your Gemini or Grok key in the workspace. It is stored locally in your browser, so you stay in control of access." />
+              <Faq question="Are my images stored by Learn Stock?" answer="No. Your images are sent directly from the browser to the AI provider you choose. Learn Stock does not keep your image files." />
+              <Faq question="Which exports can I create?" answer="The current workspace prepares contributor-focused CSV exports and ZIP packs, with settings designed around Adobe Stock conventions." />
             </div>
           </div>
         </section>
 
-        {/* ── Stats ── */}
-        <section className="mx-auto max-w-6xl px-5 py-12 lg:px-8">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {[
-              { v: <CountUpStat target={100} suffix="+" />, l: "Files per batch" },
-              { v: "AI", l: "SEO-friendly metadata" },
-              { v: <CountUpStat target={100} suffix="+" />, l: "Daily contributors" },
-              { v: "Top 5%", l: "Search ranking rate" },
-            ].map((s, i) => (
-              <div
-                key={s.l}
-                data-reveal
-                data-reveal-delay={String((i % 4) + 1)}
-                className="lift rounded-xl border border-border/80 bg-card/60 p-5 text-center"
-              >
-                <div className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                  {s.v}
-                </div>
-                <div className="mt-1 text-xs font-medium text-muted-foreground">{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Features ── */}
-        <section id="features" className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
-          <div className="text-center">
-            <span className="section-badge">
-              Core features
-            </span>
-            <h2 data-reveal className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Everything you need to ship faster
-            </h2>
-            <p data-reveal data-reveal-delay="1" className="mx-auto mt-2.5 max-w-lg text-sm text-muted-foreground">
-              Purpose-built tools for stock contributors who want higher search rankings and faster uploads.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { Icon: Wand2, t: "AI-powered metadata", d: "Titles and keywords generated with Gemini and Grok, tuned to Adobe Stock guidelines." },
-              { Icon: Layers, t: "Batch processing", d: "Drop dozens of images at once and generate contributor-ready tags in a single click." },
-              { Icon: ShieldCheck, t: "Adobe-friendly titles", d: "Marketable rhythm, no filler words, and strict adherence to contributor guidelines." },
-              { Icon: Zap, t: "Single-word keywords", d: "Compound phrases auto-split, deduped, and filtered of stop words automatically." },
-              { Icon: FileSpreadsheet, t: "CSV & ZIP export", d: "Ready-to-upload CSV formatted precisely for Adobe Stock contributor accounts." },
-              { Icon: Sparkles, t: "Custom prompts", d: "Inject your own style directives, mandatory keywords, and negative keywords." },
-            ].map(({ Icon, t, d }, i) => (
-              <div
-                key={t}
-                data-reveal
-                data-reveal-delay={String((i % 3) + 1)}
-                className="lift group rounded-xl border border-border/80 bg-card/70 p-6 transition-all hover:border-primary/40"
-              >
-                <div className="feature-icon">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <h3 className="mt-4 text-sm font-bold text-foreground">{t}</h3>
-                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{d}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Before vs After ── */}
-        <section className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
-          <div className="text-center">
-            <span className="section-badge">
-              Quality comparison
-            </span>
-            <h2 data-reveal className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Before vs. After
-            </h2>
-          </div>
-
-          <div className="relative mt-12 grid gap-5 md:grid-cols-2">
-            {/* BEFORE */}
-            <div
-              data-reveal
-              className="lift relative overflow-hidden rounded-xl border border-destructive/30 bg-destructive/5 p-6"
-            >
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-destructive">
-                <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
-                Before (Rejected or Low Ranking)
-              </div>
-              <div className="mt-5">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Title</p>
-                <div className="mt-2 rounded-lg border border-destructive/20 bg-background/50 px-3 py-2.5">
-                  <span className="text-xs text-muted-foreground line-through decoration-destructive/60">
-                    Business woman working laptop office
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Keywords</p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {["business woman", "working", "laptop office"].map((k) => (
-                    <span
-                      key={k}
-                      className="rounded-md border border-destructive/25 bg-destructive/10 px-2 py-0.5 text-[11px] text-muted-foreground line-through decoration-destructive/60"
-                    >
-                      {k}
-                    </span>
-                  ))}
-                  <span className="rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] text-muted-foreground">
-                    +0 more
-                  </span>
-                </div>
-              </div>
-              <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-destructive">
-                <X className="h-3.5 w-3.5" />
-                Compound phrases — Adobe search penalizes
-              </p>
-            </div>
-
-            {/* AFTER */}
-            <div
-              data-reveal
-              data-reveal-delay="2"
-              className="lift relative overflow-hidden rounded-xl border border-success/30 bg-success/5 p-6"
-            >
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-success">
-                <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                After — Learn Stock
-              </div>
-              <div className="mt-5">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Title</p>
-                <div className="mt-2 rounded-lg border border-success/25 bg-background/50 px-3 py-2.5">
-                  <span className="text-xs font-medium text-foreground">
-                    Confident businesswoman working on laptop at modern office desk, remote work concept
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Keywords</p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {[
-                    "businesswoman",
-                    "laptop",
-                    "office",
-                    "working",
-                    "professional",
-                    "confident",
-                    "remote",
-                    "desk",
-                    "corporate",
-                    "freelancer",
-                  ].map((k) => (
-                    <span
-                      key={k}
-                      className="rounded-md border border-success/25 bg-success/10 px-2 py-0.5 text-[11px] font-medium text-foreground"
-                    >
-                      {k}
-                    </span>
-                  ))}
-                  <span className="rounded-md border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                    +39 more
-                  </span>
-                </div>
-              </div>
-              <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-success">
-                <Check className="h-3.5 w-3.5" />
-                Clean single-word keywords, CSV contributor-ready
-              </p>
-            </div>
-
-            {/* Center indicator */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm">
-                <ChevronRight className="h-4 w-4" />
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* ── How it works ── */}
-        <section id="how" className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
-          <div className="text-center">
-            <span className="section-badge">
-              Workflow
-            </span>
-            <h2 data-reveal className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Three simple steps
-            </h2>
-          </div>
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            {[
-              { Icon: Upload, t: "Upload your files", d: "Drag and drop your images. JPG, PNG, WebP, SVG, EPS — up to 100 files per batch." },
-              { Icon: Wand2, t: "AI generates metadata", d: "Gemini or Grok analyzes each visual and writes optimized titles, keywords, and category." },
-              { Icon: Download, t: "Export & upload", d: "Download a contributor-ready CSV or compiled ZIP pack in a single click." },
-            ].map(({ Icon, t, d }, i) => (
-              <div
-                key={t}
-                data-reveal
-                data-reveal-delay={String(i + 1)}
-                className="lift rounded-xl border border-border/80 bg-card/70 p-7 text-center"
-              >
-                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-foreground text-background">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="mt-4 text-sm font-bold text-foreground">{t}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{d}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── FAQ ── */}
-        <section id="faq" className="mx-auto max-w-3xl px-5 py-20 lg:px-8">
-          <div className="text-center">
-            <span className="section-badge">
-              FAQ
-            </span>
-            <h2 data-reveal className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-              Frequently asked questions
-            </h2>
-          </div>
-          <div className="mt-10 space-y-3">
-            {[
-              { q: "Do I need my own API key?", a: "Yes. You bring your own Gemini or Grok API key — it is stored securely in your browser only." },
-              { q: "Which platforms are supported?", a: "Adobe Stock contributor specification is fully tuned today. FreePik, Shutterstock, and Vecteezy formats are built in." },
-              { q: "Are my images uploaded anywhere?", a: "No. Images are sent directly to the AI API from your browser. We never store or retain your files." },
-              { q: "How accurate is the metadata?", a: "Strictly follows Adobe Stock guidelines: single-word keywords, proper categories, and marketable descriptive titles." },
-            ].map((f) => (
-              <details
-                key={f.q}
-                className="group rounded-xl border border-border/80 bg-card/70 px-5 py-4 transition-colors hover:border-primary/30 [&_summary::-webkit-details-marker]:hidden"
-              >
-                <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-foreground">
-                  {f.q}
-                  <span className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-transform group-open:rotate-45 text-sm font-bold">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground pr-6">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        {/* ── CTA ── */}
-        <section className="mx-auto max-w-6xl px-5 pb-24 lg:px-8">
-          <div className="rounded-2xl border border-border/80 bg-card p-10 text-center shadow-sm sm:p-14">
-            <h2 className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
-              Ready to automate your stock workflow?
-            </h2>
-            <p className="mx-auto mt-2.5 max-w-md text-xs leading-relaxed text-muted-foreground">
-              Start generating Adobe Stock metadata in seconds — clean, fast, and contributor-tuned.
-            </p>
-            <div className="mt-6">
-              <MagneticLink
-                to="/app"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-95"
-              >
-                Get Access <ArrowRight className="h-4 w-4" />
-              </MagneticLink>
-            </div>
+        <section className="site-shell py-16 lg:py-24">
+          <div className="closing-cta">
+            <div><h2 className="closing-title max-w-2xl text-4xl leading-[0.98] tracking-[-0.045em] text-primary-foreground sm:text-5xl">A clearer batch is one good start away.</h2></div>
+            <Link to="/app" className="light-action-button">Open workspace <ArrowRight className="h-4 w-4" /></Link>
           </div>
         </section>
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-border/80 bg-card/40">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-xs text-muted-foreground md:flex-row lg:px-8">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Logo className="h-4 w-4" />
-            </span>
-            <span className="font-semibold text-foreground">Learn Stock</span>
-          </div>
-          <p>© {new Date().getFullYear()} Learn Stock. All rights reserved.</p>
-        </div>
-      </footer>
-      <BackToTop />
+      <footer className="border-t border-border"><div className="site-shell flex flex-col gap-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-2 font-medium text-foreground"><Logo className="h-4 w-4 text-primary" /> Learn Stock</div><p>AI-assisted metadata for stock contributors.</p></div></footer>
     </div>
   );
 }
 
-/* ── Helper components ── */
-
-type AnchorAttrs = React.AnchorHTMLAttributes<HTMLAnchorElement>;
-
-function MagneticLink({ to, className, children }: { to: string; className?: string; children: React.ReactNode }) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.15, 5);
-  return (
-    <Link to={to} ref={ref} className={className}>
-      {children}
-    </Link>
-  );
+function ProductPreview() {
+  return <div className="product-preview" aria-label="Illustrative Learn Stock workspace preview">
+    <div className="product-preview__topbar"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Current batch</p><p className="mt-1 font-sans text-xl font-semibold tracking-[-0.02em] text-foreground">Golden hour collection</p></div><span className="batch-ready"><span /> 6 ready to review</span></div>
+    <div className="product-preview__image-wrap"><img src={contactSheet} alt="Synthetic example contact sheet with lifestyle, landscape, and still-life stock imagery" /><span className="preview-note">Synthetic sample imagery</span></div>
+    <div className="product-preview__footer"><div className="flex items-center gap-3"><span className="preview-count">06</span><span className="text-sm text-muted-foreground">images in this batch</span></div><div className="hidden items-center gap-2 text-sm font-medium text-primary sm:flex">Review metadata <ArrowRight className="h-4 w-4" /></div></div>
+  </div>;
 }
 
-function MagneticAnchor({ className, children, ...rest }: AnchorAttrs) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.15, 5);
-  return (
-    <a ref={ref} className={className} {...rest}>
-      {children}
-    </a>
-  );
+function WorkflowStep({ number, icon: Icon, title, text }: { number: string; icon: typeof FolderOpen; title: string; text: string }) {
+  return <li className="workflow-step"><span className="workflow-step__number">{number}</span><Icon className="workflow-step__icon" /><div><h3>{title}</h3><p>{text}</p></div></li>;
+}
+
+function ValueColumn({ icon: Icon, title, text }: { icon: typeof ImagePlus; title: string; text: string }) {
+  return <article className="value-column"><Icon className="h-5 w-5 text-primary" /><h3>{title}</h3><p>{text}</p></article>;
+}
+
+function Faq({ question, answer }: { question: string; answer: string }) {
+  return <details className="faq-row group"><summary>{question}<ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" /></summary><p>{answer}</p></details>;
 }

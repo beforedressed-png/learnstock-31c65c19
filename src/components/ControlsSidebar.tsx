@@ -33,7 +33,7 @@ const PLATFORMS: { id: ExportPlatform; label: string; abbr: string; available: b
   { id: "pond5", label: "Pond5", abbr: "P5", available: false },
 ];
 
-const cardCls = "rounded-xl border border-border/80 bg-card p-4 shadow-sm";
+const cardCls = "border-b border-border/80 bg-card p-4 last:border-b-0";
 
 export function ControlsSidebar() {
   const { settings, update } = useGenSettings();

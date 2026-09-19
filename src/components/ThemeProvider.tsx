@@ -18,7 +18,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem(THEME_KEY);
       if (saved === "light" || saved === "dark") return saved;
     }
-    return "dark"; // Default is dark mode
+    return "light";
   });
 
   useEffect(() => {
